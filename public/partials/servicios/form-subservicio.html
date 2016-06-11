@@ -1,0 +1,22 @@
+<h1>{{servicio.nombre}}</h1>
+<h2>Crear Subservicio:</h2>
+
+<form>
+    <div class="form-group">
+        <label>Nombre</label>		
+        <input class="form-control" ng-model="subservicio.nombre"></input>
+    </div>
+    <div class="form-group">
+        <label>Descripción</label>		
+        <input class="form-control" ng-model="subservicio.descripcion"></input>
+    </div>
+    <div class="form-group">
+        <label>Precio</label>		
+        <input class="form-control" ng-model="subservicio.precio"></input>
+    </div>
+    <div class="form-group">
+        <label>Detalles</label> 
+        <textarea class="form-control" ng-model="subservicio.detalles"></textarea>
+    </div>
+    <input type="button" class="btn btn-primary" value="Save" ng-click="guardar()"></input>	
+</form>

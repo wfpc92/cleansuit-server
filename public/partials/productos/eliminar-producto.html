@@ -1,0 +1,13 @@
+<h1>Eliminar Producto</h1>
+<p>
+    Estas seguro que quieres eliminar este producto?
+</p>
+<ul>
+    <li>Nombre: {{producto.nombre}}</li>
+    <li>Precio: {{producto.precio}}</li>
+    <li>Descripcion corta: {{producto.desc_corta}}</li>
+    <li>Descripcion Larga: {{producto.desc_larga}}</li>
+    <li>Foto: {{producto.foto}}</li>
+</ul>
+<input type="button" value="Eliminar" class="btn btn-danger" ng-click="eliminar()" />
+<a class="btn btn-default" href="/#/">Cancelar</a>

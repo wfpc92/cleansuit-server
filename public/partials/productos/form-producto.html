@@ -1,0 +1,25 @@
+<h1>Crear un Producto</h1>
+
+<form>
+    <div class="form-group">
+        <label>Nombre</label>		
+        <input class="form-control" ng-model="producto.nombre"></input>
+    </div>
+    <div class="form-group">
+        <label>Precio</label>		
+        <input class="form-control" ng-model="producto.precio"></input>
+    </div>
+    <div class="form-group">
+        <label>Descripción Corta</label>
+        <textarea class="form-control" ng-model="producto.desc_corta"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Descripción Larga</label>
+        <textarea class="form-control" ng-model="producto.desc_larga"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Foto</label>
+        <input type="file" class="form-control" ng-model="producto.foto"></input>
+    </div>
+    <input type="button" class="btn btn-primary" value="Save" ng-click="guardar()"></input>	
+</form>
