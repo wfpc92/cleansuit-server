@@ -5,7 +5,7 @@ app.controller('NuevoServicioCtrl', ['$scope', '$resource', '$location',
         $scope.guardar = function(){
             var Servicios = $resource('/servicios');
             Servicios.save($scope.servicio, function(){
-                $location.path('/');
+                $location.path('/servicios');
             });
         };
     }]);

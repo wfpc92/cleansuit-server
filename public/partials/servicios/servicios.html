@@ -17,8 +17,10 @@
         <ul>
         	<li ng-repeat="subservicio in servicio.subservicios">
         		<span>{{subservicio.nombre}}</span>
-		    	<a href="/#/servicio/{{servicio._id}}/subservicio/editar/{{subservicio._id}}">Editar</a>
-		    	<a href="/#/servicio/{{servicio._id}}/subservicio/eliminar/{{subservicio._id}}">
+		    	<a href="/#/servicios/{{servicio._id}}/subservicios/editar/{{subservicio._id}}">
+                    <i class="glyphicon glyphicon-pencil"></i>         
+                </a>
+		    	<a href="/#/servicios/{{servicio._id}}/subservicios/eliminar/{{subservicio._id}}">
 		            <i class="glyphicon glyphicon-remove"></i>
 		        </a>
         	</li>

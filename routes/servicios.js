@@ -30,16 +30,16 @@ router.post('/', function(req, res){
     });
 });
 
-router.get('/:id', function(req, res) {
-    Servicios.findById(req.params.id, function(err, servicio) {
+router.get('/:idServicio', function(req, res) {
+    Servicios.findById(req.params.idServicio, function(err, servicio) {
         if (err) res.send(err);
 
         res.json(servicio);
     });
 });
 
-router.put('/:id', function(req, res){
-    Servicios.findById(req.params.id, function(err, servicio) {
+router.put('/:idServicio', function(req, res){
+    Servicios.findById(req.params.idServicio, function(err, servicio) {
         if (err) res.send(err);
 
         //modificar atributos del servicio
@@ -55,8 +55,8 @@ router.put('/:id', function(req, res){
     });
 });
 
-router.delete('/:id', function(req, res){
-    Servicios.findByIdAndRemove(req.params.id, function(err, servicio) {
+router.delete('/:idServicio', function(req, res){
+    Servicios.findByIdAndRemove(req.params.idServicio, function(err, servicio) {
         if (err) res.send(err);
 
         res.json(servicio);
@@ -64,8 +64,19 @@ router.delete('/:id', function(req, res){
 });
 
 //subservicios:
-router.post('/:id/subservicios', function(req, res) {
-    Servicios.findById(req.params.id, function(err, servicio) {
+router.get('/:idServicio/subservicios', function(req, res) {
+    Subservicios
+        .find()
+        .populate('_creator')
+        .exec(function(err, subservicios) {
+            if (err) res.send(err);
+            
+            res.json(subservicios);
+        });
+});
+
+router.post('/:idServicio/subservicios', function(req, res) {
+    Servicios.findById(req.params.idServicio, function(err, servicio) {
         if (err) res.send(err);
 
         var subservicio = new Subservicios();
@@ -88,6 +99,53 @@ router.post('/:id/subservicios', function(req, res) {
     });
 });
 
+router.get('/subservicios/:idSubservicio', function(req, res){
+     Subservicios
+        .findById(req.params.idSubservicio)
+        .populate('_creator')
+        .exec(function(err, subservicio) {
+            if (err) res.send(err);
+            
+            res.json(subservicio);
+        });
+});
 
+router.put('/subservicios/:idSubservicio', function(req, res){
+    Subservicios.findById(req.params.idSubservicio, function(err, subservicio) {
+        if (err) res.send(err);
+
+        //modificar atributos del subservicio
+        subservicio.nombre = req.body.nombre || subservicio.nombre;
+        subservicio.descripcion = req.body.descripcion || subservicio.descripcion;
+        subservicio.precio = req.body.precio || subservicio.precio;
+        subservicio.detalles = req.body.detalles || subservicio.detalles;
+
+        // Save the beer and check for errors
+        subservicio.save(function(err) {
+            if (err) res.send(err);
+
+            res.json(subservicio);
+        });
+    });
+});
+
+router.delete('/subservicios/:idSubservicio', function(req, res){
+    Subservicios.findByIdAndRemove(req.params.idSubservicio, function(err, subservicio) {
+        if (err) res.send(err);
+
+        if(subservicio) {
+            Servicios.findById(subservicio._creator, function(err, servicio) {
+                if(err) res.send(err);
+
+                servicio.subservicios.pull({ _id: subservicio._id }); // removed
+                servicio.save(function(err) {
+                    res.json(subservicio);
+                });
+            });
+        } else {
+            res.json({mensaje: "No se encontro el subservicio."});
+        }
+    });
+});
 
 module.exports = router;

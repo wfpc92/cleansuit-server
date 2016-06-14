@@ -29,6 +29,14 @@ app.config(['$routeProvider', function($routeProvider){
             templateUrl: 'partials/servicios/form-subservicio.html', 
             controller: 'NuevoSubservicioCtrl'
         })
+        .when('/servicios/:idServicio/subservicios/editar/:idSubservicio', {
+            templateUrl: 'partials/servicios/form-subservicio.html', 
+            controller: 'EditarSubservicioCtrl'
+        })
+        .when('/servicios/:idServicio/subservicios/eliminar/:idSubservicio', {
+            templateUrl: 'partials/servicios/eliminar-subservicio.html', 
+            controller: 'EliminarSubservicioCtrl'
+        })
 
 
 
