@@ -1,3 +1,4 @@
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,15 +6,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var config = require('./config/config'); // get our config file
 
-mongoose.connect('mongodb://localhost:27017/cleansuit');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var productosRouter = require('./routes/productos');
-var serviciosRouter = require('./routes/servicios');
+mongoose.connect(config.database);
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,6 +24,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+var routes = require('./routes/index');
+var productosRouter = require('./routes/productos');
+var serviciosRouter = require('./routes/servicios');
+var users = require('./routes/users')(app);
 
 app.use('/', routes);
 app.use('/users', users);
