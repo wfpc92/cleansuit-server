@@ -35,3 +35,13 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# binarios servidor cleansuit
+bin
+etc
+include
+lib
+n
+run
+share
+!bin/www
