@@ -1,7 +1,7 @@
 var express = require('express');
 var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var router = express.Router();
-var config = require('../config/config'); // get our config file
+var config = require('../config'); // get our config file
 var User   = require('../models/user'); // get our mongoose model
 
 // route to authenticate a user (POST http://localhost:8080/api/authenticate)
