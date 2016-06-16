@@ -79,6 +79,8 @@ router.post('/:idServicio/subservicios', function(req, res) {
     Servicios.findById(req.params.idServicio, function(err, servicio) {
         if (err) res.send(err);
 
+        if(!servicio) throw err;
+        
         var subservicio = new Subservicios();
         subservicio._creator = servicio._id;
         subservicio.nombre = req.body.nombre;
