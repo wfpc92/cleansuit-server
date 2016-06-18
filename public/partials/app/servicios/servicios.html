@@ -1,0 +1,43 @@
+<h2>Lista de Servicios:</h2>
+
+<ul>
+	<li ng-repeat='servicio in servicios'>
+		<span>{{servicio.nombre}}</span>
+		<a ui-sref="app.servicios-editar({
+						id: '{{servicio._id}}'
+					})">
+			<i class="glyphicon glyphicon-pencil"></i>
+			</a>
+		<a ui-sref="app.servicios-eliminar({ 
+						id: '{{servicio._id}}' 
+					})">
+			<i class="glyphicon glyphicon-remove"></i>
+		</a>
+		<br/>
+		<span>Subservicios:</span>  
+		<a ui-sref="app.servicios-subservicios-nuevo({ 
+						id: '{{servicio._id}}'
+					})">
+			<i class="glyphicon glyphicon-plus"></i>
+		</a>
+		<ul>
+			<li ng-repeat="subservicio in servicio.subservicios">
+				<span>{{subservicio.nombre}}</span>
+				<a ui-sref="app.servicios-subservicios-editar({ 
+								idServicio: '{{servicio._id}}',
+								idSubservicio:  '{{subservicio._id}}'
+							})">
+					<i class="glyphicon glyphicon-pencil"></i>         
+				</a>
+				<a ui-sref="app.servicios-subservicios-eliminar({ 
+								idServicio: '{{servicio._id}}',
+								idSubservicio:  '{{subservicio._id}}'
+							})">
+					<i class="glyphicon glyphicon-remove"></i>
+				</a>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+ <a ui-sref="app.servicios-nuevo" class="btn btn-primary">Nuevo Servicio</a>

@@ -1,0 +1,19 @@
+<h2>Lista de Productos:</h2>
+
+<ul>
+    <li ng-repeat='producto in productos'>
+    	<span>{{producto.nombre}}</span>
+		<a ui-sref="app.productos-editar({
+						id: '{{producto._id}}'
+					})">
+    		<i class="glyphicon glyphicon-pencil"></i>
+    	</a>
+    	<a ui-sref="app.productos-eliminar({ 
+						id: '{{producto._id}}' 
+					})">
+            <i class="glyphicon glyphicon-remove"></i>
+        </a>
+    </li>
+</ul>
+
+ <a ui-sref="app.productos-nuevo" class="btn btn-primary">Nuevo Producto</a>
