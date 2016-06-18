@@ -66,9 +66,8 @@ getToken = function (headers) {
 };
 
 module.exports = function(app, passport) {
-	router.use(passport.authenticate('jwt', { session: false}));
 
-	router.get('/users', function(req, res) {
+	router.get('/users', passport.authenticate('jwt', { session: false}), function(req, res) {
 		User.find(function(err, usuarios) {
 			if (err) res.send(err);
 
@@ -76,7 +75,7 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	router.get('/memberinfo', function(req, res) {
+	router.get('/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {
 		var token = getToken(req.headers);
 		if (token) {
 			var decoded = jwt.decode(token, config.jwtSecret);
