@@ -4,6 +4,11 @@ var AppLayoutCtrl = function($scope, AuthService, $state) {
     if(!AuthService.isAuthenticated()) {
     	$state.go("home.login")
     }
+
+    $scope.logout = function() {
+    	AuthService.logout();
+    	$state.go("home.inicio");
+    };
 };
 
 app.controller('AppLayoutCtrl', AppLayoutCtrl);
