@@ -1,0 +1,44 @@
+<h2>Lista de Ordenes:</h2>
+
+<div ng-if="ordenes.length==0">No hay Ordenes disponibles.</div>
+<table class="table table-responsive table-hover" ng-if="ordenes.length>0">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Informacion Usuario</th>
+			<th>Informacion Orden</th>
+			<th>Items</th>
+			<th>Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat='orden in ordenes track by $index'>
+			<th scope="row">{{$index}}</th>
+			<td>{{orden.cliente_id.name}}</td>
+			<td>
+				<address>
+					<strong>Recolección.</strong><br>
+					{{orden.orden.direccionRecoleccion.direccion}}, Hora: {{orden.orden.direccionRecoleccion.hora}}
+				</address>
+				<address>
+					<strong>Entrega.</strong><br>
+					{{orden.orden.direccionEntrega.direccion}}, Hora: {{orden.orden.direccionEntrega.hora}}
+				</address>
+				<label>Forma de Pago:</label>
+				<span>{{orden.orden.formaPago}}</span>
+				<label>Teléfono:</label>
+				<span>{{orden.orden.telefono}}</span>
+			</td>
+			<td>
+				<div ng-repeat="item in orden.items" >
+					Tipo: <strong>{{item.tipo}}.</strong><br>
+					Descripción: {{item.nombre}}<br/>
+					Cantidad: {{item.cantidad}}
+				</div>
+			</td>
+			<td>
+				<button>Asignar Domiciliario</button>
+			</td>
+		</tr>
+	</tbody>
+</table>

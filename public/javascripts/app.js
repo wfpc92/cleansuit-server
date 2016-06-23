@@ -191,11 +191,25 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
 
         //USUARIOS
         .state('app.usuarios', {
-            url:'/usuarios/',
+            url:'/usuarios',
             views: {
                 "contenedor": {
                     templateUrl: 'partials/app/usuarios/usuarios.html',
                     controller: 'UsuariosCtrl'
+                }
+            }
+        })
+
+
+
+
+        //ORDENES
+        .state('app.ordenes', {
+            url:'/ordenes',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/ordenes/ordenes.html',
+                    controller: 'OrdenesCtrl'
                 }
             }
         });
