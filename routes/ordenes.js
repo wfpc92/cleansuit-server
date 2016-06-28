@@ -15,7 +15,6 @@ module.exports = function(app, passport) {
 	});
 
 	router.get('/', function(req, res) {
-		//req.user
 		Ordenes
 			.find()
 			.populate('cliente_id')
@@ -25,7 +24,6 @@ module.exports = function(app, passport) {
 				res.json(ordenes);
 			});
 	});
-
 
 
 	router.post('/', function(req, res, next) {
@@ -40,6 +38,8 @@ module.exports = function(app, passport) {
 	},	function(req, res){
 		var orden = new Ordenes();
 		orden.cliente_id = req.user._id; //con passport obtenemos req.user a partir del token
+		orden.fecha = new Date();
+		orden.estado = 'nueva';
 		//datos validado
 		orden.orden = req.orden;
 		orden.items = req.items;
@@ -49,9 +49,21 @@ module.exports = function(app, passport) {
 
 			res.json({
 				mensaje: 'orden enviada.',
-				datos: orden
+				orden: orden
 			});
 		});
+	});
+
+
+	router.get('/en-proceso', function(req, res) {
+		Ordenes
+			.find({'cliente_id': req.user._id})
+			.populate('cliente_id')
+			.exec(function(err, ordenes) {
+				if (err) return res.send(err);
+				
+				res.json(ordenes);
+			});
 	});
 
 	return router;

@@ -11,10 +11,12 @@ module.exports = function(passport) {
 	};
 	
 	var strategy = new Strategy(params, function(jwt_payload, done) {
-		User.findOne({id: jwt_payload.id}, function(err, user) {
+		console.log("config/auth/strategy/jwt_payload", jwt_payload)
+		User.findOne({_id: jwt_payload._id}, function(err, user) {
 			  if (err) {
 					return done(err, false);
 			  }
+			  console.log("strategy, user, ", user)
 			  if (user) {
 					return done(null, user);
 			  } else {

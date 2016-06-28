@@ -6,6 +6,13 @@ var OrdenesSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
+  	fecha: {
+  		type: Date
+  	},
+  	estado: {
+  		type: String, 
+  		enum: ['nueva','rutaRecoleccion','recolectada', 'rutaEntrega', 'entregada', 'cancelada']
+  	},
 	orden: {},
 	items: {},
 	

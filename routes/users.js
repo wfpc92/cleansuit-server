@@ -40,12 +40,20 @@ router.post('/authenticate', function(req, res) {
 		} else {
 			user.comparePassword(req.body.password, function (err, isMatch) {
 				if (isMatch && !err) {
-					// if user is found and password is right create a token
-					var token = jwt.encode(user, config.jwtSecret);
+					// codificar id de usuario, el _id puede ser accedido en jwt_payload._id
+					var token = jwt.encode({_id:user._id}, config.jwtSecret);
 					// return the information including token as JSON
-					res.json({success: true, token: 'JWT ' + token});
+					res.json({
+						success: true, 
+						usuario: {
+							nombre: user.name, 
+							correo: user.email,
+							token: 'JWT ' + token
+						}
+					});
 				} else {
-					res.send({success: false, mensaje: 'Falló autenticación. Contraseña incorrecta.'});
+					res.send({
+							success: false, mensaje: 'Falló autenticación. Contraseña incorrecta.'});
 				}
 			});
 		}
