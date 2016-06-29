@@ -1,5 +1,5 @@
 var AuthService = function($q, $http) {
-	var LOCAL_TOKEN_KEY = 'yourTokenKey';
+	var LOCAL_TOKEN_KEY = 'CleanSuitTokenKey';
 	var isAuthenticated = false;
 	var authToken;
  
@@ -38,7 +38,7 @@ var AuthService = function($q, $http) {
 			$http.post('/signup', user).then(function(result) {
 				console.log(result.data)
 				if (result.data.success) {
-					storeUserCredentials(result.data.token);
+					storeUserCredentials(result.data.usuario.token);
 					resolve(result.data.mensaje);
 				} else {
 					reject(result.data.mensaje);
@@ -52,7 +52,7 @@ var AuthService = function($q, $http) {
 			$http.post('/authenticate', user).then(function(result) {
 				console.log(result.data)
 				if (result.data.success) {
-					storeUserCredentials(result.data.token);
+					storeUserCredentials(result.data.usuario.token);
 					resolve(result.data.mensaje);
 				} else {
 					reject(result.data.mensaje);
