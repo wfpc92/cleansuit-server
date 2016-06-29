@@ -8,11 +8,18 @@
 			<th>Informacion Usuario</th>
 			<th>Informacion Orden</th>
 			<th>Items</th>
+			<th>Estado</th>
+			<th>Fecha Pedido</th>
 			<th>Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat='orden in ordenes track by $index'>
+		<tr ng-class="{ 
+					'success': {{orden.estado == 'nueva'}}, 
+					'danger': {{orden.estado == 'cancelada'}}, 
+					'info': {{orden.estado == 'entregada'}}
+			}" 
+			ng-repeat='orden in ordenes track by $index'>
 			<th scope="row">{{$index}}</th>
 			<td>{{orden.cliente_id.name}}</td>
 			<td>
@@ -34,6 +41,16 @@
 					Tipo: <strong>{{item.tipo}}.</strong><br>
 					Descripción: {{item.nombre}}<br/>
 					Cantidad: {{item.cantidad}}
+				</div>
+			</td>
+			<td >
+				<div >
+					{{orden.estado}} 
+				</div>
+			</td>
+			<td>
+				<div>
+					{{orden.fecha}}
 				</div>
 			</td>
 			<td>

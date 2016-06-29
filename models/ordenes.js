@@ -11,7 +11,7 @@ var OrdenesSchema = new mongoose.Schema({
   	},
   	estado: {
   		type: String, 
-  		enum: ['nueva','rutaRecoleccion','recolectada', 'rutaEntrega', 'entregada', 'cancelada']
+  		enum: ['nueva','rutaRecoleccion','recolectada', 'procesando', 'rutaEntrega', 'entregada', 'cancelada']
   	},
 	orden: {},
 	items: {},

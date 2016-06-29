@@ -58,6 +58,20 @@ module.exports = function(app, passport) {
 	router.get('/en-proceso', function(req, res) {
 		Ordenes
 			.find({'cliente_id': req.user._id})
+			.where('estado').in(['nueva', 'rutaRecoleccion', 'recolectada', 'procesando', 'rutaEntrega'])
+			.populate('cliente_id')
+			.exec(function(err, ordenes) {
+				if (err) return res.send(err);
+				
+				res.json(ordenes);
+			});
+	});
+
+
+	router.get('/historial', function(req, res) {
+		Ordenes
+			.find({'cliente_id': req.user._id})
+			.where('estado').in(['entregada', 'cancelada'])
 			.populate('cliente_id')
 			.exec(function(err, ordenes) {
 				if (err) return res.send(err);
