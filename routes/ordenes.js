@@ -37,7 +37,7 @@ module.exports = function(app, passport) {
 		}
 	},	function(req, res){
 		var orden = new Ordenes();
-		orden.cliente_id = req.user._id; //con passport obtenemos req.user a partir del token
+		orden.cliente_id = req.usuario._id; //con passport obtenemos req.usuario a partir del token
 		orden.fecha = new Date();
 		orden.estado = 'nueva';
 		//datos validado
@@ -57,7 +57,7 @@ module.exports = function(app, passport) {
 
 	router.get('/en-proceso', function(req, res) {
 		Ordenes
-			.find({'cliente_id': req.user._id})
+			.find({'cliente_id': req.usuario._id})
 			.where('estado').in(['nueva', 'rutaRecoleccion', 'recolectada', 'procesando', 'rutaEntrega'])
 			.populate('cliente_id')
 			.exec(function(err, ordenes) {
@@ -70,7 +70,7 @@ module.exports = function(app, passport) {
 
 	router.get('/historial', function(req, res) {
 		Ordenes
-			.find({'cliente_id': req.user._id})
+			.find({'cliente_id': req.usuario._id})
 			.where('estado').in(['entregada', 'cancelada'])
 			.populate('cliente_id')
 			.exec(function(err, ordenes) {

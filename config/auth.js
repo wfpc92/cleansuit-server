@@ -1,5 +1,5 @@
 var passportJWT = require('passport-jwt');
-var User = require('../models/user');
+var Usuarios = require('../models/usuarios');
 var ExtractJwt = passportJWT.ExtractJwt;
 var Strategy = passportJWT.Strategy;
 var config = require("./passport")
@@ -12,13 +12,13 @@ module.exports = function(passport) {
 	
 	var strategy = new Strategy(params, function(jwt_payload, done) {
 		console.log("config/auth/strategy/jwt_payload", jwt_payload)
-		User.findOne({_id: jwt_payload._id}, function(err, user) {
+		Usuarios.findOne({_id: jwt_payload._id}, function(err, usuario) {
 			  if (err) {
 					return done(err, false);
 			  }
-			  console.log("strategy, user, ", user)
-			  if (user) {
-					return done(null, user);
+			  console.log("strategy, user, ", usuario)
+			  if (usuario) {
+					return done(null, usuario);
 			  } else {
 					return done(null, false);
 			  }
