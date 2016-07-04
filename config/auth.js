@@ -11,12 +11,11 @@ module.exports = function(passport) {
 	};
 	
 	var strategy = new Strategy(params, function(jwt_payload, done) {
-		console.log("config/auth/strategy/jwt_payload", jwt_payload)
-		Usuarios.findOne({_id: jwt_payload._id}, function(err, usuario) {
+		Usuarios.findOne({_id: jwt_payload}, function(err, usuario) {
 			  if (err) {
 					return done(err, false);
 			  }
-			  console.log("strategy, user, ", usuario)
+			  console.log("strategy, usuario, ", usuario)
 			  if (usuario) {
 					return done(null, usuario);
 			  } else {
@@ -24,7 +23,7 @@ module.exports = function(passport) {
 			  }
 		  });
 	});
-	
+
 	passport.use(strategy);
 	
 	return {
@@ -34,6 +33,6 @@ module.exports = function(passport) {
 
 		authenticate: function() {
 			return passport.authenticate("jwt", config.jwtSession);
-		}
+		},
 	};
 };

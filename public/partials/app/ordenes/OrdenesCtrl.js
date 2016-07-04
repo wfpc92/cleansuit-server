@@ -5,7 +5,7 @@ var OrdenesCtrl = function($scope, RecursosFactory) {
     .get("/ordenes")
     .then(function(respuesta) {
     	console.log("OrdenesCtrl: ", respuesta);
-    	$scope.ordenes = respuesta.data;
+    	$scope.ordenes = respuesta.data.ordenes;
     });
 };
 

@@ -1,15 +1,18 @@
 var LoginCtrl = function($scope, AuthService, $state) {
-	$scope.error = "";
-	$scope.user = {
-		email: "",
-		password: ""
+	
+	$scope.error = null;
+	$scope.usuario = {
+		correo: "",
+		contrasena: ""
 	};
 
-	$scope.login = function() {
-		AuthService.login($scope.user).then(function(msg) {
+	$scope.ingresar = function() {
+		AuthService
+		.ingresar($scope.usuario)
+		.then(function(msg) {
 			$state.go('app.inicio');
 		}, function(errMsg) {
-			console.log(errMsg)
+			$scope.error = errMsg;
 		}); 
 	};
 };

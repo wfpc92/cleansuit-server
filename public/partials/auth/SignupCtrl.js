@@ -1,16 +1,18 @@
 var SignupCtrl = function($scope, AuthService, $state) {
 	$scope.error = "";
-	$scope.user = {
-		name: "",
-		email: "",
-		password: ""
+	$scope.usuario = {
+		nombre: "",
+		correo: "",
+		contrasena: ""
 	};
 
-	$scope.signup = function() {
-		AuthService.register($scope.user).then(function(msg) {
+	$scope.registrar = function() {
+		AuthService
+		.registrar($scope.usuario)
+		.then(function(msg) {
 			$state.go('app.inicio');
 		}, function(errMsg) {
-			alert(errMsg)
+			$scope.error = errMsg;
 		});
 	};
 };

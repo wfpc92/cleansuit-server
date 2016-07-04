@@ -15,7 +15,7 @@ module.exports = function(app, passport) {
 			.find()
 			.populate('subservicios')
 			.exec(function(err, servicios) {
-				if (err) res.send(err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
 				res.json(servicios);
 			});
@@ -27,7 +27,7 @@ module.exports = function(app, passport) {
 		servicio.descripcion = req.body.descripcion,
 		
 		servicio.save(function(err) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json({
 				mensaje: 'servicio agregado',
@@ -38,7 +38,7 @@ module.exports = function(app, passport) {
 
 	router.get('/:idServicio', function(req, res) {
 		Servicios.findById(req.params.idServicio, function(err, servicio) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json(servicio);
 		});
@@ -46,7 +46,7 @@ module.exports = function(app, passport) {
 
 	router.put('/:idServicio', function(req, res){
 		Servicios.findById(req.params.idServicio, function(err, servicio) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			//modificar atributos del servicio
 			servicio.nombre = req.body.nombre || servicio.nombre;
@@ -54,7 +54,7 @@ module.exports = function(app, passport) {
 
 			// Save the beer and check for errors
 			servicio.save(function(err) {
-				if (err) res.send(err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 				res.json(servicio);
 			});
@@ -63,7 +63,7 @@ module.exports = function(app, passport) {
 
 	router.delete('/:idServicio', function(req, res){
 		Servicios.findByIdAndRemove(req.params.idServicio, function(err, servicio) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json(servicio);
 		});
@@ -75,7 +75,7 @@ module.exports = function(app, passport) {
 			.find()
 			.populate('_creator')
 			.exec(function(err, subservicios) {
-				if (err) res.send(err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
 				res.json(subservicios);
 			});
@@ -83,9 +83,9 @@ module.exports = function(app, passport) {
 
 	router.post('/:idServicio/subservicios', function(req, res) {
 		Servicios.findById(req.params.idServicio, function(err, servicio) {
-			if (err) return res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-			if(!servicio) return res.json(null);
+			if(!servicio) return res.json({success: false, mensaje: "no se encuentra el servicio"});
 			
 			var subservicio = new Subservicios();
 			subservicio._creator = servicio._id;
@@ -95,15 +95,15 @@ module.exports = function(app, passport) {
 			subservicio.detalles = req.body.detalles;
 
 			subservicio.save(function(err) {
-				if(err) res.send(err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 				servicio.subservicios.push(subservicio);
 				servicio.save(function(err) {
-					if(err) res.send(err);
+					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 					res.json({
 						mensaje: "subservicio creado en el servicio: "+servicio._id,
-						datos: servicio
+						datos: subservicio
 					});
 				});
 			});        
@@ -115,7 +115,7 @@ module.exports = function(app, passport) {
 			.findById(req.params.idSubservicio)
 			.populate('_creator')
 			.exec(function(err, subservicio) {
-				if (err) res.send(err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
 				res.json(subservicio);
 			});
@@ -123,7 +123,7 @@ module.exports = function(app, passport) {
 
 	router.put('/subservicios/:idSubservicio', function(req, res){
 		Subservicios.findById(req.params.idSubservicio, function(err, subservicio) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			//modificar atributos del subservicio
 			subservicio.nombre = req.body.nombre || subservicio.nombre;
@@ -133,7 +133,7 @@ module.exports = function(app, passport) {
 
 			// Save the beer and check for errors
 			subservicio.save(function(err) {
-				if (err) res.send(err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 				res.json(subservicio);
 			});
@@ -142,11 +142,11 @@ module.exports = function(app, passport) {
 
 	router.delete('/subservicios/:idSubservicio', function(req, res){
 		Subservicios.findByIdAndRemove(req.params.idSubservicio, function(err, subservicio) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			if(subservicio) {
 				Servicios.findById(subservicio._creator, function(err, servicio) {
-					if(err) res.send(err);
+					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 					servicio.subservicios.pull({ _id: subservicio._id }); // removed
 					servicio.save(function(err) {
@@ -154,7 +154,7 @@ module.exports = function(app, passport) {
 					});
 				});
 			} else {
-				res.json({mensaje: "No se encontro el subservicio."});
+				res.json({success: false, mensaje: "No se encontro el subservicio."});
 			}
 		});
 	});

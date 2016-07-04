@@ -3,21 +3,21 @@
 
     <h1><span class="fa fa-sign-in"></span> Ingresar</h1>
 
-    <div class="alert alert-danger" ng-if="error.length > 0">{{error}}</div>
+    <div class="alert alert-danger" ng-if="error">{{error}}</div>
 
 
     <!-- LOGIN FORM -->
     <form>
         <div class="form-group">
             <label>Correo Electrónico</label>
-            <input type="text" class="form-control" name="email" ng-model="user.email">
+            <input type="text" class="form-control" name="email" ng-model="usuario.correo">
         </div>
         <div class="form-group">
             <label>Contraseña</label>
-            <input type="password" class="form-control" name="password" ng-model="user.password">
+            <input type="password" class="form-control" name="password" ng-model="usuario.contrasena">
         </div>
 
-        <button class="btn btn-warning btn-lg" ng-click="login()">Ingresar</button>
+        <button class="btn btn-warning btn-lg" ng-click="ingresar()">Ingresar</button>
     </form>
 
     <hr>

@@ -2,9 +2,11 @@
 var mongoose = require('mongoose');
 require('mongoose-type-email');
 var bcrypt   = require('bcrypt');
+var jwt         = require('jwt-simple');
+var config = require("../config/passport");
 
 // set up a mongoose model
-var UsuarioSchema = new mongoose.Schema({
+var UsuariosSchema = new mongoose.Schema({
 	nombre: {
 		type: String,
 		required: true
@@ -24,7 +26,7 @@ var UsuarioSchema = new mongoose.Schema({
   	},
 });
 
-UsuarioSchema.pre('save', function (next) {
+UsuariosSchema.pre('save', function (next) {
 	var usuario = this;
 	if (this.isModified('contrasena') || this.isNew) {
 		bcrypt.genSalt(10, function (err, salt) {
@@ -44,7 +46,8 @@ UsuarioSchema.pre('save', function (next) {
 	}
 });
  
-UsuarioSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
+UsuariosSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
+	console.log("Usuarios.comparePassword()")
 	bcrypt.compare(contrasenaRecibida, this.contrasena, function (err, isMatch) {
 		if (err) {
 			return cb(err);
@@ -53,4 +56,26 @@ UsuarioSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
 	});
 };
 
-module.exports = mongoose.model('Usuario', UsuarioSchema);
+UsuariosSchema.methods.getInfo = function(info) {
+	console.log("Usuarios.getInfo()")
+	var token = jwt.encode(this._id, config.jwtSecret);
+
+	var usuario = {
+		nombre: this.nombre, 
+		correo: this.correo,
+		rol: this.rol,
+		token: 'JWT ' + token
+	};
+
+	switch(this.rol){
+		case "cliente":
+			usuario.direccion = info.direccion;
+			usuario.telefono = info.telefono;
+			break;
+	}
+	return usuario;
+};
+
+
+
+module.exports = mongoose.model('Usuarios', UsuariosSchema);

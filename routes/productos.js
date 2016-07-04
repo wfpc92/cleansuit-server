@@ -7,7 +7,7 @@ module.exports = function(app, passport) {
 
 	router.get('/', function(req, res) {
 		Productos.find(function(err, productos) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json(productos);
 		});
@@ -22,7 +22,7 @@ module.exports = function(app, passport) {
 		producto.foto = req.body.foto
 		
 		producto.save(function(err) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json({
 				mensaje: 'producto agregado',
@@ -33,15 +33,15 @@ module.exports = function(app, passport) {
 
 	router.get('/:id', function(req, res) {
 		Productos.findById(req.params.id, function(err, producto) {
-			if (err) res.send(err);
-
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
 			res.json(producto);
 		});
 	});
 
 	router.put('/:id', function(req, res){
 		Productos.findById(req.params.id, function(err, producto) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			//modificar atributos del producto
 			producto.nombre = req.body.nombre || producto.nombre;
@@ -52,7 +52,7 @@ module.exports = function(app, passport) {
 
 			// Save the beer and check for errors
 			producto.save(function(err) {
-				if (err) res.send(err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 				res.json(producto);
 			});
@@ -61,7 +61,7 @@ module.exports = function(app, passport) {
 
 	router.delete('/:id', function(req, res){
 		Productos.findByIdAndRemove(req.params.id, function(err, producto) {
-			if (err) res.send(err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json(producto)
 		});

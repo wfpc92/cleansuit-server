@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
 
-var ClienteSchema = new mongoose.Schema({
+var ClientesSchema = new mongoose.Schema({
 	usuario_id: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Usuario'
+		ref: 'Usuarios',
+		unique: true,
 	},
 	direccion: {
 		type: String
@@ -14,4 +15,4 @@ var ClienteSchema = new mongoose.Schema({
 });
 
 // Export the Mongoose model
-module.exports = mongoose.model('Cliente', ClienteSchema);
+module.exports = mongoose.model('Clientes', ClientesSchema);

@@ -33,9 +33,9 @@ var AuthService = function($q, $http) {
 		window.localStorage.removeItem(LOCAL_TOKEN_KEY);
 	}
  
-	var register = function(user) {
+	var registrar = function(user) {
 		return $q(function(resolve, reject) {
-			$http.post('/signup', user).then(function(result) {
+			$http.post('/registrar', user).then(function(result) {
 				console.log(result.data)
 				if (result.data.success) {
 					storeUserCredentials(result.data.usuario.token);
@@ -47,9 +47,9 @@ var AuthService = function($q, $http) {
 		});
 	}; 
  
-	var login = function(user) {
+	var ingresar = function(user) {
 		return $q(function(resolve, reject) {
-			$http.post('/authenticate', user).then(function(result) {
+			$http.post('/ingresar', user).then(function(result) {
 				console.log(result.data)
 				if (result.data.success) {
 					storeUserCredentials(result.data.usuario.token);
@@ -68,8 +68,8 @@ var AuthService = function($q, $http) {
 	loadUserCredentials();
  
 	return {
-		login: login,
-		register: register,
+		ingresar: ingresar,
+		registrar: registrar,
 		logout: logout,
 		isAuthenticated: function() {return isAuthenticated;},
 	};

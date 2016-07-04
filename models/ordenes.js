@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var OrdenesSchema = new mongoose.Schema({
 	cliente_id: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'Usuarios'
 	},
   	fecha: {
   		type: Date

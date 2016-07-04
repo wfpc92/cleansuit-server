@@ -1,8 +1,27 @@
 <h2>Lista de Usuarios:</h2>
 
-<ul>
-    <li ng-repeat='usuario in usuarios'>
-    	<span>Nombre: {{usuario.name}}</span>
-        <span>Email: {{usuario.email}}</span>
-    </li>
-</ul>
+<div ng-if="usuarios.length==0">No hay Usuarios registrados.</div>
+<table class="table table-responsive table-hover" ng-if="usuarios.length>0">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Nombre</th>
+			<th>Correo</th>
+			<th>Rol</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat='usuario in usuarios track by $index'>
+			<td scope="row">{{$index}}</td>
+			<td>
+				<p>{{usuario.nombre}}
+			</td>
+			<td>
+				<p>{{usuario.correo}}
+			</td>
+			<td>
+				<p>{{usuario.rol}}
+			</td>
+		</tr>
+	</tbody>
+</table>
