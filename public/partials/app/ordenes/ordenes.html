@@ -20,16 +20,25 @@
 					'info': {{orden.estado == 'entregada'}}
 			}" 
 			ng-repeat='orden in ordenes track by $index'>
-			<th scope="row">{{$index}}</th>
-			<td>{{orden.cliente_id.name}}</td>
+			<td scope="row">{{$index}}</td>
+			<td>
+				{{orden.cliente_id.nombre}}<br/>
+				{{orden.cliente_id.correo}}
+			</td>
 			<td>
 				<address>
 					<strong>Recolección.</strong><br>
-					{{orden.orden.direccionRecoleccion.direccion}}, Hora: {{orden.orden.direccionRecoleccion.hora}}
+					Dirección: {{orden.orden.recoleccion.direccion}}<br/>
+					Posicion Geografica: {{orden.orden.recoleccion.posicion.lat}} {{orden.orden.recoleccion.posicion.lng}} <br/>
+					Fecha: {{orden.orden.recoleccion.fecha | date}}<br/>
+					Hora: {{orden.orden.recoleccion.hora}}<br/>
 				</address>
 				<address>
 					<strong>Entrega.</strong><br>
-					{{orden.orden.direccionEntrega.direccion}}, Hora: {{orden.orden.direccionEntrega.hora}}
+					Dirección: {{orden.orden.entrega.direccion}}<br/>
+					Posicion Geografica: {{orden.orden.entrega.posicion.lat}} {{orden.orden.entrega.posicion.lng}}<br/>
+					Fecha: {{orden.orden.entrega.fecha | date}}<br/>  
+					Hora: {{orden.orden.entrega.hora}}<br/>
 				</address>
 				<label>Forma de Pago:</label>
 				<span>{{orden.orden.formaPago}}</span>
@@ -37,10 +46,12 @@
 				<span>{{orden.orden.telefono}}</span>
 			</td>
 			<td>
-				<div ng-repeat="item in orden.items" >
+				<div ng-repeat="item in orden.items track by $index" >
+					<strong>Item {{$index+1}}</strong><br>
 					Tipo: <strong>{{item.tipo}}.</strong><br>
 					Descripción: {{item.nombre}}<br/>
-					Cantidad: {{item.cantidad}}
+					Precio: {{item.precio}}<br/>
+					Cantidad: {{item.cantidad}}<br><br>
 				</div>
 			</td>
 			<td >
