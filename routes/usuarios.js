@@ -6,21 +6,7 @@ router.get('/', function(req, res, next) {
 	res.render('index', { view: 'pages/home'});
 });
 
-router.post('/registrar',
-	//validacion de datos
-	function(req, res, next) {
-		console.log("POST /registro, validacion de datos: ", req.body);
-		try {
-			req.nombre = req.body.nombre;
-			req.correo = req.body.correo;
-			req.contrasena = req.body.contrasena;
-			next();
-		} catch(err) {
-			return next(err);
-		}
-	},
-	//registro de usuario.
-	function(req, res) {
+router.post('/registrar', function(req, res) {
 	if (!req.body.nombre || !req.body.correo || !req.body.contrasena) {
 		res.json({success: false, mensaje: 'Por favor ingrese nombre, correo y contraseña.'});
 	} else {
@@ -72,7 +58,7 @@ router.post('/ingresar', function(req, res, next) {
 		if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 		if (!usuario) {
-			res.json({success: false, mensaje: 'Falló autenticación. Usuario no encontrado.', error: err});
+			res.json({success: false, mensaje: 'Usuario no encontrado.', error: err});
 		} else {
 			usuario.comparePassword(req.body.contrasena, function (err, isMatch) {
 				if (isMatch && !err) {
@@ -89,7 +75,7 @@ router.post('/ingresar', function(req, res, next) {
 						});
 					});
 				} else {
-					return res.json({success: false, mensaje: 'Falló autenticación. Contraseña incorrecta.', error: err});
+					return res.json({success: false, mensaje: 'Contraseña incorrecta.', error: err});
 				}
 			});
 		}
