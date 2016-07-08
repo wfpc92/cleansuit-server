@@ -1,4 +1,7 @@
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
+
+autoIncrement.initialize(mongoose.connection);
 
 // Define our beer schema
 var OrdenesSchema = new mongoose.Schema({
@@ -6,16 +9,26 @@ var OrdenesSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Usuarios'
 	},
-  	fecha: {
-  		type: Date
-  	},
-  	estado: {
-  		type: String, 
-  		enum: ['nueva','rutaRecoleccion','recolectada', 'procesando', 'rutaEntrega', 'entregada', 'cancelada']
-  	},
+	codigo: {
+		type: Number
+	},
+	fecha: {
+		type: Date
+	},
+	estado: {
+		type: String, 
+		enum: ['nueva','rutaRecoleccion','recolectada', 'procesando', 'rutaEntrega', 'entregada', 'cancelada']
+	},
 	orden: {},
 	items: {},
 	
+});
+
+OrdenesSchema.plugin(autoIncrement.plugin, {
+		model: 'Ordenes',
+		field: 'codigo',
+		startAt: 1,
+		incrementBy: 1
 });
 
 // Export the Mongoose model
