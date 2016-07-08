@@ -1,0 +1,12 @@
+<h1>Eliminar Promoción</h1>
+<p>
+    Estas seguro que quieres eliminar este promoción?
+</p>
+<ul>
+    <li>Imagen: <img ng-src="{{promocion.url_imagen}}"/></li>
+    <li>Descuento: {{promocion.descuento}}</li>
+    <li>Código: {{promocion.codigo}}</li>
+    <li>Descripción: {{promocion.descripcion}}</li>
+</ul>
+<input type="button" value="Eliminar" class="btn btn-danger" ng-click="eliminar()" />
+<a class="btn btn-default" ui-sref="app.promociones">Cancelar</a>

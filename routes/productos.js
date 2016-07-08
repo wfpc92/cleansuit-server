@@ -9,24 +9,30 @@ module.exports = function(app, passport) {
 		Productos.find(function(err, productos) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-			res.json(productos);
+			res.json({
+				success: true,
+				productos: productos,
+				mensaje: 'lista de productos'
+			});
 		});
 	});
 
 	router.post('/', function(req, res){
-		var producto = new Productos();
-		producto.nombre = req.body.nombre,
-		producto.precio = req.body.precio,
-		producto.desc_corta = req.body.desc_corta,
-		producto.desc_larga = req.body.desc_larga,
-		producto.foto = req.body.foto
+		var producto = new Productos({
+			nombre: req.body.nombre,
+			precio: req.body.precio,
+			desc_corta: req.body.desc_corta,
+			desc_larga: req.body.desc_larga,
+			url_imagen: req.body.url_imagen
+		});
 		
 		producto.save(function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json({
-				mensaje: 'producto agregado',
-				datos: producto
+				success: true,
+				producto: producto,
+				mensaje: 'producto agregado'
 			});
 		});
 	});
@@ -35,7 +41,11 @@ module.exports = function(app, passport) {
 		Productos.findById(req.params.id, function(err, producto) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
-			res.json(producto);
+			res.json({
+				success: true,
+				producto: producto,
+				mensaje: 'informacion de producto'
+			});
 		});
 	});
 
@@ -48,13 +58,17 @@ module.exports = function(app, passport) {
 			producto.precio = req.body.precio || producto.precio;
 			producto.desc_corta = req.body.desc_corta || producto.desc_corta;
 			producto.desc_larga = req.body.desc_larga || producto.desc_larga;
-			producto.foto = req.body.foto || producto.foto;
+			producto.url_imagen = req.body.url_imagen || producto.url_imagen;
 
 			// Save the beer and check for errors
 			producto.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-				res.json(producto);
+				res.json({
+					success: true,
+					producto: producto,
+					mensaje: 'producto modificado'
+				});
 			});
 		});
 	});
@@ -63,7 +77,11 @@ module.exports = function(app, passport) {
 		Productos.findByIdAndRemove(req.params.id, function(err, producto) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-			res.json(producto)
+			res.json({
+				success: true,
+				producto: producto,
+				mensaje: 'producto eliminado'
+			});
 		});
 	});
 	

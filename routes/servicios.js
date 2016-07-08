@@ -17,21 +17,27 @@ module.exports = function(app, passport) {
 			.exec(function(err, servicios) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
-				res.json(servicios);
+				res.json({
+					success: true,
+					servicios: servicios,
+					mensaje: 'lista de servicios'
+				});
 			});
 	});
 
 	router.post('/', function(req, res){
-		var servicio = new Servicios();
-		servicio.nombre = req.body.nombre,
-		servicio.descripcion = req.body.descripcion,
+		var servicio = new Servicios({
+			nombre: req.body.nombre,
+			descripcion: req.body.descripcion
+		});
 		
 		servicio.save(function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json({
-				mensaje: 'servicio agregado',
-				datos: servicio
+				success: true,
+				servicio: servicio,
+				mensaje: 'servicio agregado.'
 			});
 		});
 	});
@@ -40,7 +46,11 @@ module.exports = function(app, passport) {
 		Servicios.findById(req.params.idServicio, function(err, servicio) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-			res.json(servicio);
+			res.json({
+				success: true,
+				servicio: servicio,
+				mensaje: 'informacion de servicio.'
+			});
 		});
 	});
 
@@ -56,7 +66,11 @@ module.exports = function(app, passport) {
 			servicio.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-				res.json(servicio);
+				res.json({
+					success: true,
+					servicio: servicio,
+					mensaje: 'servicio modificado.'
+				});
 			});
 		});
 	});
@@ -65,19 +79,27 @@ module.exports = function(app, passport) {
 		Servicios.findByIdAndRemove(req.params.idServicio, function(err, servicio) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-			res.json(servicio);
+			res.json({
+				success: true,
+				servicio: servicio,
+				mensaje: 'servicio eliminado.'
+			});
 		});
 	});
 
 	//subservicios:
 	router.get('/:idServicio/subservicios', function(req, res) {
 		Subservicios
-			.find()
+			.find({_creator: req.params.idServicio})
 			.populate('_creator')
 			.exec(function(err, subservicios) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
-				res.json(subservicios);
+				res.json({
+					success: true,
+					subservicios: subservicios,
+					mensaje: 'lista de subservicios con id ' + req.params.idServicio
+				});
 			});
 	});
 
@@ -87,13 +109,14 @@ module.exports = function(app, passport) {
 
 			if(!servicio) return res.json({success: false, mensaje: "no se encuentra el servicio"});
 			
-			var subservicio = new Subservicios();
-			subservicio._creator = servicio._id;
-			subservicio.nombre = req.body.nombre;
-			subservicio.descripcion = req.body.descripcion;
-			subservicio.precio = req.body.precio;
-			subservicio.detalles = req.body.detalles;
-
+			var subservicio = new Subservicios({
+				_creator: servicio._id,
+				nombre: req.body.nombre,
+				descripcion: req.body.descripcion,
+				precio: req.body.precio,
+				detalles: req.body.detalles
+			});
+		
 			subservicio.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
@@ -102,9 +125,11 @@ module.exports = function(app, passport) {
 					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 					res.json({
+						success: true,
+						subservicio: subservicio,
 						mensaje: "subservicio creado en el servicio: "+servicio._id,
-						datos: subservicio
 					});
+
 				});
 			});        
 		});
@@ -117,7 +142,11 @@ module.exports = function(app, passport) {
 			.exec(function(err, subservicio) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
-				res.json(subservicio);
+				res.json({
+					success: true,
+					subservicio: subservicio,
+					mensaje: "informacion del subservicio del servicio: "+req.params.idSubservicio,
+				});
 			});
 	});
 
@@ -135,7 +164,11 @@ module.exports = function(app, passport) {
 			subservicio.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-				res.json(subservicio);
+				res.json({
+					success: true,
+					subservicio: subservicio,
+					mensaje: "subservicio modificado del servicio: "+req.params.idSubservicio,
+				});
 			});
 		});
 	});
@@ -150,7 +183,13 @@ module.exports = function(app, passport) {
 
 					servicio.subservicios.pull({ _id: subservicio._id }); // removed
 					servicio.save(function(err) {
-						res.json(subservicio);
+						if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+						res.json({
+							success: true,
+							subservicio: subservicio,
+							mensaje: "subservicio eliminado del servicio: "+req.params.idSubservicio,
+						});
 					});
 				});
 			} else {

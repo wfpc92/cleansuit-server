@@ -1,13 +1,13 @@
 var NuevoSubservicioCtrl = function($scope, RecursosFactory, $state, $stateParams){
 	var subservicio = {};
+	
 	$scope.accion = "Nuevo Subservicio";
 	
-	console.log($stateParams.id)
 	RecursosFactory 
-	.get("/servicios/" + $stateParams.id)
+	.get("/servicios/" + $stateParams.idServicio)
 	.then(function(respuesta) {
 		console.log(respuesta)
-		$scope.servicio = respuesta.data;
+		$scope.servicio = respuesta.data.servicio;
 	});
 
 	$scope.guardar = function(){

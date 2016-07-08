@@ -8,7 +8,7 @@ var EditarSubservicioCtrl = function($scope, RecursosFactory, $state, $statePara
     .get("/servicios/subservicios/"+idSubservicio)
     .then(function(respuesta) {
         console.log("EditarSubservicioCtrl: ", respuesta);
-        $scope.subservicio = respuesta.data;
+        $scope.subservicio = respuesta.data.subservicio;
         $scope.servicio = $scope.subservicio._creator;
     });
 

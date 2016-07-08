@@ -5,7 +5,7 @@ var EliminarProductoCtrl = function($scope, RecursosFactory, $state, $stateParam
     .get("/productos/"+$stateParams.id)
     .then(function(respuesta) {
         console.log("EliminarProductoCtrl: ", respuesta)
-        $scope.producto = respuesta.data;
+        $scope.producto = respuesta.data.producto;
     });
 
     $scope.eliminar = function(){

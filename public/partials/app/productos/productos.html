@@ -1,19 +1,53 @@
 <h2>Lista de Productos:</h2>
 
-<ul>
-    <li ng-repeat='producto in productos'>
-    	<span>{{producto.nombre}}</span>
-		<a ui-sref="app.productos-editar({
-						id: '{{producto._id}}'
-					})">
-    		<i class="glyphicon glyphicon-pencil"></i>
-    	</a>
-    	<a ui-sref="app.productos-eliminar({ 
-						id: '{{producto._id}}' 
-					})">
-            <i class="glyphicon glyphicon-remove"></i>
-        </a>
-    </li>
-</ul>
 
- <a ui-sref="app.productos-nuevo" class="btn btn-primary">Nuevo Producto</a>
+<a ui-sref="app.productos-nuevo" class="btn btn-primary">Nuevo Producto</a>
+
+<div ng-if="productos.length==0">No hay productos Creados.</div>
+<table class="table table-responsive table-hover" ng-if="productos.length>0">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Descripcion Corta</th>
+            <th>Descripcion Larga</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat='producto in productos track by $index'>
+            <td scope="row">{{$index}}</td>
+            <td>
+                {{producto.nombre}}
+            </td>
+            <td>
+                {{producto.precio}}
+            </td>
+            <td>
+                {{producto.desc_corta}}
+            </td>
+            <td>
+                {{producto.desc_larga}}
+            </td>
+             <td>
+                <img ng-src="{{producto.url_imagen}}" />
+                {{producto.url_imagen}}
+            </td>
+            <td>
+               <a ui-sref="app.productos-editar({
+                                id: '{{producto._id}}'
+                            })">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a ui-sref="app.productos-eliminar({ 
+                                id: '{{producto._id}}' 
+                            })">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+

@@ -1,0 +1,44 @@
+<h2>Lista de Promociones:</h2>
+
+<a ui-sref="app.promociones-nueva" class="btn btn-primary">Nueva Promoción</a>
+
+<div ng-if="promociones.length==0">No hay Promociones Creadas.</div>
+<table class="table table-responsive table-hover" ng-if="promociones.length>0">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Imagen</th>
+            <th>Codigo</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat='promocion in promociones track by $index'>
+            <td scope="row">{{$index}}</td>
+            <td>
+                <img ng-src="{{promocion.url_imagen}}" />
+                {{promocion.url_imagen}}
+            </td>
+            <td>
+                <strong>{{promocion.codigo}}</strong>
+            </td>
+            <td>
+                <strong>{{promocion.descuento}}</strong><br/>
+                Descripcion: {{promocion.descripcion}}
+            </td>
+            <td>
+                <a ui-sref="app.promociones-editar({
+                                idPromocion: '{{promocion._id}}'
+                            })">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a ui-sref="app.promociones-eliminar({ 
+                                idPromocion: '{{promocion._id}}' 
+                            })">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>

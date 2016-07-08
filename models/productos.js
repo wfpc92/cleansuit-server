@@ -6,7 +6,7 @@ var ProductosSchema   = new mongoose.Schema({
 	precio: Number,
 	desc_corta: String,
 	desc_larga: String,
-	foto: String
+	url_imagen: String
 });
 
 // Export the Mongoose model

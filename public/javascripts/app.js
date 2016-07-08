@@ -78,8 +78,53 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
         })
         
 
+        /**
+         * PROMOCIONES
+         */
+        .state('app.promociones', {
+            url:'/promociones',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/promociones/promociones.html',
+                    controller: 'PromocionesCtrl'
+                }
+            }
 
-        //SERVICIOS
+        })
+        .state('app.promociones-nueva', {
+            url:'/promociones/nueva',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/promociones/form-promocion.html',
+                    controller: 'NuevaPromocionCtrl'
+                }
+            }
+
+        })
+        .state('app.promociones-editar', {
+            url:'/promociones/editar/:idPromocion',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/promociones/form-promocion.html',
+                    controller: 'EditarPromocionCtrl'
+                }
+            }
+        })
+        .state('app.promociones-eliminar', {
+            url:'/promociones/eliminar/:idPromocion',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/promociones/eliminar-promocion.html',
+                    controller: 'EliminarPromocionCtrl'
+                }
+            }
+        })
+
+
+
+        /**
+         * SERVICIOS
+        */
         .state('app.servicios', {
             url:'/servicios',
             views: {
@@ -99,7 +144,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
             }
         })
         .state('app.servicios-editar', {
-            url:'/servicios/editar/:id',
+            url:'/servicios/editar/:idServicio',
             views: {
                 "contenedor": {
                     templateUrl: 'partials/app/servicios/form-servicio.html',
@@ -108,7 +153,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
             }
         })
         .state('app.servicios-eliminar', {
-            url:'/servicios/eliminar/:id',
+            url:'/servicios/eliminar/:idServicio',
             views: {
                 "contenedor": {
                     templateUrl: 'partials/app/servicios/eliminar-servicio.html',
@@ -118,7 +163,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
         })
 
         .state('app.servicios-subservicios-nuevo', {
-            url:'/servicios/:id/subservicios/nuevo',
+            url:'/servicios/:idServicio/subservicios/nuevo',
             views: {
                 "contenedor": {
                     templateUrl: 'partials/app/servicios/form-subservicio.html', 
@@ -146,7 +191,9 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
         })
 
 
-
+        /**
+         * PRODUCTOS
+         */
         .state('app.productos', {
             url:'/productos',
             views: {
@@ -189,7 +236,9 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
 
 
 
-        //USUARIOS
+        /**
+         * USUARIOS
+         */
         .state('app.usuarios', {
             url:'/usuarios',
             views: {
@@ -203,7 +252,9 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
 
 
 
-        //ORDENES
+        /**
+         * ORDENES
+         */
         .state('app.ordenes', {
             url:'/ordenes',
             views: {

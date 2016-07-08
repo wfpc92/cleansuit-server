@@ -7,7 +7,7 @@ var EliminarSubservicioCtrl =  function($scope, RecursosFactory, $state, $stateP
     .get("/servicios/subservicios/"+idSubservicio)
     .then(function(respuesta) {
         console.log("EliminarSubservicioCtrl: ", respuesta);
-        $scope.subservicio = respuesta.data;
+        $scope.subservicio = respuesta.data.subservicio;
         $scope.servicio = $scope.subservicio._creator;
     });
 
@@ -16,7 +16,6 @@ var EliminarSubservicioCtrl =  function($scope, RecursosFactory, $state, $stateP
         .delete("/servicios/subservicios/"+idSubservicio, $scope.subservicio)
         .then(function(respuesta) {
             console.log("EliminarSubservicioCtrl: eliminar():", respuesta)
-            $scope.servicio = respuesta.data;
             $state.go("app.servicios");
         });
     };

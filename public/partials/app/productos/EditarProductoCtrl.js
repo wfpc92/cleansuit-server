@@ -6,7 +6,7 @@ var EditarProductoCtrl = function($scope, RecursosFactory, $state, $stateParams)
     .get("/productos/"+$stateParams.id)
     .then(function(respuesta) {
         console.log("EditarProductoCtrl: ", respuesta)
-        $scope.producto = respuesta.data;
+        $scope.producto = respuesta.data.producto;
     });
 
     $scope.guardar = function(){

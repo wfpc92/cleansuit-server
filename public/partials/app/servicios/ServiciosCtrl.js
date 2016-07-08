@@ -6,7 +6,7 @@ var ServiciosCtrl = function ($scope, RecursosFactory){
     .get("/servicios")
     .then(function(respuesta) {
     	console.log("ServiciosCtrl: ", respuesta);
-    	$scope.servicios = respuesta.data;
+    	$scope.servicios = respuesta.data.servicios;
     });
 };
 

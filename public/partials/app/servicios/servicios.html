@@ -1,43 +1,66 @@
 <h2>Lista de Servicios:</h2>
 
-<ul>
-	<li ng-repeat='servicio in servicios'>
-		<span>{{servicio.nombre}}</span>
-		<a ui-sref="app.servicios-editar({
-						id: '{{servicio._id}}'
-					})">
-			<i class="glyphicon glyphicon-pencil"></i>
-			</a>
-		<a ui-sref="app.servicios-eliminar({ 
-						id: '{{servicio._id}}' 
-					})">
-			<i class="glyphicon glyphicon-remove"></i>
-		</a>
-		<br/>
-		<span>Subservicios:</span>  
-		<a ui-sref="app.servicios-subservicios-nuevo({ 
-						id: '{{servicio._id}}'
-					})">
-			<i class="glyphicon glyphicon-plus"></i>
-		</a>
-		<ul>
-			<li ng-repeat="subservicio in servicio.subservicios">
-				<span>{{subservicio.nombre}}</span>
-				<a ui-sref="app.servicios-subservicios-editar({ 
-								idServicio: '{{servicio._id}}',
-								idSubservicio:  '{{subservicio._id}}'
+
+<a ui-sref="app.servicios-nuevo" class="btn btn-primary">Nuevo Servicio</a>
+
+<div ng-if="servicios.length==0">No hay servicios Creados.</div>
+<table class="table table-responsive table-hover" ng-if="servicios.length>0">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Subservicios</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat='servicio in servicios'>
+            <td scope="row">{{$index}}</td>
+            <td>
+                {{servicio.nombre}}
+            </td>
+            <td>
+                {{servicio.descripcion}}
+            </td>
+            <td>
+                <ul>
+                	<span>Subservicios:</span>  
+					<a ui-sref="app.servicios-subservicios-nuevo({ 
+									idServicio: '{{servicio._id}}'
+								})">
+						<i class="glyphicon glyphicon-plus"></i>
+					</a>
+					<li ng-repeat="subservicio in servicio.subservicios">
+
+						<span>{{subservicio.nombre}}</span>
+						<a ui-sref="app.servicios-subservicios-editar({ 
+										idServicio: '{{servicio._id}}',
+										idSubservicio:  '{{subservicio._id}}'
+									})">
+							<i class="glyphicon glyphicon-pencil"></i>         
+						</a>
+						<a ui-sref="app.servicios-subservicios-eliminar({ 
+										idServicio: '{{servicio._id}}',
+										idSubservicio:  '{{subservicio._id}}'
+									})">
+							<i class="glyphicon glyphicon-remove"></i>
+						</a>
+					</li>
+				</ul>
+            </td>
+            <td>
+               <a ui-sref="app.servicios-editar({
+								idServicio: '{{servicio._id}}'
 							})">
-					<i class="glyphicon glyphicon-pencil"></i>         
-				</a>
-				<a ui-sref="app.servicios-subservicios-eliminar({ 
-								idServicio: '{{servicio._id}}',
-								idSubservicio:  '{{subservicio._id}}'
+					<i class="glyphicon glyphicon-pencil"></i>
+					</a>
+				<a ui-sref="app.servicios-eliminar({ 
+								idServicio: '{{servicio._id}}' 
 							})">
 					<i class="glyphicon glyphicon-remove"></i>
 				</a>
-			</li>
-		</ul>
-	</li>
-</ul>
-
- <a ui-sref="app.servicios-nuevo" class="btn btn-primary">Nuevo Servicio</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
