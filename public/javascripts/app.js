@@ -263,6 +263,21 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
                     controller: 'OrdenesCtrl'
                 }
             }
+        })
+
+
+
+        /**
+         * CONFIGRACIONES
+         */
+        .state('app.configuraciones', {
+            url:'/configuraciones',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/configuraciones/configuraciones.html',
+                    controller: 'ConfiguracionesCtrl'
+                }
+            }
         });
 
     $urlRouterProvider.otherwise('/home/inicio');

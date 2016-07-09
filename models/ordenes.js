@@ -1,9 +1,6 @@
 var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 
-autoIncrement.initialize(mongoose.connection);
-
-// Define our beer schema
 var OrdenesSchema = new mongoose.Schema({
 	cliente_id: {
 		type: mongoose.Schema.Types.ObjectId,

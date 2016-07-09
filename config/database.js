@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
+
 var config = {
 	dbRemote: {
 		uri: 'mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit'
@@ -31,6 +33,7 @@ function conectar() {
 		intentos++;
 		mongoose.connect(dbURI);
 		db = mongoose.connection;
+		autoIncrement.initialize(db);
 		console.log("Intentando conexión a " + dbURI + ", esperando respuesta...");	
 	} catch( err ) {
 		console.log("Falló al conectar a: " + dbURI, err.message);

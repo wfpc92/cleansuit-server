@@ -1,0 +1,12 @@
+
+<h1><span class=""></span>Configuraciones del Sistema</h1>
+<div class="alert alert-info" ng-if="mensaje">{{mensaje}}</div>
+
+<form>
+    <div class="form-group">
+        <label>Precio Domicilio</label>
+        <input type="text" class="form-control" name="domicilio" ng-model="configuraciones.domicilio">
+    </div>
+    
+    <button class="btn btn-warning btn-lg" ng-click="actualizar()">Actualizar</button>
+</form>

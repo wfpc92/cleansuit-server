@@ -127,6 +127,7 @@ module.exports = function(app, passport) {
 		
 		var mensaje = "";
 		req.user.nombre = req.body.nombre;
+		req.user.correo = req.body.correo;
 		
 		console.log(req.body.contrasena,  req.body.repetirContrasena)
 		if(req.body.contrasena) {
