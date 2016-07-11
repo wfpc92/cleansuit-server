@@ -81,6 +81,37 @@ router.post('/ingresar', function(req, res, next) {
 		}
 	});
 });
+
+
+/* Inicia la sesión de usuario usando su información de facebook
+ * Recibe fb_token y fb_uid obtenidos previamente en el cliente
+ * Valida que los datos sean correctos consultando con el API de fb si el token corresponde al uid
+ * Si es válido, retorna el token de sesión
+ */
+router.post("/ingresar/fb", function(req, res, next) {
+	console.log("POST /ingresar/fb, validacion de datos: ", req.body);
+	
+	// obtenemos el token y el uid de la solicitud
+	var fb_token = "", fb_uid = "";
+	if (req.body.fb_token && req.body.fb_uid) {
+		if (req.body.fb_token.length > 0 && req.body.fb_uid.length > 0) {
+			fb_token = req.body.fb_token;
+			fb_uid = req.body.fb_uid;
+		}
+	}
+	if (fb_token == "" && fb_uid == "") {
+		res.json({ success: false, mensaje: 'Datos insuficientes para iniciar sesión.' });
+		return;
+	}
+
+	// Validamos con Facebook que el token y el uid son verdaderos
+
+	// Si son verdaderos, buscamos un usuario que tenga este fb_uid en su perfil
+
+	// Si el usuario existe, le generamos un token y retornamos el usual token de sesión
+
+	// Si el usuario no existe, lo creamos (sin contraseña, pero con el fb_uid) y retornamos el usual token de sesión
+});
  
 /*getToken = function (headers) {
 	console.log("get otken")
