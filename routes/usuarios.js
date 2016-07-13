@@ -40,14 +40,15 @@ function registrarCliente(datos, callback) {
 		"fb_uid": (datos.fb_uid) ? datos.fb_uid : ''
 	});
 
-	nuevoUsuario.save(function(err) {
-		if (err) { console.log(err); callback(null); } 
+	nuevoUsuario.save(function(err) { 
+		if (err) { console.log(err); callback(null); return;} 
 		
 		//informacion de cliente
 		var infoCliente = new Clientes({
 			usuario_id: nuevoUsuario._id,
 			direccion: '',
-			telefono: ''
+			telefono: '',
+			url_foto: datos.url_foto
 		});
 
 		infoCliente.save(function(err) {
@@ -63,7 +64,7 @@ router.post('/registrar', function(req, res) {
 		res.json({success: false, mensaje: 'Por favor ingrese nombre, correo y contraseña.'});
 	}
 	else {
-		registrarUsuario(req.body, function(infoUsuario) {
+		registrarCliente(req.body, function(infoUsuario) {
 			if (infoUsuario) {
 				res.json({
 					success: true, 
@@ -138,6 +139,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 		return;
 	}
 
+	
 	// Validamos con Facebook que el token y el uid son verdaderos
 	console.log("fb_token:", fb_token)
 	var options = {
@@ -171,8 +173,18 @@ router.post("/ingresar/fb", function(req, res, next) {
 
 						// Si el usuario existe, retornamos el token
 						if (usuario) {
-							res.json({ success: true, existe: true, "usuario": usuario.getInfo() });
-							return;
+							Clientes.findOne({
+								usuario_id: usuario._id
+							}, function(err, infoCliente) {
+								if (err) return res.json({success: false, mensaje: err});
+
+								res.json({
+									success: true, 
+									existe: true,
+									usuario: usuario.getInfo(infoCliente),
+									mensaje: 'usuario logueado satisfactoriamente.'
+								});
+							});
 						}
 						else {
 							// El usuario no existe -> crear uno nuevo y retornar token
@@ -187,6 +199,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 								"nombre": (nombre1.length > nombre2.length) ? nombre1 : nombre2,
 								"correo": parsed.email,
 								"contrasena": (crypto.randomBytes(12)).toString("base64"),
+								"url_foto": "http://graph.facebook.com/"+fb_uid+"/picture?width=270&height=270",
 								"fb_uid": fb_uid
 							}
 
@@ -369,6 +382,7 @@ module.exports = function(app, passport) {
 
 				infoCliente.direccion = req.body.direccion;
 				infoCliente.telefono = req.body.telefono;
+				infoCliente.url_foto = req.body.data_foto || infoCliente.url_foto;
 
 				infoCliente.save(function(err){
 					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});

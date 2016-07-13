@@ -6,6 +6,9 @@ var ClientesSchema = new mongoose.Schema({
 		ref: 'Usuarios',
 		unique: true,
 	},
+	url_foto: {
+		type: String
+	},
 	direccion: {
 		type: String
 	},
