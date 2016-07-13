@@ -264,7 +264,7 @@ router.post('/cliente/reset', function(req, res) {
 		// generamos enlace único de restaurar contraseña, que expire en 24 horas
 		var cadenaRandom = (crypto.randomBytes(24)).toString("base64");
 		var passToken = cadenaRandom.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-		var enlaceReset = "http://api.cleansuit.co/cliente/recuperar/" + passToken;
+		var enlaceReset = "http://api.cleansuit.co/cliente/reset/" + passToken;
 
 		// almacenamos en BD el token y fecha de expiración
 		usuario.pass_token = passToken;
