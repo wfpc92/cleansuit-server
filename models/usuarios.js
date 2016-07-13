@@ -66,7 +66,8 @@ UsuariosSchema.methods.getInfo = function(info) {
 		nombre: this.nombre, 
 		correo: this.correo,
 		rol: this.rol,
-		token: 'JWT ' + token
+		token: 'JWT ' + token,
+		fb: this.fb_uid ? true : false
 	};
 
 	switch(this.rol) {
@@ -74,9 +75,11 @@ UsuariosSchema.methods.getInfo = function(info) {
 			if (info) {
 				usuario.direccion = (info.direccion) ? info.direccion : "";
 				usuario.telefono = (info.telefono) ? info.telefono : "";
+				usuario.url_foto = (info.url_foto) ? info.url_foto : "";
 			} else {
 				usuario.direccion = "";
 				usuario.telefono = "";
+				usuario.url_foto = "";
 			}
 			break;
 	}
