@@ -323,8 +323,6 @@ router.get('/cliente/reset/:token', function(req, res) {
 				
 				return res.json({ success: true });
 			});
-
-			return res.json({ success: true });
 		});
 	});
 });
