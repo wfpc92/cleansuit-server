@@ -6,7 +6,8 @@ module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
 
 	router.get('/', function(req, res) {
-		Promociones.find(function(err, promociones) {
+		Promociones
+		.find(function(err, promociones) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json({
@@ -23,6 +24,7 @@ module.exports = function(app, passport) {
 			descuento: req.body.descuento,
 			codigo: req.body.codigo,
 			descripcion: req.body.descripcion,
+			items: req.body.items
 		});
 		
 		promocion.save(function(err) {
@@ -57,6 +59,7 @@ module.exports = function(app, passport) {
 			promocion.descuento = req.body.descuento || promocion.descuento;
 			promocion.codigo = req.body.codigo || promocion.codigo;
 			promocion.descripcion = req.body.descripcion || promocion.descripcion;
+			promocion.items = req.body.items || promocion.items;
 			
 			// Save the beer and check for errors
 			promocion.save(function(err) {

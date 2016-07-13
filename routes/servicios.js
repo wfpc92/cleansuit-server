@@ -88,19 +88,34 @@ module.exports = function(app, passport) {
 	});
 
 	//subservicios:
+	router.get('/subservicios/all', function(req, res) {
+		Subservicios
+		.find()
+		.populate('_creator')
+		.exec(function(err, subservicios) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
+			res.json({
+				success: true,
+				subservicios: subservicios,
+				mensaje: 'lista de subservicios del sistema '
+			});
+		});
+	});
+
 	router.get('/:idServicio/subservicios', function(req, res) {
 		Subservicios
-			.find({_creator: req.params.idServicio})
-			.populate('_creator')
-			.exec(function(err, subservicios) {
-				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
-				res.json({
-					success: true,
-					subservicios: subservicios,
-					mensaje: 'lista de subservicios con id ' + req.params.idServicio
-				});
+		.find({_creator: req.params.idServicio})
+		.populate('_creator')
+		.exec(function(err, subservicios) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
+			res.json({
+				success: true,
+				subservicios: subservicios,
+				mensaje: 'lista de subservicios con id ' + req.params.idServicio
 			});
+		});
 	});
 
 	router.post('/:idServicio/subservicios', function(req, res) {

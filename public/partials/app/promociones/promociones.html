@@ -10,6 +10,7 @@
             <th>Imagen</th>
             <th>Codigo</th>
             <th>Descripcion</th>
+            <th>Items a los que se aplica la promoción</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -26,6 +27,11 @@
             <td>
                 <strong>{{promocion.descuento}}</strong><br/>
                 Descripcion: {{promocion.descripcion}}
+            </td>
+            <td>
+                <div ng-repeat="item in items">
+                    {{item}} <br />
+                </div>
             </td>
             <td>
                 <a ui-sref="app.promociones-editar({
