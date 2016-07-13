@@ -1,6 +1,9 @@
 var express = require('express');
 var https = require("https");
 var crypto = require("crypto");
+var nodemailer = require('nodemailer');
+var sendmailTransport = require('nodemailer-sendmail-transport');
+
 var Usuarios = require('../models/usuarios');
 var Clientes = require('../models/clientes');
 
@@ -9,6 +12,22 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
 	res.render('index', { view: 'pages/home'});
 });
+
+// @HELPER Envía un email automatizado con el texto
+// Invoca el callback al terminar con error=null en caso de éxito
+// El email se envía mediante el SendMail de WebFaction (https://docs.webfaction.com/user-guide/email.html#email-sending-from-an-application)
+function enviarEmail(origen, destino, titulo, texto, callback) {
+	var opciones = {
+		"from": origen,
+		"to": destino,
+		"subject": titulo,
+		"text": texto
+	};
+	var transporter = nodemailer.createTransport(sendmailTransport({ "path": "/usr/bin/sendmail", "args": "" }));
+	transporter.sendMail(mailOptions, function(error, info) {
+		callback(error, info);
+	});
+}
 
 // Registra un nuevo usuario cliente en BD (almacena 2 registros 1:1 en usuarios y clientes)
 // invoca callback al terminar con la info del usuario creado como parámetro
@@ -203,27 +222,98 @@ router.post("/ingresar/fb", function(req, res, next) {
 			}
 		});
 
-		responseFb.on('error', function(err){
+		responseFb.on('error', function(err) {
 			res.json({ "success": false, "mensaje": "Error: " + err.message });
 		});
 	});
 
 	return;
 });
- 
-/*getToken = function (headers) {
-	console.log("get otken")
-	if (headers && headers.authorization) {
-		var parted = headers.authorization.split(' ');
-		if (parted.length === 2) {
-			return parted[1];
-		} else {
-			return null;
-		}
-	} else {
-		return null;
+
+/* Envía al email del cliente un enlace único que le permite restaurar su contraseña
+ * El enlace caduca en 24 horas
+ */
+router.post('/cliente/reset', function(req, res) {
+	var email = (req.body.email) ? (req.body.email).trim() : "";
+	
+	if (email == "") {
+		res.json({ success: false, mensaje: 'Datos insuficientes para recuperar contraseña.' });
+		return;
 	}
-};*/
+
+	Usuarios.findOne({ "correo": email }, function(err, usuario) {
+		if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
+
+		if (!usuario) {
+			return res.json({ success: false, mensaje: 'El email ingresado no corresponde a una cuenta registrada.' });
+		}
+		
+		// generamos enlace único de restaurar contraseña, que expire en 24 horas
+		var cadenaRandom = (crypto.randomBytes(24)).toString("base64");
+		var passToken = cadenaRandom.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+		var enlaceReset = "http://api.cleansuit.co/cliente/recuperar/" + passToken;
+
+		// almacenamos en BD el token y fecha de expiración
+		usuario.pass_token = passToken;
+        usuario.pass_token_vence = Date.now() + 3600000 * 24; // en 24 horas vence
+        
+        usuario.save(function(err) {
+        	if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
+
+			// enviamos email con el enlace
+			var asunto = "Cleansuit: Restaurar su contraseña";
+			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
+			enviarEmail("noreply@cleansuit.co", email, asunto, texto, function(email_error, email_info) {
+				if (email_error) {
+					return res.json({ success: false, mensaje: email_error });
+				}
+
+				return res.json({ success: true });
+			});
+        });
+	});
+});
+
+/* Recibe un token de recuperación de contraseña
+ * Si es válido, envía un email con la nueva contraseña
+*/
+router.get('/cliente/reset/:token', function(req, res) {
+	var pass_token = req.params.token;
+	// Buscamos el usuario con este token de recuperación de contraseña
+	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
+		if (!usuario) {
+			return res.json({ success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.' });
+		}
+
+		// Verificamos que el token no ha expirado
+		var vencimiento = usuario.pass_token_vence;
+		if (Date.now() > vencimiento) {
+			return res.json({ success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.' });
+		}
+
+		// Reseteamos la contraseña y guardamos el usuario
+		var cadenaRandom = (crypto.randomBytes(8)).toString("base64");
+		var nuevaContrasena = cadenaRandom.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+		usuario.contrasena = nuevaContrasena;
+
+		usuario.save(function(err) {
+			if (err) return res.json({ success: false, mensaje: 'Ocurrió un error al intentar restaurar la contraseña.' });
+
+			// Enviamos el email con la nueva contraseña
+			var asunto = "Cleansuit: Su contraseña ha sido restaurada!";
+			var texto = "Su nueva contraseña es: " + nuevaContrasena
+			enviarEmail("noreply@cleansuit.co", email, asunto, texto, function(email_error, email_info) {
+				if (email_error) {
+					return res.json({ success: false, mensaje: email_error });
+				}
+				
+				return res.json({ success: true });
+			});
+
+			return res.json({ success: true });
+		});
+	});
+});
 
 module.exports = function(app, passport) {
 

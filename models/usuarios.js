@@ -26,7 +26,13 @@ var UsuariosSchema = new mongoose.Schema({
   	},
   	fb_uid: {
   		type: String
-  	}
+  	},
+  	pass_token: { // Recuperar contraseña: token
+  		type: String
+  	},
+  	pass_token_vence: { // Recuperar contraseña: fecha y hora de vencimiento
+  		type: Date
+  	},
 });
 
 UsuariosSchema.pre('save', function (next) {
