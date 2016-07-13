@@ -24,7 +24,7 @@ function enviarEmail(origen, destino, titulo, texto, callback) {
 		"text": texto
 	};
 	var transporter = nodemailer.createTransport(sendmailTransport({ "path": "/usr/bin/sendmail", "args": "" }));
-	transporter.sendMail(mailOptions, function(error, info) {
+	transporter.sendMail(opciones, function(error, info) {
 		callback(error, info);
 	});
 }
