@@ -60,7 +60,6 @@ UsuariosSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
 };
 
 UsuariosSchema.methods.getInfo = function(info) {
-	console.log("Usuarios.getInfo()")
 	var token = jwt.encode(this._id, config.jwtSecret);
 
 	var usuario = {
@@ -69,7 +68,6 @@ UsuariosSchema.methods.getInfo = function(info) {
 		rol: this.rol,
 		token: 'JWT ' + token
 	};
-	console.log("usuario en getInfo():", usuario);
 
 	switch(this.rol) {
 		case "cliente":
@@ -83,8 +81,7 @@ UsuariosSchema.methods.getInfo = function(info) {
 
 			break;
 	}
-	console.log("usuario en getInfo() luego de agregar dir y te.:", usuario);
-	
+
 	return usuario;
 };
 
