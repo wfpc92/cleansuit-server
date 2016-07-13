@@ -204,7 +204,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 		});
 
 		responseFb.on('error', function(err){
-			res.json({ "success": false, "message": "Error: " + err.message });
+			res.json({ "success": false, "mensaje": "Error: " + err.message });
 		});
 	});
 
