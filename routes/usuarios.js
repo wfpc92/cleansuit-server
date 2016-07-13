@@ -314,7 +314,8 @@ router.get('/cliente/reset/:token', function(req, res) {
 
 			// Enviamos el email con la nueva contraseña
 			var asunto = "Cleansuit: Su contraseña ha sido restaurada!";
-			var texto = "Su nueva contraseña es: " + nuevaContrasena
+			var texto = "Su nueva contraseña es: " + nuevaContrasena;
+			var email = usuario.correo;
 			enviarEmail("noreply@cleansuit.co", email, asunto, texto, function(email_error, email_info) {
 				if (email_error) {
 					return res.json({ success: false, mensaje: email_error });
