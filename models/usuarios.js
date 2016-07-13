@@ -24,6 +24,9 @@ var UsuariosSchema = new mongoose.Schema({
   		type: String, 
   		enum: ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente']
   	},
+  	fb_uid: {
+  		type: String
+  	}
 });
 
 UsuariosSchema.pre('save', function (next) {
@@ -57,7 +60,6 @@ UsuariosSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
 };
 
 UsuariosSchema.methods.getInfo = function(info) {
-	console.log("Usuarios.getInfo()")
 	var token = jwt.encode(this._id, config.jwtSecret);
 
 	var usuario = {
@@ -67,13 +69,18 @@ UsuariosSchema.methods.getInfo = function(info) {
 		token: 'JWT ' + token
 	};
 
-	switch(this.rol){
+	switch(this.rol) {
 		case "cliente":
-			usuario.direccion = info.direccion;
-			usuario.telefono = info.telefono;
-			usuario.url_foto = info.url_foto;
+			if (info) {
+				usuario.direccion = (info.direccion) ? info.direccion : "";
+				usuario.telefono = (info.telefono) ? info.telefono : "";
+			} else {
+				usuario.direccion = "";
+				usuario.telefono = "";
+			}
 			break;
 	}
+
 	return usuario;
 };
 
