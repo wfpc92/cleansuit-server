@@ -104,6 +104,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 		return;
 	}
 
+	
 	// Validamos con Facebook que el token y el uid son verdaderos
 
 	// Si son verdaderos, buscamos un usuario que tenga este fb_uid en su perfil
@@ -111,7 +112,10 @@ router.post("/ingresar/fb", function(req, res, next) {
 	// Si el usuario existe, le generamos un token y retornamos el usual token de sesión
 
 	// Si el usuario no existe, lo creamos (sin contraseña, pero con el fb_uid) y retornamos el usual token de sesión
+
 });
+
+
  
 /*getToken = function (headers) {
 	console.log("get otken")
@@ -181,6 +185,7 @@ module.exports = function(app, passport) {
 
 				infoCliente.direccion = req.body.direccion;
 				infoCliente.telefono = req.body.telefono;
+				infoCliente.url_foto = req.body.data_foto || infoCliente.url_foto;
 
 				infoCliente.save(function(err){
 					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});

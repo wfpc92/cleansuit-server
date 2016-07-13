@@ -71,6 +71,7 @@ UsuariosSchema.methods.getInfo = function(info) {
 		case "cliente":
 			usuario.direccion = info.direccion;
 			usuario.telefono = info.telefono;
+			usuario.url_foto = info.url_foto;
 			break;
 	}
 	return usuario;

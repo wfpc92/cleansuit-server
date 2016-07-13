@@ -11,15 +11,16 @@ module.exports = function(passport) {
 	};
 	
 	var strategy = new Strategy(params, function(jwt_payload, done) {
+
 		Usuarios.findOne({_id: jwt_payload}, function(err, usuario) {
 			  if (err) {
-					return done(err, false);
+			  		return done(err, false);
 			  }
 			  console.log("strategy, usuario, ", usuario)
 			  if (usuario) {
 					return done(null, usuario);
 			  } else {
-					return done(null, false);
+			  		return done(null, false);
 			  }
 		  });
 	});
