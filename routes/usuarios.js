@@ -1,43 +1,60 @@
 var express = require('express');
-var router = express.Router();
-var Usuarios   = require('../models/usuarios');
+var https = require("https");
+var crypto = require("crypto");
+var Usuarios = require('../models/usuarios');
 var Clientes = require('../models/clientes');
+
+var router = express.Router();
+
 router.get('/', function(req, res, next) {
 	res.render('index', { view: 'pages/home'});
 });
 
+// Registra un nuevo usuario cliente en BD (almacena 2 registros 1:1 en usuarios y clientes)
+// invoca callback al terminar con la info del usuario creado como parámetro
+function registrarCliente(datos, callback) {
+	var nuevoUsuario = new Usuarios({
+		"nombre": datos.nombre,
+		"correo": datos.correo,
+		"contrasena": datos.contrasena,
+		"rol": 'cliente',
+		"fb_uid": (datos.fb_uid) ? datos.fb_uid : ''
+	});
+
+	nuevoUsuario.save(function(err) {
+		if (err) { console.log(err); callback(null); } 
+		
+		//informacion de cliente
+		var infoCliente = new Clientes({
+			usuario_id: nuevoUsuario._id,
+			direccion: '',
+			telefono: ''
+		});
+
+		infoCliente.save(function(err) {
+			if (err) { console.log(err); callback(null); } 
+			var info = nuevoUsuario.getInfo(infoCliente);
+			callback(info);
+		});
+	});
+}
+
 router.post('/registrar', function(req, res) {
 	if (!req.body.nombre || !req.body.correo || !req.body.contrasena) {
 		res.json({success: false, mensaje: 'Por favor ingrese nombre, correo y contraseña.'});
-	} else {
-		//informacion de autenticacion de usuario
-		var nuevoUsuario = new Usuarios({
-			nombre: req.body.nombre,
-			correo: req.body.correo,
-			contrasena: req.body.contrasena,
-			rol: 'cliente'
-		});
-
-		// save the usuario
-		nuevoUsuario.save(function(err) {
-			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
-			//informacion de cliente
-			var infoCliente = new Clientes({
-				usuario_id: nuevoUsuario._id,
-				direccion: '',
-				telefono:''
-			});
-
-			infoCliente.save(function(err){
-				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-
+	}
+	else {
+		registrarUsuario(req.body, function(infoUsuario) {
+			if (infoUsuario) {
 				res.json({
 					success: true, 
-					usuario: nuevoUsuario.getInfo(infoCliente),
-					mensaje: 'usuario creado satisfactoriamente.'
+					usuario: infoUsuario,
+					mensaje: 'Usuario creado satisfactoriamente.'
 				});
-			});
+			}
+			else {
+				res.json({ success: false, mensaje: "No se pudo registrar el usuario cliente." });
+			}
 		});
 	}
 });
@@ -86,11 +103,9 @@ router.post('/ingresar', function(req, res, next) {
 /* Inicia la sesión de usuario usando su información de facebook
  * Recibe fb_token y fb_uid obtenidos previamente en el cliente
  * Valida que los datos sean correctos consultando con el API de fb si el token corresponde al uid
- * Si es válido, retorna el token de sesión
+ * Si es válido, retorna el usuario con token de sesión
  */
 router.post("/ingresar/fb", function(req, res, next) {
-	console.log("POST /ingresar/fb, validacion de datos: ", req.body);
-	
 	// obtenemos el token y el uid de la solicitud
 	var fb_token = "", fb_uid = "";
 	if (req.body.fb_token && req.body.fb_uid) {
@@ -105,12 +120,95 @@ router.post("/ingresar/fb", function(req, res, next) {
 	}
 
 	// Validamos con Facebook que el token y el uid son verdaderos
+	console.log("fb_token:", fb_token)
+	var options = {
+		host: "graph.facebook.com",
+		path: "/v2.6/me?fields=id,email,last_name,first_name&access_token=" + fb_token
+	};
+	https.get(options, function(responseFb) {
+		var data = "";
+		
+		responseFb.on('data', function(chunk) {
+			data = chunk;
+		});
 
-	// Si son verdaderos, buscamos un usuario que tenga este fb_uid en su perfil
+		responseFb.on('end',function() {
+			if (responseFb.statusCode > 220 || responseFb.statusCode < 200) {
+				console.log("Error - FB respondió con status ", responseFb.statusCode);
+				res.json({ success: false, mensaje: "No se pudo iniciar sesión con Facebook." });
+				return;
+			}
 
-	// Si el usuario existe, le generamos un token y retornamos el usual token de sesión
+			var parsed = JSON.parse(data);
+			// Continuar si se obtuvo respuesta válida de FB API
+			if (parsed.id) {
+				console.log("Respuesta de FB:", parsed.id, parsed.email, parsed.last_name, parsed.first_name);
+				var fb_api_uid = parsed.id;
+				// el UID de FB API coincide con el de la app cliente?
+				if (fb_api_uid == fb_uid) {
+					// El usuario ya tiene cuenta en Cleansuit?
+					Usuarios.findOne({ "fb_uid": fb_uid }, function(err, usuario) {
+						if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
 
-	// Si el usuario no existe, lo creamos (sin contraseña, pero con el fb_uid) y retornamos el usual token de sesión
+						// Si el usuario existe, retornamos el token
+						if (usuario) {
+							res.json({ success: true, existe: true, "usuario": usuario.getInfo() });
+							return;
+						}
+						else {
+							// El usuario no existe -> crear uno nuevo y retornar token
+							var nombre1 = "" + parsed.name;
+							var nombre2 = (parsed.first_name + " " + parsed.last_name).trim();
+							
+							crypto.randomBytes(7, (err, buf) => {
+								if (err) throw err;
+							});
+
+							var datosNuevoUsuario = {
+								"nombre": (nombre1.length > nombre2.length) ? nombre1 : nombre2,
+								"correo": parsed.email,
+								"contrasena": (crypto.randomBytes(12)).toString("base64"),
+								"fb_uid": fb_uid
+							}
+
+							registrarCliente(datosNuevoUsuario, function(infoUsuario) {
+								if (infoUsuario) {
+									res.json({
+										success: true, 
+										existe: false,
+										usuario: infoUsuario,
+										mensaje: 'Nuevo usuario registrado con éxito.'
+									});
+									return;
+								}
+								else {
+									console.log("falló registrarCliente(): ", infoUsuario);
+									res.json({ success: false, mensaje: "No se pudo registrar el usuario. Si ya tiene cuenta en Cleansuit, por favor inicie sesión con sus credenciales." });
+									return;
+								}
+							});
+						}
+					});
+				}
+				else {
+					console.log("ERROR - el Token de FB no corresponde al id de usuario retornado por FB.");
+					res.json({ success: false, mensaje: "No se pudo iniciar sesión con Facebook." });
+					return;
+				}
+			}
+			else {
+				console.log("ERROR - FB no respondió con el id del usuario.");
+				res.json({ success: false, mensaje: "No se pudo iniciar sesión con Facebook." });
+				return;
+			}
+		});
+
+		responseFb.on('error', function(err){
+			res.json({ "success": false, "message": "Error: " + err.message });
+		});
+	});
+
+	return;
 });
  
 /*getToken = function (headers) {

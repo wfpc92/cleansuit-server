@@ -24,6 +24,9 @@ var UsuariosSchema = new mongoose.Schema({
   		type: String, 
   		enum: ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente']
   	},
+  	fb_uid: {
+  		type: String
+  	}
 });
 
 UsuariosSchema.pre('save', function (next) {
@@ -66,13 +69,22 @@ UsuariosSchema.methods.getInfo = function(info) {
 		rol: this.rol,
 		token: 'JWT ' + token
 	};
+	console.log("usuario en getInfo():", usuario);
 
-	switch(this.rol){
+	switch(this.rol) {
 		case "cliente":
-			usuario.direccion = info.direccion;
-			usuario.telefono = info.telefono;
+			if (info) {
+				usuario.direccion = (info.direccion) ? info.direccion : "";
+				usuario.telefono = (info.telefono) ? info.telefono : "";
+			} else {
+				usuario.direccion = "";
+				usuario.telefono = "";
+			}
+
 			break;
 	}
+	console.log("usuario en getInfo() luego de agregar dir y te.:", usuario);
+	
 	return usuario;
 };
 
