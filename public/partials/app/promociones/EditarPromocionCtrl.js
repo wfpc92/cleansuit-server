@@ -14,12 +14,33 @@ var EditarPromocionCtrl = function($scope,
         $scope.promocion = respuesta.data.promocion;
     });
 
+    RecursosFactory 
+    .get("/productos")
+    .then(function(respuestaProductos) {
+        RecursosFactory  
+        .get("/servicios/subservicios/all")
+        .then(function(respuestaServicios) {
+            $scope.productosYServicios = respuestaProductos.data.productos.concat( respuestaServicios.data.subservicios)
+        });
+    });
+
     $scope.guardar = function(){
+        $scope.error = "";
+        
         RecursosFactory 
         .put("/promociones/"+$stateParams.idPromocion, $scope.promocion)
         .then(function(respuesta) {
             console.log("EditarPromocionCtrl: guardar(): ", respuesta);
-            $state.go("app.promociones");
+                
+            if(respuesta.data.success){
+                $state.go("app.promociones");
+            } else {
+                console.log("EditarPromocionCtrl.guardar(), err", respuesta.data.error)
+                $scope.error = respuesta.data.mensaje;
+            }
+        }, function(err){
+            console.log("EditarPromocionCtrl.guardar(), err", err)
+            $scope.error = err.errmsg
         });
     }
 };

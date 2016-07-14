@@ -5,6 +5,8 @@ var NuevaPromocionCtrl = function($scope,
 	console.log("NuevaPromocionCtrl");
 
 	$scope.mensaje = "Crear una promoción";
+	$scope.promocion = {};
+
 
 	RecursosFactory 
     .get("/productos")
@@ -12,18 +14,26 @@ var NuevaPromocionCtrl = function($scope,
     	RecursosFactory  
 	    .get("/servicios/subservicios/all")
 	    .then(function(respuestaServicios) {
-	        console.log("EditarSubservicioCtrl: ", respuestaServicios);
-	        $scope.productosYServicios = respuestaProductos.data.productos.concat( respuestaServicios.data.subservicios)
-	        console.log($scope.productosYServicios)
+	        $scope.productosYServicios = respuestaProductos.data.productos.concat( respuestaServicios.data.subservicios);
 	    });
     });
 	
     $scope.guardar = function(){
+		$scope.error = "";
+    	
         RecursosFactory
 		.post('/promociones', $scope.promocion)
 		.then(function(respuesta) {
-			console.log("NuevoPromocionCtrl: ", respuesta);
+			if(respuesta.data.success){
+			console.log("NuevaPromocionCtrl.guardar()", respuesta);
 			$state.go('app.promociones');
+			} else {
+				console.log("NuevaPromocionCtrl.guardar(), err", respuesta.data.error)
+				$scope.error = respuesta.data.mensaje;
+			}
+		}, function(err){
+			console.log("NuevaPromocionCtrl.guardar(), err", err)
+			$scope.error = err.errmsg
 		});
     };
 };

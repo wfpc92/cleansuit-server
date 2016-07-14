@@ -19,16 +19,25 @@ module.exports = function(app, passport) {
 	});
 
 	router.post('/', function(req, res){
+
+		var items = {};
+		for(var i in req.body.items) {
+			if(req.body.items[i]){
+				items[i] = req.body.items[i];
+			}
+		}
+
 		var promocion = new Promociones({
 			url_imagen: req.body.url_imagen,
 			descuento: req.body.descuento,
 			codigo: req.body.codigo,
 			descripcion: req.body.descripcion,
-			items: req.body.items
+			items: items
 		});
 		
-		promocion.save(function(err) {
-			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+		promocion
+		.save(function(err) {
+			if (err) return res.json({success: false, mensaje: "Campos de promocion incompletos o invalidos.", error: err});
 
 			res.json({
 				success: true,
@@ -39,7 +48,8 @@ module.exports = function(app, passport) {
 	});
 
 	router.get('/:id', function(req, res) {
-		Promociones.findById(req.params.id, function(err, promocion) {
+		Promociones
+		.findById(req.params.id, function(err, promocion) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
 			res.json({
@@ -51,19 +61,27 @@ module.exports = function(app, passport) {
 	});
 
 	router.put('/:id', function(req, res){
-		Promociones.findById(req.params.id, function(err, promocion) {
+		Promociones
+		.findById(req.params.id, function(err, promocion) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+			var items = {};
+			for(var i in req.body.items) {
+				if(req.body.items[i]){
+					items[i] = req.body.items[i];
+				}
+			}
 
 			//modificar atributos de la promocion
 			promocion.url_imagen = req.body.url_imagen || promocion.url_imagen;
 			promocion.descuento = req.body.descuento || promocion.descuento;
 			promocion.codigo = req.body.codigo || promocion.codigo;
 			promocion.descripcion = req.body.descripcion || promocion.descripcion;
-			promocion.items = req.body.items || promocion.items;
+			promocion.items = items;
 			
 			// Save the beer and check for errors
 			promocion.save(function(err) {
-				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+				if (err) return res.json({success: false, mensaje: "Campos de promocion incompletos o invalidos.", error: err});
 
 				res.json({
 					success: true,

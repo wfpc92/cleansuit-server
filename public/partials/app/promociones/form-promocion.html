@@ -1,5 +1,7 @@
 <h1>{{mensaje}}</h1>
 
+<div class="alert alert-danger" ng-if="error">{{error}}</div>
+
 <input type="button" class="btn btn-primary" value="Save" ng-click="guardar()"></input>
 
 <form>
@@ -38,7 +40,7 @@
         <tbody>
             <tr ng-repeat='pys in productosYServicios'>
                 <td>
-                    <input type="checkbox" ng-model="pys.aplica" ng-checked="pys.aplica">
+                    <input type="checkbox" ng-model="promocion.items[pys._id]" ng-checked="promocion.items[pys._id]">
                 </td>
                 <td>
                     {{pys.nombre}}
@@ -48,10 +50,8 @@
                 </td>
             </tr>
         </tbody>
-    </table>
-        <div ng-repeat="producto in productos">
-
-        </div>
+        </table>
+       
     </div>
 
 

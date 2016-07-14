@@ -29,8 +29,8 @@
                 Descripcion: {{promocion.descripcion}}
             </td>
             <td>
-                <div ng-repeat="item in items">
-                    {{item}} <br />
+                <div ng-repeat="(key, value) in promocion.items">
+                    {{key}}: {{value}} <br />
                 </div>
             </td>
             <td>

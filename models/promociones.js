@@ -17,7 +17,7 @@ var PromocionesSchema   = new mongoose.Schema({
 	descripcion: {
 		type: String
 	},
-	items: [mongoose.Schema.Types.ObjectId],//referencias a los productos y subservicios a los se aplica la promocion.
+	items: {},//referencias a los productos y subservicios a los se aplica la promocion.
 });
 
 // Export the Mongoose model
