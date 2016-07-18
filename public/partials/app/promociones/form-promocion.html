@@ -11,7 +11,7 @@
     </div>
 
     <div class="form-group">
-        <label>Descuento</label>       
+        <label>Descuento General</label>       
         <input class="form-control" ng-model="promocion.descuento"></input>
     </div>
     
@@ -40,13 +40,13 @@
         <tbody>
             <tr ng-repeat='pys in productosYServicios'>
                 <td>
-                    <input type="checkbox" ng-model="promocion.items[pys._id]" ng-checked="promocion.items[pys._id]">
+                    <input type="checkbox" ng-model="promocion.items[pys._id].checked" ng-checked="promocion.items[pys._id].checked">
                 </td>
                 <td>
                     {{pys.nombre}}
                 </td>
                 <td>
-                    <input type="number" ng-model="pys.descuento" value="{{pys.descuento}}"/>
+                    <input type="number" ng-model="promocion.items[pys._id].descuento"/>
                 </td>
             </tr>
         </tbody>

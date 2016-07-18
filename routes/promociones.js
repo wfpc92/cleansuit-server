@@ -9,7 +9,7 @@ module.exports = function(app, passport) {
 		Promociones
 		.find(function(err, promociones) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-
+			console.log(promociones)
 			res.json({
 				success: true,
 				promociones: promociones,
@@ -19,13 +19,17 @@ module.exports = function(app, passport) {
 	});
 
 	router.post('/', function(req, res){
-
+		//req.body.items viene con el formato: [{_idItem: boolean}],
 		var items = {};
+		console.log(req.body.items)
+
 		for(var i in req.body.items) {
 			if(req.body.items[i]){
 				items[i] = req.body.items[i];
 			}
 		}
+
+		console.log(items)
 
 		var promocion = new Promociones({
 			url_imagen: req.body.url_imagen,

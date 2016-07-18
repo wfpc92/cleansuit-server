@@ -20,7 +20,10 @@ var NuevaPromocionCtrl = function($scope,
 	
     $scope.guardar = function(){
 		$scope.error = "";
-    	
+
+		//$scope.promocion.items se envia de la forma: [{_idItem: boolean}], debe ser procesado en servidor.
+		console.log($scope.promocion.items);
+		
         RecursosFactory
 		.post('/promociones', $scope.promocion)
 		.then(function(respuesta) {

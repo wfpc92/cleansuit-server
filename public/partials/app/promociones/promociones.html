@@ -19,7 +19,6 @@
             <td scope="row">{{$index}}</td>
             <td>
                 <img ng-src="{{promocion.url_imagen}}" />
-                {{promocion.url_imagen}}
             </td>
             <td>
                 <strong>{{promocion.codigo}}</strong>
@@ -30,7 +29,8 @@
             </td>
             <td>
                 <div ng-repeat="(key, value) in promocion.items">
-                    {{key}}: {{value}} <br />
+                    {{getItemById(key).nombre}} 
+                    <strong>{{promocion.items[key].descuento}}%</strong><br/>
                 </div>
             </td>
             <td>
