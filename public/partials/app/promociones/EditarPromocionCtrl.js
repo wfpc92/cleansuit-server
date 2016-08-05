@@ -6,12 +6,38 @@ var EditarPromocionCtrl = function($scope,
     console.log("EditarPromocionCtrl");
 
     $scope.mensaje = "Editar una promoción";
-
+    $scope.inputRangoFechaHora = $('input[name="daterange"]');
+    
     RecursosFactory  
     .get("/promociones/"+$stateParams.idPromocion)
     .then(function(respuesta) {
         console.log("EditarPromocionCtrl: ", respuesta)
         $scope.promocion = respuesta.data.promocion;
+        
+        var optDRP = {
+            startDate: Date.now(),
+            endDate: Date.now(),
+            timePicker: true,
+            timePickerIncrement: 5,
+            locale: {
+                format: 'DD/MM/YYYY h:mm A'
+            }
+        };
+
+        if($scope.promocion.fecha_inicio 
+            && $scope.promocion.fecha_fin) {
+            $scope.promocion.fecha_inicio = new Date($scope.promocion.fecha_inicio);
+            $scope.promocion.fecha_fin = new Date($scope.promocion.fecha_fin);
+            optDRP.startDate =  $scope.promocion.fecha_inicio;
+            optDRP.endDate = $scope.promocion.fecha_fin;
+        } 
+
+        //DateRangePicker colocar los valores por defecto o para editar de la promocion. fuente: http://www.daterangepicker.com/
+        $scope.inputRangoFechaHora
+        .daterangepicker(optDRP, function(start, end, label) {
+            $scope.promocion.fecha_inicio = start.utc().format();
+            $scope.promocion.fecha_fin = end.utc().format();
+        });
     });
 
     RecursosFactory 

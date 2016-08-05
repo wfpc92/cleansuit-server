@@ -6,20 +6,26 @@
 
 <form>
     <div class="form-group">
-        <label>Imagen</label>       
+        <label>Imagen</label>
         <input class="form-control" ng-model="promocion.url_imagen"></input>
     </div>
 
     <div class="form-group">
-        <label>Descuento General</label>       
+        <label>Descuento General</label>
         <input class="form-control" ng-model="promocion.descuento"></input>
     </div>
     
     <div class="form-group">
-        <label>Código</label>		
+        <label>Código</label>
         <input class="form-control" ng-model="promocion.codigo"></input>
     </div>
     
+    <div class="form-group">
+        <label>Vigencia de la Promoción: 
+        </label>
+        <input type="text" class="form-control" name="daterange" />
+    </div>
+
     <div class="form-group">
         <label>Descripción</label>
         <textarea class="form-control" ng-model="promocion.descripcion"></textarea>

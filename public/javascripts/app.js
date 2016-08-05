@@ -1,5 +1,5 @@
 
-var app = angular.module('CleanSuit', ['ui.router']);
+var app = angular.module('CleanSuit', ['ui.router', 'daterangepicker']);
 
 app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
 

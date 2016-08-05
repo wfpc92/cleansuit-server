@@ -24,7 +24,9 @@
                 <strong>{{promocion.codigo}}</strong>
             </td>
             <td>
-                <strong>{{promocion.descuento}}</strong><br/>
+                <strong>Descuento General: {{promocion.descuento}}</strong><br/>
+                <strong>Fecha Inicio: {{promocion.fecha_inicio | date : 'dd/MM/yyyy hh:mm'}}</strong><br/>
+                <strong>Fecha Fin: {{promocion.fecha_fin | date : 'dd/MM/yyyy hh:mm'}}</strong><br/>
                 Descripcion: {{promocion.descripcion}}
             </td>
             <td>

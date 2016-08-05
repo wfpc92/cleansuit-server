@@ -35,6 +35,8 @@ module.exports = function(app, passport) {
 			url_imagen: req.body.url_imagen,
 			descuento: req.body.descuento,
 			codigo: req.body.codigo,
+			fecha_inicio: req.body.fecha_inicio,
+			fecha_fin: req.body.fecha_fin,
 			descripcion: req.body.descripcion,
 			items: items
 		});
@@ -80,6 +82,8 @@ module.exports = function(app, passport) {
 			promocion.url_imagen = req.body.url_imagen || promocion.url_imagen;
 			promocion.descuento = req.body.descuento || promocion.descuento;
 			promocion.codigo = req.body.codigo || promocion.codigo;
+			promocion.fecha_inicio = req.body.fecha_inicio || promocion.fecha_inicio;
+			promocion.fecha_fin = req.body.fecha_fin || promocion.fecha_fin;
 			promocion.descripcion = req.body.descripcion || promocion.descripcion;
 			promocion.items = items;
 			
@@ -107,6 +111,37 @@ module.exports = function(app, passport) {
 			});
 		});
 	});
-	
+
+	router.get('/validar/:cupon', function(req, res) {
+		var descuentos = null;
+		var cupon = req.params.cupon;
+		
+		Promociones
+		.findOne({
+			codigo: cupon
+		}, function(err, promocion) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
+			if(!promocion) {
+				return res.json({
+					success: false, 
+					mensaje: "El codigo '"+ cupon +"' no se encuentra disponible.", 
+				});
+			}
+
+			if(promocion.vigente()) {
+				mensaje = "Cupón válido.";
+			} else {
+				mensaje = "Cupón ya expiró.";
+			}
+
+			res.json({
+				success: true,
+				promocion: promocion,
+				mensaje: mensaje
+			});
+		});
+	});	
+
 	return router;
 };
