@@ -5,8 +5,13 @@ var NuevaPromocionCtrl = function($scope,
 	console.log("NuevaPromocionCtrl");
 
 	$scope.mensaje = "Crear una promoción";
-	$scope.promocion = {};
-	$scope.inputRangoFechaHora = $('input[name="daterange"]');
+	$scope.promocion = {
+		fecha_inicio: new Date('2016/08/01'),
+		fecha_fin: new Date('2016/08/30')
+	};
+	
+	console.log($scope.promocion.fecha_fin)
+	$scope.inputRangoFechaHora = typeof $ !== 'undefined' ? $('input[name="daterange"]') : {};
 	
 	var optDRP = {
         startDate: Date.now(),
@@ -18,12 +23,14 @@ var NuevaPromocionCtrl = function($scope,
         }
     };
 
-    //DateRangePicker fuente: http://www.daterangepicker.com/
-    $scope.inputRangoFechaHora
-    .daterangepicker(optDRP, function(start, end, label) {
-        $scope.promocion.fecha_inicio = start.utc().format();
-        $scope.promocion.fecha_fin = end.utc().format();
-    });
+    if(typeof $ !== 'undefined') {
+	    //DateRangePicker fuente: http://www.daterangepicker.com/
+	    $scope.inputRangoFechaHora
+	    .daterangepicker(optDRP, function(start, end, label) {
+	        $scope.promocion.fecha_inicio = start.utc().format();
+	        $scope.promocion.fecha_fin = end.utc().format();
+	    });
+	}
 
 	RecursosFactory 
     .get("/productos")
