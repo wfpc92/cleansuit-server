@@ -27,8 +27,8 @@ coverage
 build/Release
 
 # Dependency directories
-node_modules
-jspm_packages
+/node_modules
+/jspm_packages
 
 # Optional npm cache directory
 .npm
@@ -37,11 +37,11 @@ jspm_packages
 .node_repl_history
 
 # binarios servidor cleansuit
-bin
-etc
-include
-lib
-n
-run
-share
-!bin/www
+/bin
+/etc
+/include
+/lib
+/n
+/run
+/share
+!/bin/www

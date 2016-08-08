@@ -17,8 +17,7 @@ var OrdenesSchema = new mongoose.Schema({
 		enum: ['nueva','rutaRecoleccion','recolectada', 'procesando', 'rutaEntrega', 'entregada', 'cancelada']
 	},
 	orden: {},
-	items: {},
-	
+	items: {},	
 });
 
 OrdenesSchema.plugin(autoIncrement.plugin, {

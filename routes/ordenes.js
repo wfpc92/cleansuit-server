@@ -35,6 +35,7 @@ module.exports = function(app, passport) {
 		try {
 			req.orden = req.body.orden;
 			req.items = req.body.items;
+			req.cupon = req.body.cupon;
 			next();
 		} catch(err) {
 			return next(err);
@@ -47,6 +48,7 @@ module.exports = function(app, passport) {
 		//datos validado
 		orden.orden = req.orden;
 		orden.items = req.items;
+		orden.cupon = req.cupon;
 		
 		orden.save(function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
