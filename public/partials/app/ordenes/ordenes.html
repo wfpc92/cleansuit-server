@@ -40,10 +40,9 @@
 					Fecha: {{orden.orden.entrega.fecha | date}}<br/>  
 					Hora: {{orden.orden.entrega.hora}}<br/>
 				</address>
-				<label>Forma de Pago:</label>
-				<span>{{orden.orden.formaPago}}</span>
-				<label>Teléfono:</label>
-				<span>{{orden.orden.telefono}}</span>
+				<label>Forma de Pago:</label><span>{{orden.orden.formaPago ? orden.orden.formaPago : 'No disponible'}}</span><br />
+				<label>Teléfono:</label><span>{{orden.orden.telefono ? orden.orden.telefono : 'No disponible'}}</span><br />
+				<label>Servicio Directo:</label><span>{{orden.orden.servicioDirecto ? 'Si': 'No'}}</span><br />
 			</td>
 			<td>
 				<div ng-repeat="item in orden.items track by $index" >
