@@ -357,8 +357,8 @@ module.exports = function(app, passport) {
 		console.log(JSON.stringify(req.body))
 		
 		var mensaje = "";
-		req.user.nombre = req.body.nombre;
-		req.user.correo = req.body.correo;
+		req.user.nombre = req.body.nombre || "";
+		req.user.correo = req.body.correo || "";
 		
 		console.log(req.body.contrasena,  req.body.repetirContrasena)
 		if(req.body.contrasena) {
@@ -372,15 +372,15 @@ module.exports = function(app, passport) {
 		}
 
 		req.user.save(function(err){
-			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			if (err) return res.json({success: false, mensaje: "Información duplicada.", error: err});
 
 			Clientes.findOne({
 				usuario_id: req.user._id
 			}, function(err, infoCliente) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-
-				infoCliente.direccion = req.body.direccion;
-				infoCliente.telefono = req.body.telefono;
+				console.log(JSON.stringify(infoCliente))
+				infoCliente.direccion = req.body.direccion || "";
+				infoCliente.telefono = req.body.telefono || "";
 				infoCliente.url_foto = req.body.data_foto || infoCliente.url_foto;
 
 				infoCliente.save(function(err){
