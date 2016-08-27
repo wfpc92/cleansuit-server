@@ -13,6 +13,14 @@ function crearConfiguraciones(config) {
 	return configuraciones;
 }
 
+function modificarConfiguraciones(config, nuevaConfig) {
+	config.domicilio = nuevaConfig.domicilio || config.domicilio;
+	config.versionInventario = nuevaConfig.versionInventario || config.versionInventario;
+	config.sobreEmpresa = nuevaConfig.sobreEmpresa || config.sobreEmpresa;
+	config.terminosCondiciones = nuevaConfig.terminosCondiciones || config.terminosCondiciones;
+	return config
+}
+
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
 	
@@ -53,7 +61,7 @@ module.exports = function(app, passport) {
 	});
 
 
-	router.post('/domicilio',	function(req, res){
+	router.post('/',	function(req, res){
 		Configuraciones.find(function(err, configuracionesLst) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
@@ -64,8 +72,8 @@ module.exports = function(app, passport) {
 				var configuraciones = crearConfiguraciones(req.body);
 				mensaje = "configuraciones creada";
 			} else {
-				//si existe tomar la primera
-				configuraciones = configuracionesLst[0];
+				//si existe modificar la primera de acuerdo lo que viene en el body
+				configuraciones = modificarConfiguraciones(configuracionesLst[0], req.body);
 				mensaje = "configuraciones actualizada"
 			}
 
@@ -76,61 +84,6 @@ module.exports = function(app, passport) {
 					mensaje: mensaje
 				});
 			});
-		});
-	});
-
-	router.post('/sobre-empresa',	function(req, res){
-		Configuraciones.find(function(err, configuracionesLst) {
-			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-
-			var configuraciones = null;
-
-			//si no existe una configuraciones se inicializa.
-			if(configuracionesLst.length == 0){
-				var configuraciones = crearConfiguraciones(req.body);
-				mensaje = "configuraciones creada";
-			} else {
-				//si existe tomar la primera
-				configuraciones = configuracionesLst[0];
-				mensaje = "configuraciones actualizada"
-			}
-			configuraciones.save(function(err){
-				res.json({
-					success: true,
-					configuraciones: configuraciones,
-					mensaje: mensaje
-				});
-			});
-
-			
-		});
-	});
-
-	router.post('/terminos-condiciones',	function(req, res){
-		Configuraciones.find(function(err, configuracionesLst) {
-			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-
-			var configuraciones = null;
-
-			//si no existe una configuraciones se inicializa.
-			if(configuracionesLst.length == 0){
-				var configuraciones = crearConfiguraciones(req.body);
-				mensaje = "configuraciones creada";
-			} else {
-				//si existe tomar la primera
-				configuraciones = configuracionesLst[0];
-				configuraciones.terminosCondiciones = req.body.terminosCondiciones;
-				mensaje = "configuraciones actualizada"
-			}
-			configuraciones.save(function(err){
-				res.json({
-					success: true,
-					configuraciones: configuraciones,
-					mensaje: mensaje
-				});
-			});
-
-			
 		});
 	});
 
