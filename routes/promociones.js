@@ -124,15 +124,15 @@ module.exports = function(app, passport) {
 			
 			if(!promocion) {
 				return res.json({
-					success: false, 
-					mensaje: "El codigo '"+ cupon +"' no se encuentra disponible.", 
+					success: true, 
+					mensaje: "El código '"+ cupon +"' no se encuentra disponible.", 
 				});
 			}
 
 			if(promocion.vigente()) {
 				mensaje = "Cupón válido.";
 			} else {
-				mensaje = "Cupón ya expiró.";
+				mensaje = "Éste cupón ya expiró.";
 			}
 
 			res.json({
