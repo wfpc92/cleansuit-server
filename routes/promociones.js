@@ -9,7 +9,11 @@ module.exports = function(app, passport) {
 		Promociones
 		.find(function(err, promociones) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			console.log(promociones)
+			
+			for (var i in promociones){
+				promociones[i].etiquetar();
+			}
+
 			res.json({
 				success: true,
 				promociones: promociones,
@@ -58,6 +62,10 @@ module.exports = function(app, passport) {
 		.findById(req.params.id, function(err, promocion) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
+			if(!promocion) return res.json({success: false, mensaje: "No existe promocion", error: err});
+			
+			promocion.etiquetar();
+
 			res.json({
 				success: true,
 				promocion: promocion,
