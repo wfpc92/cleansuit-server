@@ -47,11 +47,7 @@ VersionesOrdenesSchema.statics.getVersion = function(usuario_id, cb) {
 			v = new self();
 			v.usuario_id = usuario_id;
 			v.version = 0;
-			v.save(function(err) {
-				if(cb) {
-					cb(v);
-				}
-			});
+			v.save();
 		} 
 
 		if(cb) {
