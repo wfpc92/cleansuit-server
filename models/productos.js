@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
-var Configuraciones = require('./configuraciones');
+var VersionApp = require('./version-app');
 
-// Define our beer schema
 var ProductosSchema   = new mongoose.Schema({
 	nombre: String,
 	precio: Number,
@@ -11,20 +10,9 @@ var ProductosSchema   = new mongoose.Schema({
 });
 
 ProductosSchema.post('save', function (next) {
-	Configuraciones.find(function(err, configuracionesLst) {
-		var configuraciones;
-
-		if(configuracionesLst.length !== 0){
-			configuraciones = configuracionesLst[0];
-			configuraciones.versiones.inventario += 1;
-		} else {
-			configuraciones = new Configuraciones();
-		}
-		console.log(configuraciones)
-
-		configuraciones.save();
-	});
+	VersionApp.singleton(function(v) {
+		v.inventario += 1;
+	})
 });
 
-// Export the Mongoose model
 module.exports = mongoose.model('Productos', ProductosSchema);

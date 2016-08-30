@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
+var VersionApp = require('./version-app');
 
-// Define our beer schema
 var PromocionesSchema = new mongoose.Schema({
 	url_imagen: {
 		type: String,
@@ -73,5 +73,10 @@ PromocionesSchema.methods.etiquetar = function() {
 	this.etiquetaDescuentos = etiqueta;
 };
 
+PromocionesSchema.post('save', function (next) {
+	VersionApp.singleton(function(v) {
+		v.inventario += 1;
+	})
+});
 
 module.exports = mongoose.model('Promociones', PromocionesSchema);
