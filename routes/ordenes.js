@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var Ordenes = require('../models/ordenes');
+var VersionesOrdenes = require("../models/versiones-ordenes")
 
 
 module.exports = function(app, passport) {
@@ -53,10 +54,12 @@ module.exports = function(app, passport) {
 		orden.save(function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-			res.json({
-				success: true,
-				mensaje: 'orden enviada.',
-				orden: orden
+			VersionesOrdenes.actualizar(req.user._id, function(o) {
+				res.json({
+					success: true,
+					mensaje: 'orden enviada.',
+					orden: orden
+				});
 			});
 		});
 	});

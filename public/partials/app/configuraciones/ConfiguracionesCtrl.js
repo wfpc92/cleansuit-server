@@ -14,7 +14,7 @@ var ConfiguracionesCtrl = function($scope,
 
 	$scope.actualizar = function() {
 		RecursosFactory
-		.post("/configuraciones/domicilio", $scope.configuraciones)
+		.post("/configuraciones", $scope.configuraciones)
 		.then(function(respuesta) {
 			$scope.mensaje = respuesta.data.mensaje;
 		});		

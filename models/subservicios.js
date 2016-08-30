@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
+var VersionApp = require('./version-app');
 
-// Define our beer schema
 var SubserviciosSchema = new mongoose.Schema({
 	_creator : { type: mongoose.Schema.Types.ObjectId, ref: 'Servicios' },
 	nombre: String,
@@ -9,5 +9,10 @@ var SubserviciosSchema = new mongoose.Schema({
 	detalles: String
 });
 
-// Export the Mongoose model
+SubserviciosSchema.post('save', function (next) {
+	VersionApp.singleton(function(v) {
+		v.inventario += 1;
+	})
+});
+
 module.exports = mongoose.model('Subservicios', SubserviciosSchema);
