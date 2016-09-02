@@ -73,7 +73,7 @@ router.post('/registrar', function(req, res) {
 				});
 			}
 			else {
-				res.json({ success: false, mensaje: "No se pudo registrar el usuario cliente." });
+				res.json({ success: false, mensaje: "No se pudo registrar el usuario." });
 			}
 		});
 	}
