@@ -353,8 +353,8 @@ module.exports = function(app, passport) {
 	});
 
 	router.post('/cliente', passport.authenticate('jwt', { session: false}), function(req, res) {
-		console.log(JSON.stringify(req.user))
-		console.log(JSON.stringify(req.body))
+		//console.log(JSON.stringify(req.user))
+		//console.log(JSON.stringify(req.body))
 		
 		var mensaje = "";
 		req.user.nombre = req.body.nombre || "";
@@ -378,10 +378,10 @@ module.exports = function(app, passport) {
 				usuario_id: req.user._id
 			}, function(err, infoCliente) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				console.log(JSON.stringify(infoCliente))
+				//console.log(JSON.stringify(infoCliente))
 				infoCliente.direccion = req.body.direccion || "";
 				infoCliente.telefono = req.body.telefono || "";
-				infoCliente.url_foto = req.body.data_foto || infoCliente.url_foto;
+				infoCliente.url_foto = req.body.url_foto || infoCliente.url_foto;
 
 				infoCliente.save(function(err){
 					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
