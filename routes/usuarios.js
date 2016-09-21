@@ -281,16 +281,15 @@ router.post('/cliente/reset', function(req, res) {
 			var asunto = "Cleansuit: Restaurar su contraseña";
 			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
 			
-			fs.readFile('views/reset.ejs', 'utf-8', function(err, content) {
+			fs.readFile('views/correo_reset.ejs', 'utf-8', function(err, content) {
 				var renderedHtml = ejs.render(content, {enlaceReset: enlaceReset});
-				var html = renderedHtml;
-				console.log(html);
-				enviarEmail("noreply@cleansuit.co", email, asunto, texto, html, function(email_error, email_info) {
+				
+				enviarEmail("noreply@cleansuit.co", email, asunto, texto, renderedHtml, function(email_error, email_info) {
 					if (email_error) {
 						return res.json({ success: false, mensaje: email_error });
 					}
 
-					return res.json({ success: true });
+					return res.json({ success: true, pass_token: usuario.pass_token });
 				});
 			});
 
@@ -303,24 +302,21 @@ router.post('/cliente/reset', function(req, res) {
  * Si es válido, envía un email con la nueva contraseña
 */
 router.get('/cliente/reset/:token', function(req, res) {
-
-	
-		/*
 	var pass_token = req.params.token;
+
 	// Buscamos el usuario con este token de recuperación de contraseña
 	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
 		if (!usuario) {
-			return res.json({ success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.' });
+			return res.render("reset", { success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.', pass_token: ""});
 		}
 
 		// Verificamos que el token no ha expirado
 		var vencimiento = usuario.pass_token_vence;
 		if (Date.now() > vencimiento) {
-			return res.json({ success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.' });
+			return res.render("reset", { success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.', pass_token: ""});
 		}
 
-  		//fs.readFile('index.html', 'utf-8', function(err, content) {
-		
+		return res.render("reset", { success: true, mensaje: '', pass_token: pass_token});		
 	});
 		/*
 		// Reseteamos la contraseña y guardamos el usuario
