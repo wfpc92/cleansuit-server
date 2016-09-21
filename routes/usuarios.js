@@ -62,6 +62,12 @@ function registrarCliente(datos, callback) {
 	});
 }
 
+var estadoReset = {
+	RESET_OK: "RESET_OK",
+	CONTRASENA: "CONTRASENA",
+	CADUCADO: "CADUCADO"
+};
+
 router.post('/registrar', function(req, res) {
 	if (!req.body.nombre || !req.body.correo || !req.body.contrasena) {
 		res.json({success: false, mensaje: 'Por favor ingrese nombre, correo y contraseña.'});
@@ -289,7 +295,10 @@ router.post('/cliente/reset', function(req, res) {
 						return res.json({ success: false, mensaje: email_error });
 					}
 
-					return res.json({ success: true, pass_token: usuario.pass_token });
+					return res.json({
+						success: true, 
+						pass_token: usuario.pass_token //quitar esto.
+					});
 				});
 			});
 
@@ -307,39 +316,84 @@ router.get('/cliente/reset/:token', function(req, res) {
 	// Buscamos el usuario con este token de recuperación de contraseña
 	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
 		if (!usuario) {
-			return res.render("reset", { success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.', pass_token: ""});
+			return res.render("reset", { 
+				estado: estadoReset.CADUCADO,
+				pass_token: ""
+			});
 		}
 
 		// Verificamos que el token no ha expirado
 		var vencimiento = usuario.pass_token_vence;
 		if (Date.now() > vencimiento) {
-			return res.render("reset", { success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.', pass_token: ""});
+			return res.render("reset", { 
+				estado: estadoReset.CADUCADO,
+				pass_token: ""
+			});
 		}
 
-		return res.render("reset", { success: true, mensaje: '', pass_token: pass_token});		
+		return res.render("reset", { 
+			pass_token: pass_token
+		});		
 	});
-		/*
-		// Reseteamos la contraseña y guardamos el usuario
-		var cadenaRandom = (crypto.randomBytes(8)).toString("base64");
-		var nuevaContrasena = cadenaRandom.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-		usuario.contrasena = nuevaContrasena;
+});
+
+router.post('/cliente/reset/:token', function(req, res) {
+	var pass_token = req.params.token;
+	var contrasena = req.body.contrasena;
+	var confirmarContrasena = req.body.confirmarContrasena;
+
+	if (contrasena !== confirmarContrasena) {
+		return res.render("reset", {
+			estado: estadoReset.CONTRASENA,
+			pass_token: pass_token
+		})
+	}
+
+	// Buscamos el usuario con este token de recuperación de contraseña
+	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
+		if (!usuario) {
+			return res.render("reset", { 
+				estado: estadoReset.CADUCADO,
+				pass_token: ""});
+		}
+
+		// Verificamos que el token no ha expirado
+		var vencimiento = usuario.pass_token_vence;
+		if (Date.now() > vencimiento) {
+			return res.render("reset", { 
+				estado: estadoReset.CADUCADO,
+				pass_token: ""
+			});
+		}
+
+		usuario.contrasena = contrasena;
 
 		usuario.save(function(err) {
-			if (err) return res.json({ success: false, mensaje: 'Ocurrió un error al intentar restaurar la contraseña.' });
+			if (err) return res.json({ success: false, mensaje: 'no existe ' });
 
 			// Enviamos el email con la nueva contraseña
 			var asunto = "Cleansuit: Su contraseña ha sido restaurada!";
-			var texto = "Su nueva contraseña es: " + nuevaContrasena;
+			var texto = "Su contraseña ha sido restaurada!";
 			var email = usuario.correo;
-			enviarEmail("noreply@cleansuit.co", email, asunto, texto, null, function(email_error, email_info) {
-				if (email_error) {
-					return res.json({ success: false, mensaje: email_error });
-				}
+
+			fs.readFile('views/correo_reset.ejs', 'utf-8', function(err, content) {
+				var renderedHtml = ejs.render(content, {
+					enlaceReset: "",
+					resetSuccess: true 
+				});
 				
-				return res.json({ success: true });
+				enviarEmail("noreply@cleansuit.co", email, asunto, texto, renderedHtml, function(email_error, email_info) {
+					if (email_error) {
+						return res.json({ success: false, mensaje: email_error });
+					}
+
+					return res.render("reset", {
+						view: estadoReset.RESET_OK 
+					});
+				});
 			});
 		});
-	});*/
+	});
 });
 
 module.exports = function(app, passport) {
