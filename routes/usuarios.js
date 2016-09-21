@@ -3,6 +3,8 @@ var https = require("https");
 var crypto = require("crypto");
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
+var ejs = require("ejs");
+var fs = require("fs");
 
 var Usuarios = require('../models/usuarios');
 var Clientes = require('../models/clientes');
@@ -16,12 +18,13 @@ router.get('/', function(req, res, next) {
 // @HELPER Envía un email automatizado con el texto
 // Invoca el callback al terminar con error=null en caso de éxito
 // El email se envía mediante el SendMail de WebFaction (https://docs.webfaction.com/user-guide/email.html#email-sending-from-an-application)
-function enviarEmail(origen, destino, titulo, texto, callback) {
+function enviarEmail(origen, destino, titulo, texto, html, callback) {
 	var opciones = {
 		"from": origen,
 		"to": destino,
 		"subject": titulo,
-		"text": texto
+		"text": texto,
+		"html": html
 	};
 	var transporter = nodemailer.createTransport(sendmailTransport({ "path": "/usr/bin/sendmail", "args": "" }));
 	transporter.sendMail(opciones, function(error, info) {
@@ -89,6 +92,7 @@ router.post('/ingresar', function(req, res, next) {
 			return next(err);
 		}
 	}, function(req, res) {
+	
 	Usuarios.findOne({
 			correo: req.correo
 		}, function(err, usuario) {
@@ -276,13 +280,21 @@ router.post('/cliente/reset', function(req, res) {
 			// enviamos email con el enlace
 			var asunto = "Cleansuit: Restaurar su contraseña";
 			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
-			enviarEmail("noreply@cleansuit.co", email, asunto, texto, function(email_error, email_info) {
-				if (email_error) {
-					return res.json({ success: false, mensaje: email_error });
-				}
+			var html = {path: enlaceReset};
+			
+			fs.readFile('views/reset.ejs', 'utf-8', function(err, content) {
+				var renderedHtml = ejs.render(content, {enlaceReset: enlaceReset});
 
-				return res.json({ success: true });
+				enviarEmail("noreply@cleansuit.co", email, asunto, texto, html, function(email_error, email_info) {
+					if (email_error) {
+						return res.json({ success: false, mensaje: email_error });
+					}
+
+					return res.json({ success: true });
+				});
 			});
+
+			
         });
 	});
 });
@@ -291,6 +303,9 @@ router.post('/cliente/reset', function(req, res) {
  * Si es válido, envía un email con la nueva contraseña
 */
 router.get('/cliente/reset/:token', function(req, res) {
+
+	
+		/*
 	var pass_token = req.params.token;
 	// Buscamos el usuario con este token de recuperación de contraseña
 	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
@@ -304,6 +319,10 @@ router.get('/cliente/reset/:token', function(req, res) {
 			return res.json({ success: false, mensaje: 'El enlace de recuperar contraseña es inválido o ha caducado.' });
 		}
 
+  		//fs.readFile('index.html', 'utf-8', function(err, content) {
+		
+	});
+		/*
 		// Reseteamos la contraseña y guardamos el usuario
 		var cadenaRandom = (crypto.randomBytes(8)).toString("base64");
 		var nuevaContrasena = cadenaRandom.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
@@ -316,7 +335,7 @@ router.get('/cliente/reset/:token', function(req, res) {
 			var asunto = "Cleansuit: Su contraseña ha sido restaurada!";
 			var texto = "Su nueva contraseña es: " + nuevaContrasena;
 			var email = usuario.correo;
-			enviarEmail("noreply@cleansuit.co", email, asunto, texto, function(email_error, email_info) {
+			enviarEmail("noreply@cleansuit.co", email, asunto, texto, null, function(email_error, email_info) {
 				if (email_error) {
 					return res.json({ success: false, mensaje: email_error });
 				}
@@ -324,7 +343,7 @@ router.get('/cliente/reset/:token', function(req, res) {
 				return res.json({ success: true });
 			});
 		});
-	});
+	});*/
 });
 
 module.exports = function(app, passport) {
