@@ -357,7 +357,8 @@ router.post('/cliente/reset/:token', function(req, res) {
 		if (!usuario) {
 			return res.render("reset", { 
 				estado: estadoReset.CADUCADO,
-				pass_token: ""});
+				pass_token: pass_token
+			});
 		}
 
 		// Verificamos que el token no ha expirado
@@ -365,7 +366,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 		if (Date.now() > vencimiento) {
 			return res.render("reset", { 
 				estado: estadoReset.CADUCADO,
-				pass_token: ""
+				pass_token: pass_token
 			});
 		}
 
