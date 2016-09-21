@@ -284,13 +284,14 @@ router.post('/cliente/reset', function(req, res) {
 			fs.readFile('views/reset.ejs', 'utf-8', function(err, content) {
 				var renderedHtml = ejs.render(content, {enlaceReset: enlaceReset});
 				var html = renderedHtml;
-				enviarEmail("noreply@cleansuit.co", email, asunto, null, html, function(email_error, email_info) {
+				console.log(html);
+				enviarEmail("noreply@cleansuit.co", email, asunto, text, html, function(email_error, email_info) {
 					if (email_error) {
 						return res.json({ success: false, mensaje: email_error });
 					}
 
 					return res.json({ success: true });
-				});*/
+				});
 			});
 
 			
