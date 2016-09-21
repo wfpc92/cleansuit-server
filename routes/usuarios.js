@@ -398,7 +398,8 @@ router.post('/cliente/reset/:token', function(req, res) {
 					}
 
 					return res.render("reset", {
-						estado: estadoReset.RESET_OK 
+						estado: estadoReset.RESET_OK,
+						pass_token: pass_token
 					});
 				});
 			});
