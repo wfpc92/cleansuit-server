@@ -373,7 +373,12 @@ router.post('/cliente/reset/:token', function(req, res) {
 		usuario.contrasena = contrasena;
 
 		usuario.save(function(err) {
-			if (err) return res.json({ success: false, mensaje: 'no existe ' });
+			if (err) {
+				console.log(err)
+				return res.render("reset", {
+					view: estadoReset.CADUCADO
+				});
+			}
 
 			// Enviamos el email con la nueva contraseña
 			var asunto = "Cleansuit: Su contraseña ha sido restaurada!";
