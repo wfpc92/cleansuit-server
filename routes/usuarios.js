@@ -376,7 +376,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 			if (err) {
 				console.log(err)
 				return res.render("reset", {
-					view: estadoReset.CONTRASENA,
+					estado: estadoReset.CONTRASENA,
 					pass_token: pass_token
 				});
 			}
@@ -398,7 +398,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 					}
 
 					return res.render("reset", {
-						view: estadoReset.RESET_OK 
+						estado: estadoReset.RESET_OK 
 					});
 				});
 			});
