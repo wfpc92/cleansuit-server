@@ -376,7 +376,8 @@ router.post('/cliente/reset/:token', function(req, res) {
 			if (err) {
 				console.log(err)
 				return res.render("reset", {
-					view: estadoReset.CADUCADO
+					view: estadoReset.CADUCADO,
+					pass_token: pass_token
 				});
 			}
 
