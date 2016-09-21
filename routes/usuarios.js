@@ -288,7 +288,10 @@ router.post('/cliente/reset', function(req, res) {
 			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
 			
 			fs.readFile('views/correo_reset.ejs', 'utf-8', function(err, content) {
-				var renderedHtml = ejs.render(content, {enlaceReset: enlaceReset});
+				var renderedHtml = ejs.render(content, {
+					enlaceReset: enlaceReset,
+					resetSuccess: false
+				});
 				
 				enviarEmail("noreply@cleansuit.co", email, asunto, texto, renderedHtml, function(email_error, email_info) {
 					if (email_error) {
