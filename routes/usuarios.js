@@ -285,7 +285,7 @@ router.post('/cliente/reset', function(req, res) {
 				var renderedHtml = ejs.render(content, {enlaceReset: enlaceReset});
 				var html = renderedHtml;
 				console.log(html);
-				enviarEmail("noreply@cleansuit.co", email, asunto, text, html, function(email_error, email_info) {
+				enviarEmail("noreply@cleansuit.co", email, asunto, texto, html, function(email_error, email_info) {
 					if (email_error) {
 						return res.json({ success: false, mensaje: email_error });
 					}
