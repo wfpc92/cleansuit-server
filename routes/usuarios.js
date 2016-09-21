@@ -257,14 +257,14 @@ router.post('/cliente/reset', function(req, res) {
 		res.json({ success: false, mensaje: 'Datos insuficientes para recuperar contraseña.' });
 		return;
 	}
-
+	console.log("buscando "+email);
 	Usuarios.findOne({ "correo": email }, function(err, usuario) {
 		if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
 
 		if (!usuario) {
 			return res.json({ success: false, mensaje: 'El email ingresado no corresponde a una cuenta registrada.' });
 		}
-		
+		console.log("encontrado"+email)
 		// generamos enlace único de restaurar contraseña, que expire en 24 horas
 		var cadenaRandom = (crypto.randomBytes(24)).toString("base64");
 		var passToken = cadenaRandom.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
@@ -274,24 +274,26 @@ router.post('/cliente/reset', function(req, res) {
 		usuario.pass_token = passToken;
         usuario.pass_token_vence = Date.now() + 3600000 * 24; // en 24 horas vence
         
+        console.log("antes de guardar"+ email)
         usuario.save(function(err) {
         	if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
 
 			// enviamos email con el enlace
 			var asunto = "Cleansuit: Restaurar su contraseña";
 			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
-			var html = {path: enlaceReset};
 			
+			console.log("antes de leer archivo ejs");
 			fs.readFile('views/reset.ejs', 'utf-8', function(err, content) {
-				var renderedHtml = ejs.render(content, {enlaceReset: enlaceReset});
-
+				return res.json({html: content});
+				/*var renderedHtml = ejs.render(content, {enlaceReset: enlaceReset});
+				var html = renderedHtml;
 				enviarEmail("noreply@cleansuit.co", email, asunto, texto, html, function(email_error, email_info) {
 					if (email_error) {
 						return res.json({ success: false, mensaje: email_error });
 					}
 
 					return res.json({ success: true });
-				});
+				});*/
 			});
 
 			
