@@ -6,17 +6,8 @@
     <title>CleanSuit - Restaurar contraseña</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
-<body class="container">
 
 <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-
-
-        
-
-        El enlace de recuperar contraseña es inválido o ha caducado.
-
-        por defecto
-
 
 <%
 var estado = estado || 0;
@@ -60,7 +51,8 @@ switch (estado) {
                             </td>
                         </tr>
 <%      break;
-    case "CADUCADO":%>
+    case "CADUCADO":
+%>
                         <tr>
                             <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
                                 <span style="display:inline-block; width:90%; max-width:350px">
@@ -69,7 +61,8 @@ switch (estado) {
                             </td>
                         </tr>
 <%      break;
-    default:%>
+    default:
+%>
                         <tr>
                             <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
                                 <span style="display:inline-block; width:90%; max-width:350px">
@@ -136,7 +129,7 @@ if(errContrasena) {
                 </td>
             </tr>
         </table>
-
+<%
 if (estado == "DEFAULT") {
 %>
     </form>
