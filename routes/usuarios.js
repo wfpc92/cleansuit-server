@@ -343,11 +343,11 @@ router.get('/cliente/reset/:token', function(req, res) {
 });
 
 router.post('/cliente/reset/:token', function(req, res) {
-	var pass_token = req.params.token;
-	var contrasena = req.body.contrasena;
-	var confirmarContrasena = req.body.confirmarContrasena;
+	var pass_token = req.params.token || "";
+	var contrasena = req.body.contrasena || "";
+	var confirmarContrasena = req.body.confirmarContrasena || ""; 
 
-	if (contrasena !== confirmarContrasena) {
+	if (contrasena !== confirmarContrasena || contrasena.length < 6) {
 		return res.render("reset", {
 			estado: estadoReset.CONTRASENA,
 			pass_token: pass_token
