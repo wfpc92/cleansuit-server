@@ -12,7 +12,7 @@
 <%
 var estado = estado || 0;
 var errContrasena = estado == "CONTRASENA";
-var _default = !!((estado == "DEFAULT") || errContrasena);
+var _default = (estado == "DEFAULT") || errContrasena; //machetazo :D
 
 if (_default) {
 %>
