@@ -351,7 +351,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 		return res.render("reset", {
 			estado: estadoReset.CONTRASENA,
 			pass_token: pass_token
-		})
+		});
 	}
 
 	// Buscamos el usuario con este token de recuperación de contraseña
