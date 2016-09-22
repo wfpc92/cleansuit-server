@@ -15,9 +15,9 @@ router.get('/', function(req, res, next) {
 	res.render('index', { view: 'pages/home'});
 });
 
-// @HELPER Envía un email automatizado con el texto
+// @HELPER Envía un correo automatizado con el texto
 // Invoca el callback al terminar con error=null en caso de éxito
-// El email se envía mediante el SendMail de WebFaction (https://docs.webfaction.com/user-guide/email.html#email-sending-from-an-application)
+// El correo se envía mediante el SendMail de WebFaction (https://docs.webfaction.com/user-guide/email.html#email-sending-from-an-application)
 function enviarEmail(origen, destino, titulo, texto, html, callback) {
 	var opciones = {
 		"from": origen,
@@ -65,7 +65,8 @@ function registrarCliente(datos, callback) {
 var estadoReset = {
 	RESET_OK: "RESET_OK",
 	CONTRASENA: "CONTRASENA",
-	CADUCADO: "CADUCADO"
+	CADUCADO: "CADUCADO",
+	DEFAULT: "DEFAULT"
 };
 
 router.post('/registrar', function(req, res) {
@@ -253,22 +254,22 @@ router.post("/ingresar/fb", function(req, res, next) {
 	return;
 });
 
-/* Envía al email del cliente un enlace único que le permite restaurar su contraseña
+/* Envía al correo del cliente un enlace único que le permite restaurar su contraseña
  * El enlace caduca en 24 horas
  */
 router.post('/cliente/reset', function(req, res) {
-	var email = (req.body.email) ? (req.body.email).trim() : "";
+	var correo = (req.body.correo) ? (req.body.correo).trim() : "";
 	
-	if (email == "") {
+	if (correo == "") {
 		res.json({ success: false, mensaje: 'Datos insuficientes para recuperar contraseña.' });
 		return;
 	}
 
-	Usuarios.findOne({ "correo": email }, function(err, usuario) {
+	Usuarios.findOne({ "correo": correo }, function(err, usuario) {
 		if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
 
 		if (!usuario) {
-			return res.json({ success: false, mensaje: 'El email ingresado no corresponde a una cuenta registrada.' });
+			return res.json({ success: false, mensaje: 'El correo ingresado no corresponde a una cuenta registrada.' });
 		}
 
 		// generamos enlace único de restaurar contraseña, que expire en 24 horas
@@ -283,7 +284,7 @@ router.post('/cliente/reset', function(req, res) {
         usuario.save(function(err) {
         	if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
 
-			// enviamos email con el enlace
+			// enviamos correo electrónico con el enlace
 			var asunto = "Cleansuit: Restaurar su contraseña";
 			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
 			
@@ -293,25 +294,25 @@ router.post('/cliente/reset', function(req, res) {
 					resetSuccess: false
 				});
 				
-				enviarEmail("noreply@cleansuit.co", email, asunto, texto, renderedHtml, function(email_error, email_info) {
+				enviarEmail("noreply@cleansuit.co", correo, asunto, texto, renderedHtml, function(email_error, email_info) {
 					if (email_error) {
 						return res.json({ success: false, mensaje: email_error });
 					}
 
 					return res.json({
 						success: true, 
+						html: renderedHtml,
 						pass_token: usuario.pass_token //quitar esto.
 					});
 				});
 			});
 
-			
         });
 	});
 });
 
 /* Recibe un token de recuperación de contraseña
- * Si es válido, envía un email con la nueva contraseña
+ * Si es válido, envía un correo con la nueva contraseña
 */
 router.get('/cliente/reset/:token', function(req, res) {
 	var pass_token = req.params.token;
@@ -335,6 +336,7 @@ router.get('/cliente/reset/:token', function(req, res) {
 		}
 
 		return res.render("reset", { 
+			estado: estadoReset.DEFAULT,
 			pass_token: pass_token
 		});		
 	});
@@ -381,10 +383,10 @@ router.post('/cliente/reset/:token', function(req, res) {
 				});
 			}
 
-			// Enviamos el email con la nueva contraseña
+			// Enviamos el correo con la nueva contraseña
 			var asunto = "Cleansuit: Su contraseña ha sido restaurada!";
 			var texto = "Su contraseña ha sido restaurada!";
-			var email = usuario.correo;
+			var correo = usuario.correo;
 
 			fs.readFile('views/correo_reset.ejs', 'utf-8', function(err, content) {
 				var renderedHtml = ejs.render(content, {
@@ -392,7 +394,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 					resetSuccess: true 
 				});
 				
-				enviarEmail("noreply@cleansuit.co", email, asunto, texto, renderedHtml, function(email_error, email_info) {
+				enviarEmail("noreply@cleansuit.co", correo, asunto, texto, renderedHtml, function(email_error, email_info) {
 					if (email_error) {
 						return res.json({ success: false, mensaje: email_error });
 					}

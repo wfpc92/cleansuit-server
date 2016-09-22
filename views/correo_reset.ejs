@@ -9,13 +9,7 @@
 <body class="container">
 
 <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<% 
-if(resetSuccess) {
-%>
-    se ha restaurado su contraseña
-<%
-}
-%>
+
     <table align="center" bgcolor="#FFFFFF" height="100%" style="max-width: 590px; width: 100%;">
         <tr>
             <td style="text-align:center; width: 100%;" height="50"/>
@@ -36,13 +30,28 @@ if(resetSuccess) {
                         </td>
                     </tr>
 
+<% 
+if(resetSuccess) {
+%>
                     <tr>
+                        <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
+                            <span style="display:inline-block; width:90%; max-width:350px">
+                                Tu contraseña ha sido restablecida.
+                            </span>
+                        </td>
+                    </tr>
+<%
+} else {
+%>
+
+                <tr>
                         <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
                             <span style="display:inline-block; width:90%; max-width:350px">
                                 Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.
                             </span>
                         </td>
                     </tr>
+                    
 
                     <tr>
                         <td bgcolor="#FFFFFF" style="font-size:15px; line-height:18px; padding:0 15px 36px;">
@@ -64,6 +73,9 @@ if(resetSuccess) {
                         </td>
                     </tr>
 
+<%
+}
+%>
                     <tr>
                         <td bgcolor="#FFFFFF" style="color:#999999; font-size:11px; line-height:15px; padding:0 10px 24px;">
                             No respondas este correo electrónico. <br/>Los correos electrónicos enviados a esta dirección no se responderán.

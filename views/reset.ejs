@@ -10,24 +10,24 @@
 
 <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
+
+        
+
+        El enlace de recuperar contraseña es inválido o ha caducado.
+
+        por defecto
+
+
 <%
 var estado = estado || 0;
-switch (estado) { 
-    case "RESET_OK":%>
-        felicidades se ha cambiado la contraseña exitosamente.
-<%      break;
-    case "CONTRASENA":%>
-        las contraseñas no coinciden o estan mal formadas.
-<%      break;
-    case "CADUCADO":%>
-        El enlace de recuperar contraseña es inválido o ha caducado.
-<%      break;
-    default:%>
-        por defecto
-<%      break;
-    } %> 
+var errContrasena = estado == "CONTRASENA";
 
+if (estado == "DEFAULT") {
+%>
     <form action="<%= pass_token %>" method="post">
+<%
+}
+%>
         <table align="center" bgcolor="#FFFFFF" height="100%" style="max-width: 590px; width: 100%;">
             <tr>
                 <td style="text-align:center; width: 100%;" height="50"/>
@@ -48,6 +48,28 @@ switch (estado) {
                             </td>
                         </tr>
 
+<%
+switch (estado) { 
+    case "RESET_OK":
+%>
+                        <tr>
+                            <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
+                                <span style="display:inline-block; width:90%; max-width:350px">
+                                    Se ha cambiado la contraseña. 
+                                </span>
+                            </td>
+                        </tr>
+<%      break;
+    case "CADUCADO":%>
+                        <tr>
+                            <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
+                                <span style="display:inline-block; width:90%; max-width:350px">
+                                    Este enlace ha caducado o no es válido. Solicita cambiar tu contraseña de nuevo.
+                                </span>
+                            </td>
+                        </tr>
+<%      break;
+    default:%>
                         <tr>
                             <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
                                 <span style="display:inline-block; width:90%; max-width:350px">
@@ -64,13 +86,20 @@ switch (estado) {
 
                         <tr>
                             <td bgcolor="#FFFFFF" style="padding-top:0px; padding-bottom:30px;">    
-                                contraseña <input name="contrasena" />   
+                                contraseña <input type="password" name="contrasena" />   
                             </td>
+<%
+if(errContrasena) {
+%>
+                        Esta contraseña no es válida o no coinciden.
+<%
+}
+%>
                         </tr>
 
                         <tr>
                             <td bgcolor="#FFFFFF" style="padding-top:0px; padding-bottom:30px;">    
-                                confirme contraseña <input name="confirmarContrasena" />   
+                                confirme contraseña <input type="password" name="confirmarContrasena" />   
                             </td>
                         </tr>
 
@@ -88,6 +117,9 @@ switch (estado) {
                             </td>
                         </tr>
 
+<%      break;
+}
+%> 
                         <tr>
                             <td bgcolor="#FFFFFF" style="color:#999999; font-size:11px; line-height:15px; padding:0 10px 24px;">
                                 No respondas este correo electrónico. <br/>Los correos electrónicos enviados a esta dirección no se responderán.
@@ -104,7 +136,12 @@ switch (estado) {
                 </td>
             </tr>
         </table>
+
+if (estado == "DEFAULT") {
+%>
     </form>
-    
+<%
+}
+%>    
 </body>  
 </html>
