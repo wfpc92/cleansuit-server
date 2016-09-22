@@ -12,8 +12,9 @@
 <%
 var estado = estado || 0;
 var errContrasena = estado == "CONTRASENA";
+var _default = estado == "DEFAULT" || errContrasena;
 
-if (estado == "DEFAULT") {
+if (_default) {
 %>
     <form action="<%= pass_token %>" method="post">
 <%
@@ -130,7 +131,7 @@ if(errContrasena) {
             </tr>
         </table>
 <%
-if (estado == "DEFAULT") {
+if (_default) {
 %>
     </form>
 <%
