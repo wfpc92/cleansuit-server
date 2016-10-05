@@ -384,7 +384,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 			}
 
 			// Enviamos el correo con la nueva contraseña
-			var asunto = "Cleansuit: Su contraseña ha sido restaurada!";
+			var asunto = "Cleansuit: Su contraseña ha sido restaurada exitosamente!";
 			var texto = "Su contraseña ha sido restaurada!";
 			var correo = usuario.correo;
 
