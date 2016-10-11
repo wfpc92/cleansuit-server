@@ -137,17 +137,18 @@ module.exports = function(app, passport) {
 				});
 			}
 
+			var respuesta = {
+				success: true
+			};
+
 			if(promocion.vigente()) {
-				mensaje = "Cupón válido.";
+				respuesta.mensaje = "Cupón válido.";
+				respuesta.promocion = promocion;
 			} else {
-				mensaje = "Éste cupón ya expiró.";
+				respuesta.mensaje = "Éste cupón ya expiró.";
 			}
 
-			res.json({
-				success: true,
-				promocion: promocion,
-				mensaje: mensaje
-			});
+			res.json(respuesta);
 		});
 	});	
 
