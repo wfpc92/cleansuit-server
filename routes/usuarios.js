@@ -5,15 +5,19 @@ var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 var ejs = require("ejs");
 var fs = require("fs");
+var url = require('url');
 
 var Usuarios = require('../models/usuarios');
 var Clientes = require('../models/clientes');
 
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-	res.render('index', { view: 'pages/home'});
-});
+var estadoReset = {
+	FORMULARIO: "FORMULARIO",
+	CADUCADO: "CADUCADO",
+	RESET_OK: "RESET_OK",
+	ERROR_SERVIDOR: "ERROR_SERVIDOR"
+};
 
 // @HELPER Envía un correo automatizado con el texto
 // Invoca el callback al terminar con error=null en caso de éxito
@@ -62,12 +66,9 @@ function registrarCliente(datos, callback) {
 	});
 }
 
-var estadoReset = {
-	RESET_OK: "RESET_OK",
-	CONTRASENA: "CONTRASENA",
-	CADUCADO: "CADUCADO",
-	DEFAULT: "DEFAULT"
-};
+router.get('/', function(req, res, next) {
+	res.render('index', { view: 'pages/home'});
+});
 
 router.post('/registrar', function(req, res) {
 	if (!req.body.nombre || !req.body.correo || !req.body.contrasena) {
@@ -311,18 +312,21 @@ router.post('/cliente/reset', function(req, res) {
 	});
 });
 
+
 /* Recibe un token de recuperación de contraseña
  * Si es válido, envía un correo con la nueva contraseña
 */
 router.get('/cliente/reset/:token', function(req, res) {
 	var pass_token = req.params.token;
+	var baseUrl = url.format({protocol: req.protocol, host: req.get('host')});
+	var action = url.format({protocol: req.protocol, host: req.get('host'), pathname: req.originalUrl});
 
 	// Buscamos el usuario con este token de recuperación de contraseña
 	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
 		if (!usuario) {
 			return res.render("reset", { 
 				estado: estadoReset.CADUCADO,
-				pass_token: ""
+				baseUrl: baseUrl
 			});
 		}
 
@@ -331,13 +335,14 @@ router.get('/cliente/reset/:token', function(req, res) {
 		if (Date.now() > vencimiento) {
 			return res.render("reset", { 
 				estado: estadoReset.CADUCADO,
-				pass_token: ""
+				baseUrl: baseUrl
 			});
 		}
 
 		return res.render("reset", { 
-			estado: estadoReset.DEFAULT,
-			pass_token: pass_token
+			estado: estadoReset.FORMULARIO,
+			action: action,
+			baseUrl: baseUrl
 		});		
 	});
 });
@@ -345,12 +350,17 @@ router.get('/cliente/reset/:token', function(req, res) {
 router.post('/cliente/reset/:token', function(req, res) {
 	var pass_token = req.params.token || "";
 	var contrasena = req.body.contrasena || "";
-	var confirmarContrasena = req.body.confirmarContrasena || ""; 
+	var confirmarContrasena = req.body.confirmarContrasena || "";
+	var baseUrl = url.format({protocol: req.protocol, host: req.get('host')});
+	var action = url.format({protocol: req.protocol, host: req.get('host'), pathname: req.originalUrl});
+
 
 	if (contrasena !== confirmarContrasena || contrasena.length < 6) {
 		return res.render("reset", {
-			estado: estadoReset.CONTRASENA,
-			pass_token: pass_token
+			estado: estadoReset.FORMULARIO,
+			errContrasena: true,
+			action: action,
+			baseUrl: baseUrl
 		});
 	}
 
@@ -359,7 +369,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 		if (!usuario) {
 			return res.render("reset", { 
 				estado: estadoReset.CADUCADO,
-				pass_token: pass_token
+				baseUrl: baseUrl
 			});
 		}
 
@@ -368,18 +378,20 @@ router.post('/cliente/reset/:token', function(req, res) {
 		if (Date.now() > vencimiento) {
 			return res.render("reset", { 
 				estado: estadoReset.CADUCADO,
-				pass_token: pass_token
+				baseUrl: baseUrl
 			});
 		}
 
 		usuario.contrasena = contrasena;
-
+		usuario.pass_token = "";
+		
 		usuario.save(function(err) {
 			if (err) {
-				console.log(err)
 				return res.render("reset", {
-					estado: estadoReset.CONTRASENA,
-					pass_token: pass_token
+					estado: estadoReset.FORMULARIO,
+					errContrasena: true,
+					action: action,
+					baseUrl: baseUrl
 				});
 			}
 
@@ -396,12 +408,15 @@ router.post('/cliente/reset/:token', function(req, res) {
 				
 				enviarEmail("noreply@cleansuit.co", correo, asunto, texto, renderedHtml, function(email_error, email_info) {
 					if (email_error) {
-						return res.json({ success: false, mensaje: email_error });
+						return res.render("reset", {
+							estado: estadoReset.ERROR_SERVIDOR,
+							baseUrl: baseUrl
+						});
 					}
 
 					return res.render("reset", {
 						estado: estadoReset.RESET_OK,
-						pass_token: pass_token
+						baseUrl: baseUrl
 					});
 				});
 			});

@@ -1,141 +1,91 @@
-<!-- views/pages/index.ejs -->
+<!-- views/reset.ejs -->
+<%
+var estado = estado || 0;
+var errContrasena = errContrasena || false;
+var baseUrl = baseUrl || ".";
+%>
 
 <!DOCTYPE html>
 <html lang="en" ng-app="CleanSuit">
 <head>
-    <title>CleanSuit - Restaurar contraseña</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8"/>
+    <meta name="robots" content="index, all" >
+    <title>CleanSuit | Lavandería Boutique en Bogotá</title>
+    <meta name="description" content="Lavandería y Productos de limpieza en Bogotá. Lavado de prendas en frio y en seco, tintorería, sastrería y zapatería. Productos para el hogar e industria. Servicio a domicilio" />
+    <meta name="viewport" content="width-device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="<%= baseUrl %>/css/genericos.css" />
+    <link rel="stylesheet" href="<%= baseUrl %>/css/estilos.css" />
+    
+    <link rel="icon" sizes="192x192" href="favicon_192.png">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <script src="lib/jquery.js"></script>
+    <script src="js/cleansuit.js"></script>
+
 </head>
 
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body>
+    <%= estado %>
+    <%= errContrasena %>
+    <%= baseUrl %>
+    <header id="header">
+        <h1><img src="<%= baseUrl %>/img/logo.png" alt="CleanSuit"></h1>
+    </header>
+    
+    <section>
+        <h2>Restablece tu contraseña</h2>
 
-<%
-var estado = estado || 0;
-var errContrasena = estado == "CONTRASENA";
-var _default = (estado == "DEFAULT") || errContrasena; //machetazo :D
-
-if (_default) {
-%>
-    <form action="<%= pass_token %>" method="post">
-<%
-}
-%>
-        <table align="center" bgcolor="#FFFFFF" height="100%" style="max-width: 590px; width: 100%;">
-            <tr>
-                <td style="text-align:center; width: 100%;" height="50"/>
-            </tr>
-            <tr>
-                <td valign="top">
-                    <table id="Tabla_01" align="center" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" style="border: 1px solid #EAEAEA; border-radius: 8px; font-family:Tahoma; text-align: center;color:#666666; max-width: 590px; width: 100%;">
-
-                        <tr>
-                            <td style="padding: 10px 0">
-                                <img src="http://visionoid.net/karen/logo.png" alt="Logo CleanSuit" style="display:inline-block; border:0;"/>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td bgcolor="#44A01A" height="70">
-                                <h2 style="color:#FFFFFF;margin:0; font-weight:normal; font-size:27px;">Restaurar contraseña</h2>
-                            </td>
-                        </tr>
 
 <%
 switch (estado) { 
-    case "RESET_OK":
+case "FORMULARIO":
 %>
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
-                                <span style="display:inline-block; width:90%; max-width:350px">
-                                    Su contraseña ha sido restaurada!
-                                </span>
-                            </td>
-                        </tr>
-<%      break;
-    case "CADUCADO":
-%>
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
-                                <span style="display:inline-block; width:90%; max-width:350px">
-                                    Este enlace ha caducado o no es válido. Solicita cambiar tu contraseña de nuevo.
-                                </span>
-                            </td>
-                        </tr>
-<%      break;
-    default:
-%>
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="font-size:16px; font-weight:bold; line-height:22px; padding:75px 0 28px;">
-                                <span style="display:inline-block; width:90%; max-width:350px">
-                                    Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.
-                                </span>
-                            </td>
-                        </tr>
+        <p>Te recomendamos ingresar una contraseña fuerte con mínimo 6 caracteres que incluya números, letras y signos de puntuación.</p>
+        <form class="contrasenas" action="<%= action %>" method="POST">
+            <div class="form">
+                <label for="contrasena">Escribe tu contraseña nueva</label>
+                <input type="password" id="contrasena" name="contrasena"></input>
+            </div>
+            <div class="form">
+                <label for="confirmarContrasena">Escribe tu contraseña nueva una vez más</label>
+                <input type="password" id="confirmarContrasena" name="confirmarContrasena" class=error></input>
+<% if(errContrasena) { %>
+                <span>Las contraseñas no coinciden</span>
+<% } %> 
+            </div>
+            <button type="submit">Enviar</button>
+            <div class="clearFix"></div>
+        </form>
 
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="font-size:15px; line-height:18px; padding:0 15px 36px;">
-                                Haz clic en el enlace de abajo para realizar esta acción.
-                             </td>
-                        </tr>
 
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="padding-top:0px; padding-bottom:30px;">    
-                                contraseña <input type="password" name="contrasena" />        
 <%
-if(errContrasena) {
+break;
+case "CADUCADO":
 %>
-                        Esta contraseña no es válida o no coincide.
+        <h3>Este enlace ha caducado</h3>
+        <p class="mensaje">Por favor vuelve a intentar a realizar el cambio de tu contraseña</p>
+        <a href="<%= baseUrl %>" class="sitio">IR AL SITIO WEB DE CLEANSUIT</a>
+
 <%
-}
+break;
+case "RESET_OK":
 %>
-                            </td>
-                        </tr>
+        <h3>¡Felicitaciones!</h3>
+        <p class="mensaje">Has cambiado tu contraseña exitosamente</p>
+        <a href="<%= baseUrl %>" class="sitio">IR AL SITIO WEB DE CLEANSUIT</a>
 
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="padding-top:0px; padding-bottom:30px;">    
-                                confirme contraseña <input type="password" name="confirmarContrasena" />   
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="padding-top:0px; padding-bottom:30px;">    
-                                <input type="submit" value="restablecer"> 
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="font-size:15px; line-height:19px; padding-bottom:78px;">
-                                <span style="display: inline-block; width: 90%; max-width: 265px">
-                                    Si no deseas modificar tu contraseña, ignora y elimina este mensaje.
-                                </span>
-                            </td>
-                        </tr>
-
-<%      break;
+<%
+break;
+case "ERROR_SERVIDOR":
+%>
+        <h3>No disponible</h3>
+        <p class="mensaje">Estamos experimentado problemas con nuestros servidores. Por favor, intenta más tarde.</p>
+        <a href="<%= baseUrl %>" class="sitio">IR AL SITIO WEB DE CLEANSUIT</a>
+<%
 }
 %> 
-                        <tr>
-                            <td bgcolor="#FFFFFF" style="color:#999999; font-size:11px; line-height:15px; padding:0 10px 24px;">
-                                No respondas este correo electrónico. <br/>Los correos electrónicos enviados a esta dirección no se responderán.
-                            </td>
-                        </tr>
-
-                    </table>
-                </td>
-            </tr>
-
-            <tr>
-                <td bgcolor="#FFFFFF" style="color:#666666; font-size:11px; line-height:15px; font-family: Tahoma;padding:12px 35px 24px; text-align:center; max-width:590px; width:100%;">
-                        CleanSuit - Sede Principal: Calle 19 # 4a-20 Chía - Cundinamarca 
-                </td>
-            </tr>
-        </table>
-<%
-if (_default) {
-%>
-    </form>
-<%
-}
-%>    
+                         
+    </section>    
 </body>  
 </html>
