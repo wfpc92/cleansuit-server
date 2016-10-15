@@ -302,8 +302,7 @@ router.post('/cliente/reset', function(req, res) {
 
 					return res.json({
 						success: true, 
-						html: renderedHtml,
-						pass_token: usuario.pass_token //quitar esto.
+						html: renderedHtml
 					});
 				});
 			});
@@ -384,7 +383,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 
 		usuario.contrasena = contrasena;
 		usuario.pass_token = "";
-		
+
 		usuario.save(function(err) {
 			if (err) {
 				return res.render("reset", {
