@@ -283,7 +283,7 @@ router.post('/cliente/reset', function(req, res) {
         usuario.pass_token_vence = Date.now() + 3600000 * 24; // en 24 horas vence
         
         usuario.save(function(err) {
-        	if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
+        	if (err) return res.json({ success: false, mensaje: "Se ha producido un error al intentar almacenar esta información.", error: err });
 
 			// enviamos correo electrónico con el enlace
 			var asunto = "Cleansuit: Restaurar su contraseña";
@@ -296,13 +296,18 @@ router.post('/cliente/reset', function(req, res) {
 				});
 				
 				enviarEmail("noreply@cleansuit.co", correo, asunto, texto, renderedHtml, function(email_error, email_info) {
+					var success = true;
+					var mensaje = "Se ha enviado un enlace a tu correo.";
+
 					if (email_error) {
-						return res.json({ success: false, mensaje: email_error });
+						success = false;
+						mensaje = "Estamos experimentado problemas con nuestros servidores. Por favor, intenta más tarde.";
 					}
 
 					return res.json({
-						success: true, 
-						html: renderedHtml
+						success: success,
+						mensaje: mensaje,
+						pass_token: passToken//quitar esto, solo para pruebas.
 					});
 				});
 			});

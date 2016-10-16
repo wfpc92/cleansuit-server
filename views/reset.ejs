@@ -15,12 +15,13 @@ var baseUrl = baseUrl || ".";
     <meta name="viewport" content="width-device-width, initial-scale=1" />
 
     <link rel="stylesheet" href="<%= baseUrl %>/css/genericos.css" />
-    <link rel="stylesheet" href="<%= baseUrl %>/css/estilos.css" />
+    <link rel="stylesheet" href="<%= baseUrl %>/css/estilos-reset-password.css" />
     
     <link rel="icon" sizes="192x192" href="favicon_192.png">
     <link rel="shortcut icon" href="favicon.ico">
 
-    <script src="lib/jquery.js"></script>
+    <script src="<%= baseUrl %>/javascripts/lib/jquery/dist/jquery.js"></script>
+    <script src="<%= baseUrl %>/javascripts/lib/jquery-validation-1.15.1/dist/jquery.validate.js"></script>
     <script src="js/cleansuit.js"></script>
 
 </head>
@@ -39,14 +40,14 @@ switch (estado) {
 case "FORMULARIO":
 %>
         <p>Te recomendamos ingresar una contraseña fuerte con mínimo 6 caracteres que incluya números, letras y signos de puntuación.</p>
-        <form class="contrasenas" action="<%= action %>" method="POST">
+        <form id="formReset" class="contrasenas" action="<%= action %>" method="POST">
             <div class="form">
                 <label for="contrasena">Escribe tu contraseña nueva</label>
                 <input type="password" id="contrasena" name="contrasena"></input>
             </div>
             <div class="form">
                 <label for="confirmarContrasena">Escribe tu contraseña nueva una vez más</label>
-                <input type="password" id="confirmarContrasena" name="confirmarContrasena" class=error></input>
+                <input type="password" id="confirmarContrasena" name="confirmarContrasena"></input>
 <% if(errContrasena) { %>
                 <span>Las contraseñas no coinciden</span>
 <% } %> 
@@ -83,6 +84,40 @@ case "ERROR_SERVIDOR":
 }
 %> 
                          
-    </section>    
+    </section>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#formReset').validate({
+                rules: {
+                    contrasena: {
+                        minlength: 6,
+                        maxlength: 15,
+                        required: true
+                    },
+                    confirmarContrasena: {
+                        minlength: 6,
+                        maxlength: 15,
+                        required: true,
+                        equalTo: "#contrasena"
+                    },
+                },
+                messages : {
+                    contrasena: {
+                        minlength: "La contraseña debe tener mínimo 6 caracteres.",
+                        maxlength: "La contraseña debe tener máximo 15 caracteres.",
+                        required: "Este campo es obligatorio."
+                    },
+                    confirmarContrasena: {
+                        minlength: "La contraseña debe tener mínimo 6 caracteres.",
+                        maxlength: "La contraseña debe tener máximo 15 caracteres.",
+                        required: "Este campo es obligatorio.",
+                        equalTo: "Las contraseñas no coinciden."
+                    },
+                }
+            });
+        });
+    </script>
+
 </body>  
 </html>
