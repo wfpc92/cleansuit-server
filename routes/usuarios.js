@@ -289,7 +289,7 @@ router.post('/cliente/reset', function(req, res) {
 			var asunto = "Cleansuit: Restaurar su contraseña";
 			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
 			
-			fs.readFile('views/correo_reset.ejs', 'utf-8', function(err, content) {
+			fs.readFile('views/correo_reset.ejsa', 'utf-8', function(err, content) {
 				var renderedHtml = ejs.render(content, {
 					enlaceReset: enlaceReset,
 					resetSuccess: false
