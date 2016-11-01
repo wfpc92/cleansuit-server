@@ -116,8 +116,8 @@ var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 
 process.on('uncaughtException', function (err) {
-  console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4")
-  console.error((new Date).toUTCString() + ' uncaughtException:', err.message)
+  var d = new Date;
+  console.error(d.toUTCString() + ' uncaughtException:', err.message)
   console.error(err.stack)
 
   var opciones = {
@@ -125,7 +125,11 @@ process.on('uncaughtException', function (err) {
     "to": "wfpantoja@gmail.com",
     "subject": "CleanSuit Crash!",
     "text": "",
-    "html": "<code>"+JSON.stringify(err)+"</code>"
+    "html": "<h2>"+d.toUTCString()+" uncaughtException: "+err.message+"</h2>"+
+            "<br/>"+
+            "<p>"+ err.message + "</p>" +
+            "<br/><br/>"+
+            "<code>"+JSON.stringify(err)+"</code>"
   };
 
   var transporter = nodemailer.createTransport(sendmailTransport({ "path": "/usr/bin/sendmail", "args": "" }));
