@@ -438,6 +438,70 @@ module.exports = function(app, passport) {
 		});
 	});
 
+	router.post('/usuarios', passport.authenticate('jwt', { session: false}), function(req, res) {
+		var usuario = new Usuarios({
+			nombre: req.body.nombre || "",
+			correo: req.body.correo || "",
+			rol: req.body.rol || "",
+			contrasena: req.body.correo || ""
+		});
+
+		usuario.save(function(err) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+			res.json({
+				success: true,
+				usuario: usuario,
+				mensaje: 'usuario nuevo de la plataforma'
+			});
+		});
+	});
+
+	router.put('/usuarios/:id', passport.authenticate('jwt', { session: false}), function(req, res) {
+		Usuarios.findById(req.params.id, function(err, usuario) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
+			usuario.nombre = req.body.nombre || usuario.nombre;
+			usuario.correo = req.body.correo || usuario.correo;
+			usuario.rol = req.body.rol || usuario.rol;
+			console.log(req.body.rol)
+			
+			usuario.save(function(err) {
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+				
+				res.json({
+					success: true,
+					usuario: usuario,
+					mensaje: 'usuario actualizado en la plataforma'
+				});
+			});			
+		});
+	});
+
+	router.get('/usuarios/:id', passport.authenticate('jwt', { session: false}), function(req, res) {
+		Usuarios.findById(req.params.id, function(err, usuario) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
+			res.json({
+				success: true,
+				usuario: usuario,
+				mensaje: 'informacion de usuario'
+			});
+		});
+	});
+
+	router.delete('/usuarios/:id', function(req, res){
+		Usuarios.findByIdAndRemove(req.params.id, function(err, usuario) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+			res.json({
+				success: true,
+				usuario: usuario,
+				mensaje: 'usuario eliminado'
+			});
+		});
+	});
+
 	router.get('/cliente', passport.authenticate('jwt', { session: false}), function(req, res) {
 		Clientes.findOne({
 			usuario_id: req.user._id
@@ -498,7 +562,13 @@ module.exports = function(app, passport) {
 		});
 	});
 
-
+	router.get('/roles', passport.authenticate('jwt', { session: false}), function(req, res) {
+		res.json({
+			success: true,
+			roles: Usuarios.schema.path('rol') ? Usuarios.schema.path('rol').enumValues : [],
+			mensaje: 'roles de la plataforma'
+		});
+	});
 
 	return router;
 };

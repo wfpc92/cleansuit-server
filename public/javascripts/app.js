@@ -248,6 +248,35 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
                 }
             }
         })
+        .state('app.usuarios-nuevo', {
+            url:'/usuarios/nuevo',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/usuarios/form-usuario.html',
+                    controller: 'NuevoUsuarioCtrl'
+                }
+            }
+        })
+        .state('app.usuarios-editar', {
+            url:'/usuarios/editar/:id',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/usuarios/form-usuario.html',
+                    controller: 'EditarUsuarioCtrl'
+                }
+            }
+        })
+        .state('app.usuarios-eliminar', {
+            url:'/usuarios/eliminar/:id',
+            views: {
+                "contenedor": {
+                    templateUrl: 'partials/app/usuarios/eliminar-usuario.html',
+                    controller: 'EliminarUsuarioCtrl'
+                }
+            }
+        })
+
+
 
 
 

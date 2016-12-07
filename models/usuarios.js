@@ -22,7 +22,8 @@ var UsuariosSchema = new mongoose.Schema({
 	},
   	rol: {
   		type: String, 
-  		enum: ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente']
+  		enum: ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente'],
+  		required: true
   	},
   	fb_uid: {
   		type: String
@@ -32,7 +33,7 @@ var UsuariosSchema = new mongoose.Schema({
   	},
   	pass_token_vence: { // Recuperar contraseña: fecha y hora de vencimiento
   		type: Date
-  	},
+  	}
 });
 
 UsuariosSchema.pre('save', function (next) {
@@ -92,7 +93,5 @@ UsuariosSchema.methods.getInfo = function(info) {
 
 	return usuario;
 };
-
-
 
 module.exports = mongoose.model('Usuarios', UsuariosSchema);

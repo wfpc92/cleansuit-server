@@ -1,5 +1,7 @@
 <h2>Lista de Usuarios:</h2>
 
+<a ui-sref="app.usuarios-nuevo" class="btn btn-primary">Nuevo Usuario</a>
+
 <div ng-if="usuarios.length==0">No hay Usuarios registrados.</div>
 <table class="table table-responsive table-hover" ng-if="usuarios.length>0">
 	<thead>
@@ -8,6 +10,7 @@
 			<th>Nombre</th>
 			<th>Correo</th>
 			<th>Rol</th>
+			<th>Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -22,6 +25,18 @@
 			<td>
 				<p>{{usuario.rol}}
 			</td>
+            <td>
+               <a ui-sref="app.usuarios-editar({
+                                id: '{{usuario._id}}'
+                            })">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+                <a ui-sref="app.usuarios-eliminar({ 
+                                id: '{{usuario._id}}' 
+                            })">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </a>
+            </td>
 		</tr>
 	</tbody>
 </table>

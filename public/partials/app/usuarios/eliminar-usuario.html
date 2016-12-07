@@ -1,0 +1,11 @@
+<h1>Eliminar Usuario</h1>
+<p>
+    Estás seguro que quieres eliminar al usuario {{usuario.nombre}}?
+</p>
+<ul>
+    <li>Nombre: {{usuario.nombre}}</li>
+    <li>Correo: {{usuario.correo}}</li>
+    <li>Rol: {{usuario.rol}}</li>
+</ul>
+<input type="button" value="Eliminar" class="btn btn-danger" ng-click="eliminar()" />
+<a class="btn btn-default" ui-sref="app.usuarios">Cancelar</a>
