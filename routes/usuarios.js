@@ -464,7 +464,10 @@ module.exports = function(app, passport) {
 			usuario.nombre = req.body.nombre || usuario.nombre;
 			usuario.correo = req.body.correo || usuario.correo;
 			usuario.rol = req.body.rol || usuario.rol;
-			console.log(req.body.rol)
+			
+			if(req.body.reiniciarContrasena) {
+				usuario.contrasena = usuario.correo;
+			}
 			
 			usuario.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});

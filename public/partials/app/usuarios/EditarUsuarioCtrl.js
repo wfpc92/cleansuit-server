@@ -1,6 +1,7 @@
 var EditarUsuarioCtrl = function($scope, RecursosFactory, $state, $stateParams){
 	
 	console.log("EditarUsuarioCtrl");
+	$scope.editar= true;
 	$scope.selected = "";
 
 	RecursosFactory
@@ -29,6 +30,7 @@ var EditarUsuarioCtrl = function($scope, RecursosFactory, $state, $stateParams){
             $state.go("app.usuarios");
         });
     };
+
 };
 
 app.controller('EditarUsuarioCtrl', EditarUsuarioCtrl);
