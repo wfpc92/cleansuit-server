@@ -64,7 +64,13 @@
 				</div>
 			</td>
 			<td>
-				<button>Asignar Domiciliario</button>
+				<div class="form-group">
+					<label for="selectDomiciliarios" class="control-label">Asignar Domiciliario</label>
+					<div class="">
+						<select id="selectDomiciliarios" ng-options="d as d.nombre for d in domiciliarios track by d._id" ng-model="orden.domiciliario_id"></select>
+					</div>
+					<button ng-click="cambio(orden)">ver</button>
+				</div>
 			</td>
 		</tr>
 	</tbody>
