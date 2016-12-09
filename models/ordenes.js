@@ -55,5 +55,13 @@ OrdenesSchema.statics.ESTADOSENPROCESO = [
 	ESTADOS[4]//rutaEntrega
 ];
 
+OrdenesSchema.statics.ESTADORUTARECOLECCION = [
+	ESTADOS[1],//rutaRecoleccion
+];
+
+OrdenesSchema.statics.ESTADORUTAENTREGA = [
+	ESTADOS[4]//rutaEntrega
+];
+
 // Export the Mongoose model
 module.exports = mongoose.model('Ordenes', OrdenesSchema);

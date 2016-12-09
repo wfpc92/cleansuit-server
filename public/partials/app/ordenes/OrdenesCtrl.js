@@ -35,7 +35,7 @@ var OrdenesCtrl = function($scope, RecursosFactory) {
 
 	$scope.asignarDomiciliarioRecoleccion = function(orden, index) {
 		$scope.asignarDomiciliariosEnabled = false;
-		
+		console.log("orden enviada", orden)
 		RecursosFactory 
 		.put("/ordenes/" + orden._id, orden)
 		.then(function(respuesta) {
@@ -50,7 +50,7 @@ var OrdenesCtrl = function($scope, RecursosFactory) {
 
 	$scope.asignarDomiciliarioEntrega = function(orden, index) {
 		$scope.asignarDomiciliariosEnabled = false;
-		
+		console.log("orden enviada", orden)
 		RecursosFactory 
 		.put("/ordenes/" + orden._id, orden)
 		.then(function(respuesta) {

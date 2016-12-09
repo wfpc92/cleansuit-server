@@ -20,6 +20,7 @@ var NuevoUsuarioCtrl = function($scope, RecursosFactory, $state){
 		.post('/usuarios', $scope.usuario)
 		.then(function(respuesta) {
 			console.log("NuevoUsuarioCtrl: ", respuesta);
+			$state.go("app.usuarios");
 		});
     };
 };

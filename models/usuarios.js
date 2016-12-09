@@ -61,6 +61,7 @@ UsuariosSchema.pre('save', function (next) {
 UsuariosSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
 	console.log("Usuarios.comparePassword()")
 	bcrypt.compare(contrasenaRecibida, this.contrasena, function (err, isMatch) {
+		console.log(err, isMatch)
 		if (err) {
 			return cb(err);
 		}
