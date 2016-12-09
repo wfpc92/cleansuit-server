@@ -13,8 +13,6 @@ var NuevoUsuarioCtrl = function($scope, RecursosFactory, $state){
 			$scope.roles = respuesta.data.roles;
 			$scope.usuario.rol = $scope.roles[0];
 		}
-	}, function(err){
-		$scope.roles = ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente'];
 	});
 
     $scope.guardar = function(){

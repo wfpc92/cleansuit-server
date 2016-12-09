@@ -45,7 +45,7 @@ module.exports = function(app, passport) {
 		var orden = new Ordenes();
 		orden.cliente_id = req.user._id; //con passport obtenemos req.user a partir del token
 		orden.fecha = new Date();
-		orden.estado = 'nueva';
+		orden.estado = Ordenes.ESTADOS[0];
 		//datos validado
 		orden.orden = req.orden;
 		orden.items = req.items;
@@ -64,11 +64,42 @@ module.exports = function(app, passport) {
 		});
 	});
 
+	router.put('/:id', function(req, res){
+		Ordenes.findById(req.params.id)
+			.populate('cliente_id')
+			.exec(function(err, orden) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+			//modificar atributos de la orden
+			orden.domiciliario_recoleccion_id = req.body.domiciliario_recoleccion_id || orden.domiciliario_recoleccion_id;
+			orden.domiciliario_entrega_id = req.body.domiciliario_entrega_id || orden.domiciliario_entrega_id;
+			
+			if(req.body.domiciliario_recoleccion_id) {
+				orden.estado = Ordenes.ESTADOS[1];//cambiar estado a asignado.	
+			}
+
+			if(req.body.domiciliario_entrega_id) {
+				orden.estado = Ordenes.ESTADOS[4];//cambiar estado a asignado.	
+			}
+			
+			// Save the beer and check for errors
+			orden.save(function(err) {
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+				res.json({
+					success: true,
+					orden: orden,
+					mensaje: 'orden modificada'
+				});
+			});
+		});
+	});
+
 
 	router.get('/en-proceso', function(req, res) {
 		Ordenes
 			.find({'cliente_id': req.user._id})
-			.where('estado').in(['nueva', 'rutaRecoleccion', 'recolectada', 'procesando', 'rutaEntrega'])
+			.where('estado').in(Ordenes.ESTADOSENPROCESO)
 			.populate('cliente_id')
 			.exec(function(err, ordenes) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});

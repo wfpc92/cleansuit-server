@@ -568,7 +568,7 @@ module.exports = function(app, passport) {
 	router.get('/roles', passport.authenticate('jwt', { session: false}), function(req, res) {
 		res.json({
 			success: true,
-			roles: Usuarios.schema.path('rol') ? Usuarios.schema.path('rol').enumValues : [],
+			roles: Usuarios.ROLES,
 			mensaje: 'roles de la plataforma'
 		});
 	});

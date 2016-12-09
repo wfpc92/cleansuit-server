@@ -32,6 +32,7 @@
 					Posicion Geografica: {{orden.orden.recoleccion.posicion.lat}} {{orden.orden.recoleccion.posicion.lng}} <br/>
 					Fecha: {{orden.orden.recoleccion.fecha | date}}<br/>
 					Hora: {{orden.orden.recoleccion.hora}}<br/>
+					Domiciliario: <select ng-options="d as d.nombre for d in domiciliarios track by d._id" ng-model="orden.domiciliario_recoleccion_id" ng-change="asignarDomiciliarioRecoleccion(orden, $index)" ng-disabled="!asignarDomiciliariosEnabled"></select>
 				</address>
 				<address>
 					<strong>Entrega.</strong><br>
@@ -39,6 +40,7 @@
 					Posicion Geografica: {{orden.orden.entrega.posicion.lat}} {{orden.orden.entrega.posicion.lng}}<br/>
 					Fecha: {{orden.orden.entrega.fecha | date}}<br/>  
 					Hora: {{orden.orden.entrega.hora}}<br/>
+					Domiciliario: <select ng-options="d as d.nombre for d in domiciliarios track by d._id" ng-model="orden.domiciliario_entrega_id" ng-change="asignarDomiciliarioEntrega(orden, $index)" ng-disabled="!asignarDomiciliariosEnabled"></select>
 				</address>
 				<label>Forma de Pago:</label><span>{{orden.orden.formaPago ? orden.orden.formaPago : 'No disponible'}}</span><br />
 				<label>Teléfono:</label><span>{{orden.orden.telefono ? orden.orden.telefono : 'No disponible'}}</span><br />
@@ -64,13 +66,7 @@
 				</div>
 			</td>
 			<td>
-				<div class="form-group">
-					<label for="selectDomiciliarios" class="control-label">Asignar Domiciliario</label>
-					<div class="">
-						<select id="selectDomiciliarios" ng-options="d as d.nombre for d in domiciliarios track by d._id" ng-model="orden.domiciliario_id"></select>
-					</div>
-					<button ng-click="cambio(orden)">ver</button>
-				</div>
+				
 			</td>
 		</tr>
 	</tbody>

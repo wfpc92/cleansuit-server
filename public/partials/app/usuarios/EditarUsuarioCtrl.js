@@ -18,8 +18,6 @@ var EditarUsuarioCtrl = function($scope, RecursosFactory, $state, $stateParams){
 		        $scope.usuario = respuesta.data.usuario;
 		    });
 		}
-	}, function(err){
-		$scope.roles = ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente'];
 	});
 
     $scope.guardar = function(){

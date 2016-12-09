@@ -5,6 +5,8 @@ var bcrypt   = require('bcrypt');
 var jwt         = require('jwt-simple');
 var config = require("../config/passport");
 
+var ROLES = ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente'];
+
 // set up a mongoose model
 var UsuariosSchema = new mongoose.Schema({
 	nombre: {
@@ -22,7 +24,7 @@ var UsuariosSchema = new mongoose.Schema({
 	},
   	rol: {
   		type: String, 
-  		enum: ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente'],
+  		enum: ROLES,
   		required: true
   	},
   	fb_uid: {
@@ -93,5 +95,7 @@ UsuariosSchema.methods.getInfo = function(info) {
 
 	return usuario;
 };
+
+UsuariosSchema.statics.ROLES = ROLES;
 
 module.exports = mongoose.model('Usuarios', UsuariosSchema);
