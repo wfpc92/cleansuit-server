@@ -75,7 +75,7 @@ var OrdenesCtrl = function($scope, RecursosFactory) {
 			}
 		}
 
-		return (cont > 0 ? true : false);	
+		return cont > 0;
 	}
 };
 
