@@ -36,6 +36,9 @@ var OrdenesSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Usuarios'
 	},	
+	servicioDirecto: {
+		type: Boolean
+	}
 });
 
 OrdenesSchema.plugin(autoIncrement.plugin, {

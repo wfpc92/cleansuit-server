@@ -70,14 +70,21 @@ module.exports = function(app, passport) {
 		Ordenes.findById(req.params.id)
 		.populate('cliente_id')
 		.exec(function(err, orden) {
+			console.log("aqui se imprime")
+			console.log(JSON.stringify(req.body));
+
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
-			if(orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id) {
-				orden.estado = Ordenes.ESTADOS[1];//cambiar estado en recoleccion.	
+			if(req.body.domiciliario_recoleccion_id) { 
+				if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id) {
+					orden.estado = Ordenes.ESTADOS[1];//cambiar estado en recoleccion.
+				}
 			}
 
-			if(orden.domiciliario_entrega_id != req.body.domiciliario_entrega_id._id) {
-				orden.estado = Ordenes.ESTADOS[4];//cambiar estado en entrega.	
+			if(req.body.domiciliario_entrega_id) {
+				if (orden.domiciliario_entrega_id != req.body.domiciliario_entrega_id._id) {
+					orden.estado = Ordenes.ESTADOS[4];//cambiar estado en entrega.	
+				}
 			}
 
 			//modificar atributos de la orden

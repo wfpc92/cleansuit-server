@@ -62,6 +62,21 @@ var OrdenesCtrl = function($scope, RecursosFactory) {
 			$scope.asignarDomiciliariosEnabled = true;
 		});
 	};
+
+	$scope.soloProductos = function(index) {
+		var cont = 0, 
+			items = $scope.ordenes[index].items;
+
+		for (i in items){
+			if (items[i].tipo == 'PRODUCTO'){
+				cont++;
+			} else {
+				return false;
+			}
+		}
+
+		return (cont > 0 ? true : false);	
+	}
 };
 
 app.controller('OrdenesCtrl', OrdenesCtrl);
