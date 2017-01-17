@@ -58,6 +58,9 @@
 			<td >
 				<div >
 					{{orden.estado}} 
+					<div ng-if="orden.estado=='cancelada' && orden.cancelacion.motivo">
+						<br/>Motivo de cancelacion: {{orden.cancelacion.motivo}} {{motivos[orden.cancelacion.motivo]}}
+					</div>
 				</div>
 			</td>
 			<td>

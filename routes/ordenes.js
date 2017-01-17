@@ -6,6 +6,18 @@ var Usuarios = require('../models/usuarios');
 
 var VersionesOrdenes = require("../models/versiones-ordenes")
 
+var validarRolDomiciliario = function(req, res, next) {
+    console.log(req.user.rol, Usuarios.ROLES[4])
+    	
+    if(req.user.rol == Usuarios.ROLES[4]) {
+    	next();
+    } else {
+    	next().json({
+			success: false,
+			mensaje: "Rol no autorizado"
+		});
+    }
+};
 
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
@@ -75,6 +87,7 @@ module.exports = function(app, passport) {
 
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
+
 			if(req.body.domiciliario_recoleccion_id) { 
 				if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id) {
 					orden.estado = Ordenes.ESTADOS[1];//cambiar estado en recoleccion.
@@ -90,11 +103,15 @@ module.exports = function(app, passport) {
 			//modificar atributos de la orden
 			orden.domiciliario_recoleccion_id = req.body.domiciliario_recoleccion_id || orden.domiciliario_recoleccion_id;
 			orden.domiciliario_entrega_id = req.body.domiciliario_entrega_id || orden.domiciliario_entrega_id;
-			
+			orden.orden = req.body.orden || orden.orden;
+			orden.recoleccion = req.body.recoleccion || orden.recoleccion;
+			orden.estado = req.body.estado || orden.estado;
+
 			// Save the beer and check for errors
 			orden.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
+				console.log("put: orden, ", orden)
 				res.json({
 					success: true,
 					orden: orden,
@@ -139,37 +156,93 @@ module.exports = function(app, passport) {
 	});
 
 
-	router.get('/asignadas', function(req, res, next) {
-	    console.log(req.user.rol, Usuarios.ROLES[4])
-	    	
-	    if(req.user.rol == Usuarios.ROLES[4]) {
-	    	next();
-	    } else {
-	    	next().json({
-				success: false,
-				mensaje: "Rol no autorizado"
-			});
-	    }
-	}, function(req, res) {
-		Ordenes
-		.find({domiciliario_recoleccion_id: req.user._id})
-		.where('estado').in(Ordenes.ESTADORUTARECOLECCION)
-		.populate('cliente_id')
-		.exec(function(err, ordenesRecoleccion) {
-			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+	router.get('/asignadas', validarRolDomiciliario, function(req, res) {
+
+		var ordenesRespuesta = [];
+
+		var getOrdenes = function(find, estado, index, cb) {
 			Ordenes
-			.find({domiciliario_entrega_id: req.user._id})
-			.where('estado').in(Ordenes.ESTADORUTAENTREGA)
+			.find(find)
+			.where('estado').in(estado)
 			.populate('cliente_id')
-			.exec(function(err, ordenesEntrega) {
+			.exec(function(err, ordenes) {
+				console.log()
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
+				ordenesRespuesta[index] = ordenes;
+
+				if (cb) {
+					cb();
+				}
+			});
+		};
+		
+		getOrdenes({domiciliario_recoleccion_id: req.user._id}, Ordenes.ESTADORUTARECOLECCION, 0, function() {
+			getOrdenes({domiciliario_recoleccion_id: req.user._id}, Ordenes.ESTADORECOLECTADA, 1, function() {
+				getOrdenes({domiciliario_entrega_id: req.user._id}, Ordenes.ESTADORUTAENTREGA, 2, function() {
+					getOrdenes({domiciliario_entrega_id: req.user._id}, Ordenes.ESTADOENTREGADA, 3, function() {
+						res.json({
+							success: true,
+							ordenesRecoleccion: ordenesRespuesta[0],
+							ordenesRecolectadas: ordenesRespuesta[1],
+							ordenesEntrega: ordenesRespuesta[2],
+							ordenesEntregadas: ordenesRespuesta[3],
+							mensaje: "Ordenes asociadas a domiciliario. Ordenes por recolectar, recolectadas, para entregar y entregadas."
+						});
+					});
+				});
+			});
+		});
+	});
+
+	/*router.post('/recolectada', validarRolDomiciliario,  function(req, res){
+		console.log(req.body);
+		res.json({
+			success: true,
+			mensaje: 'orden recolectada'
+		});
+
+		var orden = req.body.orden_id;
+		var motivo = req.body.motivo;
+
+		Ordenes.findById(orden_id)
+		.populate('cliente_id')
+		.exec(function(err, orden) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
+			orden.estado = Ordenes.ESTADOS[6];
+			orden.cancelacion = orden.cancelacion || {};
+			orden.cancelacion.motivo = motivo;
+
+			orden.save(function(err) {
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+				
+			});
+		});
+	});*/
+
+	router.post('/cancelar', validarRolDomiciliario,  function(req, res){
+		var orden_id = req.body.orden_id;
+		var motivo = req.body.motivo;
+
+		Ordenes.findById(orden_id)
+		.populate('cliente_id')
+		.exec(function(err, orden) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			
+			orden.estado = Ordenes.ESTADOS[6];
+			orden.cancelacion = {
+				motivo:	motivo
+			};
+
+			orden.save(function(err) {
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
 				res.json({
 					success: true,
-					ordenesRecoleccion: ordenesRecoleccion,
-					ordenesEntrega: ordenesEntrega,
-					mensaje: "lista de ordenes de domicilio en ruta de recoleccion y entrega."
+					orden: orden,
+					mensaje: 'orden cancelada'
 				});
 			});
 		});

@@ -2,13 +2,13 @@ var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 
 var ESTADOS = [
-	'nueva',
-	'rutaRecoleccion',
-	'recolectada',
-	'procesando',
-	'rutaEntrega',
-	'entregada',
-	'cancelada'
+	'nueva',			//0
+	'rutaRecoleccion',	//1
+	'recolectada',		//2
+	'procesando',		//3
+	'rutaEntrega',		//4
+	'entregada',		//5
+	'cancelada'			//6
 ];
 
 var OrdenesSchema = new mongoose.Schema({
@@ -28,6 +28,9 @@ var OrdenesSchema = new mongoose.Schema({
 	},
 	orden: {},
 	items: {},
+	recoleccion: {},
+	entrega: {},
+	cancelacion: {},
 	domiciliario_recoleccion_id: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Usuarios'
@@ -62,8 +65,20 @@ OrdenesSchema.statics.ESTADORUTARECOLECCION = [
 	ESTADOS[1],//rutaRecoleccion
 ];
 
+OrdenesSchema.statics.ESTADORECOLECTADA = [
+	ESTADOS[2],//rutaEntrega
+];
+
 OrdenesSchema.statics.ESTADORUTAENTREGA = [
 	ESTADOS[4]//rutaEntrega
+];
+
+OrdenesSchema.statics.ESTADOENTREGADA = [
+	ESTADOS[5]//rutaEntrega
+];
+
+OrdenesSchema.statics.ESTADOCANCELADA = [
+	ESTADOS[6],//cancelada
 ];
 
 // Export the Mongoose model

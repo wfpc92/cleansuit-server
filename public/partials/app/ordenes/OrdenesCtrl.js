@@ -75,8 +75,14 @@ var OrdenesCtrl = function($scope, RecursosFactory) {
 			}
 		}
 
-		return cont > 0;
-	}
+		return cont > 0 && !$scope.ordenes[index].orden.servicioDirecto;
+	};
+
+	$scope.motivos = [
+		"Valor elevado",
+		"Manifiesta mala atención",
+		"Prefiere otra empresa",
+	];
 };
 
 app.controller('OrdenesCtrl', OrdenesCtrl);
