@@ -87,31 +87,33 @@ module.exports = function(app, passport) {
 
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
-
-			if(req.body.domiciliario_recoleccion_id) { 
-				if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id) {
-					orden.estado = Ordenes.ESTADOS[1];//cambiar estado en recoleccion.
-				}
-			}
-
-			if(req.body.domiciliario_entrega_id) {
-				if (orden.domiciliario_entrega_id != req.body.domiciliario_entrega_id._id) {
-					orden.estado = Ordenes.ESTADOS[4];//cambiar estado en entrega.	
-				}
-			}
-
-			//modificar atributos de la orden
-			orden.domiciliario_recoleccion_id = req.body.domiciliario_recoleccion_id || orden.domiciliario_recoleccion_id;
-			orden.domiciliario_entrega_id = req.body.domiciliario_entrega_id || orden.domiciliario_entrega_id;
 			orden.orden = req.body.orden || orden.orden;
 			orden.recoleccion = req.body.recoleccion || orden.recoleccion;
 			orden.estado = req.body.estado || orden.estado;
+
+			if (req.body.domiciliario_recoleccion_id) {
+				console.log("1: ", orden.domiciliario_recoleccion_id, req.body.domiciliario_recoleccion_id._id)
+				if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id && typeof req.body.domiciliario_recoleccion_id._id != 'undefined') {
+					orden.domiciliario_recoleccion_id = req.body.domiciliario_recoleccion_id._id;
+					orden.estado = Ordenes.ESTADOS[1];//cambiar estado en recoleccion.
+					console.log("2: ", orden.estado)
+				}
+			}
+			
+			if (req.body.domiciliario_entrega_id) {
+				console.log("3: ", orden.domiciliario_entrega_id, req.body.domiciliario_entrega_id._id)
+				if (orden.domiciliario_entrega_id != req.body.domiciliario_entrega_id._id && typeof req.body.domiciliario_entrega_id._id != 'undefined') {
+					orden.domiciliario_entrega_id = req.body.domiciliario_entrega_id._id;
+					orden.estado = Ordenes.ESTADOS[4];//cambiar estado en entrega.	
+					console.log("4: ", orden.estado)
+				}
+			}
 
 			// Save the beer and check for errors
 			orden.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-				console.log("put: orden, ", orden)
+				console.log("put: orden, ", orden.estado)
 				res.json({
 					success: true,
 					orden: orden,
