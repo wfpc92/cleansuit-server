@@ -90,7 +90,7 @@ module.exports = function(app, passport) {
 			orden.orden = req.body.orden || orden.orden;
 			orden.recoleccion = req.body.recoleccion || orden.recoleccion;
 			//aqui se hace la simulacion de que la entrega es igual que la recoleccion.
-			orden.entrega = req.body.entrega || orden.entrega;
+			orden.entrega = req.body.recoleccion || orden.entrega;
 			orden.estado = req.body.estado || orden.estado;
 
 			if (req.body.domiciliario_recoleccion_id) {
