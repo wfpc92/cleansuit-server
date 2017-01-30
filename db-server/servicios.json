@@ -1,0 +1,4 @@
+{"_id":{"$oid":"577ee2e47bd3c70274c0fb8b"},"nombre":"servicio lavado frio","descripcion":"descripcion de servicio lavado frio","subservicios":[{"$oid":"577ee3007bd3c70274c0fb8d"}],"__v":1}
+{"_id":{"$oid":"577ee2ef7bd3c70274c0fb8c"},"nombre":"servicio lavado caliente","descripcion":"descripcion servicio lavado caliente","subservicios":[{"$oid":"577ee31a7bd3c70274c0fb8e"}],"__v":1}
+{"_id":{"$oid":"57be0c06aecc63b910b262f7"},"nombre":"servicio sin subservicios","descripcion":"esta e la descripcion de un servicio que no tiene subservicios","subservicios":[],"__v":0}
+{"_id":{"$oid":"58876f58b4bdc86a08202114"},"nombre":"planchado","descripcion":"planchado","subservicios":[{"$oid":"58876faeb4bdc86a08202115"}],"__v":1}

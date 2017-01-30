@@ -1,0 +1,4 @@
+{"_id":{"$oid":"57c5c8c3118a8d1b119f1dd0"},"updatedAt":{"$date":"2016-08-30T17:56:19.845Z"},"createdAt":{"$date":"2016-08-30T17:56:19.845Z"},"usuario_id":{"$oid":"57b5eebfdbb7ded443c63086"},"version":0,"__v":0}
+{"_id":{"$oid":"57c709c193bf900f109e3181"},"updatedAt":{"$date":"2017-01-17T07:46:01.093Z"},"createdAt":{"$date":"2016-08-31T16:45:53.773Z"},"usuario_id":{"$oid":"57b5ec1fdbb7ded443c63082"},"version":8,"__v":0}
+{"_id":{"$oid":"5839128490c4af551427c3b1"},"updatedAt":{"$date":"2016-12-09T06:35:18.522Z"},"createdAt":{"$date":"2016-11-26T04:41:40.493Z"},"usuario_id":{"$oid":"583912828560c848147eeb21"},"version":2,"__v":0}
+{"_id":{"$oid":"5874cdd02fb60092081a2e1a"},"updatedAt":{"$date":"2017-01-10T12:04:32.124Z"},"createdAt":{"$date":"2017-01-10T12:04:32.124Z"},"usuario_id":{"$oid":"584a5c3776170a6e01c4e16c"},"version":0,"__v":0}
