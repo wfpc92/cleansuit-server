@@ -71,10 +71,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/registrar', function(req, res) {
-	if (!req.body.nombre || !req.body.correo || !req.body.contrasena) {
+	var datos = req.body.datos || {};
+
+	if (!datos.nombre || !datos.correo || !datos.contrasena) {
 		res.json({success: false, mensaje: 'Por favor ingrese nombre, correo y contraseña.'});
 	}
 	else {
+		
 		registrarCliente(req.body, function(infoUsuario) {
 			if (infoUsuario) {
 				res.json({
@@ -93,7 +96,7 @@ router.post('/registrar', function(req, res) {
 router.post('/ingresar', function(req, res, next) {
 		console.log("POST /ingresar, validacion de datos: ", req.body);
 		try {
-			req.correo = req.body.correo;
+			req.correo = req.body.correo.toLowerCase();
 			req.contrasena = req.body.contrasena;
 			next();
 		} catch(err) {

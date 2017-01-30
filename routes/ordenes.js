@@ -3,6 +3,7 @@ var router = express.Router();
 
 var Ordenes = require('../models/ordenes');
 var Usuarios = require('../models/usuarios');
+var Clientes = require('../models/clientes');
 
 var VersionesOrdenes = require("../models/versiones-ordenes")
 
@@ -247,6 +248,44 @@ module.exports = function(app, passport) {
 					success: true,
 					orden: orden,
 					mensaje: 'orden cancelada'
+				});
+			});
+		});
+	});
+
+	router.post('/venta-directa', validarRolDomiciliario,  function(req, res){
+		var nombre = req.body.cliente_id.nombre;
+		var orden = req.body.orden;
+		var entrega = req.body.entrega;
+
+		console.log("###########",req.body)
+		var nuevaOrden = new Ordenes();
+		var usuario = new Usuarios();
+		usuario.nombre = nombre;
+		usuario.rol = Usuarios.ROLES[5]; //cliente
+
+		usuario.save(function(err) {
+			console.log("usuarios",err);
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+			nuevaOrden.cliente_id = usuario._id;
+			nuevaOrden.fecha = new Date();
+			nuevaOrden.estado = Ordenes.ESTADOS[5];
+			nuevaOrden.orden = orden;
+			nuevaOrden.entrega = entrega;
+			nuevaOrden.domiciliario_entrega_id = req.user._id;
+
+			console.log("$$$$$$$$$$$$$$$",nuevaOrden)
+
+			nuevaOrden.save(function(err) {
+				console.log("nuevaorden",err);
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+				console.log("$$$$$$$$$$$$$$$",nuevaOrden)
+				res.json({
+					success: true,
+					orden: nuevaOrden,
+					mensaje: 'venta directa de producto enviada.'
 				});
 			});
 		});
