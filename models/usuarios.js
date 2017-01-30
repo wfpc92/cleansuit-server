@@ -15,12 +15,10 @@ var UsuariosSchema = new mongoose.Schema({
 	},
 	correo: {
 		type: mongoose.SchemaTypes.Email,
-		unique: true,
-		required: true
+		unique: true
 	},
 	contrasena: {
 		type: String,
-		required: true
 	},
   	rol: {
   		type: String, 
@@ -40,7 +38,8 @@ var UsuariosSchema = new mongoose.Schema({
 
 UsuariosSchema.pre('save', function (next) {
 	var usuario = this;
-	if (this.isModified('contrasena') || this.isNew) {
+
+	if ((typeof usuario.contrasena != 'undefined') && (this.isModified('contrasena') || this.isNew)) {
 		bcrypt.genSalt(10, function (err, salt) {
 			if (err) {
 				return next(err);
