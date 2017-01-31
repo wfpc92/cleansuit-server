@@ -13,6 +13,7 @@ var mongoose 		= require('mongoose');
 var app = express();
 require('./config/database');
 require('./config/auth')(passport); // pass passport for configuration
+require('./config/multer')(); // verificar que exista carpeta para guardar imagenes
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
