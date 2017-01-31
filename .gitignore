@@ -47,4 +47,4 @@ build/Release
 !/bin/www
 
 # carpeta de almacenamiento de imagenes de prendas
-/public/updates
+public/updates
