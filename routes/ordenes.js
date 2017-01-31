@@ -1,5 +1,19 @@
 var express = require('express');
 var router = express.Router();
+var multer  =   require('multer');
+
+var storage =   multer.diskStorage({
+	destination: function (req, file, callback) {
+		console.log(file)
+		callback(null, '/home/cautiva/Proyectos/CleanSuit/git/cleansuit-server/uploads');
+	},
+	filename: function (req, file, callback) {
+		callback(null, file.fieldname + '-' + Date.now()+".jpg");
+	}
+});
+
+var upload = multer({ storage : storage});
+
 
 var Ordenes = require('../models/ordenes');
 var Usuarios = require('../models/usuarios');
@@ -85,9 +99,12 @@ module.exports = function(app, passport) {
 		.exec(function(err, orden) {
 			console.log("aqui se imprime")
 			console.log(JSON.stringify(req.body));
+			console.log(req.body)
+			console.log(req.files)
+
 
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			orden.orden = req.body.orden || orden.orden;
 			orden.recoleccion = req.body.recoleccion || orden.recoleccion;
 			//aqui se hace la simulacion de que la entrega es igual que la recoleccion.
@@ -114,14 +131,24 @@ module.exports = function(app, passport) {
 
 			// Save the beer and check for errors
 			orden.save(function(err) {
+				console.log("1")
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+				console.log("2")
 
 				console.log("put: orden, ", orden.estado)
-				res.json({
-					success: true,
-					orden: orden,
-					mensaje: 'orden modificada'
-				});
+				
+				upload.any()(req, res, function(err) {
+			        console.log("3", err)
+			        if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+			        console.log("4")
+			        //res.end("File is uploaded");
+			        res.json({
+						success: true,
+						orden: orden,
+						mensaje: 'orden modificada'
+					});
+			    });
+
 			});
 		});
 	});
