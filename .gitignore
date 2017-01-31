@@ -45,3 +45,6 @@ build/Release
 /run
 /share
 !/bin/www
+
+# carpeta de almacenamiento de imagenes de prendas
+/updates
