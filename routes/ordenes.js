@@ -8,7 +8,7 @@ var storage =   multer.diskStorage({
 		callback(null, "./public/updates");
 	},
 	filename: function (req, file, callback) {
-		callback(null, file.fieldname + '-' + Date.now()+".jpg");
+		callback(null, file.fieldname + '-' + file.originalname);
 	}
 });
 
@@ -97,12 +97,6 @@ module.exports = function(app, passport) {
 		Ordenes.findById(req.params.id)
 		.populate('cliente_id')
 		.exec(function(err, orden) {
-			console.log("aqui se imprime")
-			console.log(JSON.stringify(req.body));
-			console.log(req.body)
-			console.log(req.files)
-
-
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			orden.orden = req.body.orden || orden.orden;
@@ -112,36 +106,28 @@ module.exports = function(app, passport) {
 			orden.estado = req.body.estado || orden.estado;
 
 			if (req.body.domiciliario_recoleccion_id) {
-				console.log("1: ", orden.domiciliario_recoleccion_id, req.body.domiciliario_recoleccion_id._id)
 				if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id && typeof req.body.domiciliario_recoleccion_id._id != 'undefined') {
 					orden.domiciliario_recoleccion_id = req.body.domiciliario_recoleccion_id._id;
 					orden.estado = Ordenes.ESTADOS[1];//cambiar estado en recoleccion.
-					console.log("2: ", orden.estado)
 				}
 			}
 			
 			if (req.body.domiciliario_entrega_id) {
-				console.log("3: ", orden.domiciliario_entrega_id, req.body.domiciliario_entrega_id._id)
 				if (orden.domiciliario_entrega_id != req.body.domiciliario_entrega_id._id && typeof req.body.domiciliario_entrega_id._id != 'undefined') {
 					orden.domiciliario_entrega_id = req.body.domiciliario_entrega_id._id;
 					orden.estado = Ordenes.ESTADOS[4];//cambiar estado en entrega.	
-					console.log("4: ", orden.estado)
 				}
 			}
 
 			// Save the beer and check for errors
 			orden.save(function(err) {
-				console.log("1")
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				console.log("2")
-
-				console.log("put: orden, ", orden.estado)
 				
 				upload.any()(req, res, function(err) {
-			        console.log("3", err)
 			        if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			        console.log("4")
-			        //res.end("File is uploaded");
+			        
+			        console.log(req.files)
+			        
 			        res.json({
 						success: true,
 						orden: orden,
