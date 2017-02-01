@@ -19,7 +19,7 @@
     "jsonwebtoken": "^7.0.1",
     "jwt-simple": "^0.5.0",
     "method-override": "~1.0.0",
-    "mongodb": "^1.4.4",
+    "mongodb": "latest",
     "mongoose": "latest",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-type-email": "^1.0.2",

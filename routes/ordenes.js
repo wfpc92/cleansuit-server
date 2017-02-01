@@ -94,6 +94,14 @@ module.exports = function(app, passport) {
 	});
 
 	router.put('/:id', function(req, res){
+		var aObjeto = function(txt) {
+			console.log(typeof txt)
+			if (typeof txt != 'object') {
+				return JSON.parse(txt);
+			}
+			return txt;
+		};
+
 		upload.any()(req, res, function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
@@ -104,11 +112,11 @@ module.exports = function(app, passport) {
 
 				console.log("orden recuperada: ", orden)
 				console.log("orden body: ", req.body.orden)
-				orden.orden = req.body.orden || orden.orden;
-				orden.recoleccion = req.body.recoleccion || orden.recoleccion;
+				orden.orden = req.body.orden ? aObjeto(req.body.orden) : orden.orden;
+				orden.recoleccion = req.body.recoleccion ? aObjeto(req.body.recoleccion) : orden.recoleccion;
 				//aqui se hace la simulacion de que la entrega es igual que la recoleccion.
-				orden.entrega = req.body.recoleccion || orden.entrega;
-				orden.estado = req.body.estado || orden.estado;
+				orden.entrega = req.body.recoleccion ? aObjeto(req.body.recoleccion) : orden.entrega;
+				orden.estado = req.body.estado ? Ordenes.ESTADOS[req.body.estado] : orden.estado;
 
 				if (req.body.domiciliario_recoleccion_id) {
 					if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id && typeof req.body.domiciliario_recoleccion_id._id != 'undefined') {
