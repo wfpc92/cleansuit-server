@@ -47,6 +47,7 @@
 				<label>Servicio Directo:</label><span>{{orden.orden.servicioDirecto ? 'Si': 'No'}}</span><br />
 			</td>
 			<td>
+				Orden de cotizacion:
 				<div ng-repeat="item in orden.items track by $index" >
 					<strong>Item {{$index+1}}</strong><br>
 					Tipo: <strong>{{item.tipo}}.</strong><br>
@@ -54,6 +55,55 @@
 					Precio: {{item.precio}}<br/>
 					Cantidad: {{item.cantidad}}<br><br>
 				</div>
+				<br/><br/>
+				Items recolectados:
+				<br/>
+				Prendas:
+				<div ng-repeat="item in orden.recoleccion.items.prendas track by $index" >
+					<strong>Item {{$index+1}}</strong><br>
+					Codigo: <strong>{{item.codigo}}.</strong><br>
+					Servicio: {{item.servicio.nombre}}<br/>
+					Subservicio: {{item.subservicio.nombre}}<br/>
+					Fotos: <br/>
+					<div ng-repeat="foto in item.fotos track by $index" >
+						foto {{$index + 1}}: <br/>
+						<img ng-src="http://localhost:20987/updates/{{foto.nombre}}" style="height: 100px; ">
+					</div>
+				</div>
+				<br/>
+				Productos:
+				<div ng-repeat="item in orden.recoleccion.items.productos track by $index" >
+					<strong>Item {{$index+1}}</strong><br>
+					Tipo: <strong>{{item.tipo}}.</strong><br>
+					Descripción: {{item.nombre}}<br/>
+					Precio: {{item.precio}}<br/>
+					Cantidad: {{item.cantidad}}<br><br>
+				</div>
+				<br/><br/>
+				Items entregados:
+				<br/>
+				Prendas:
+				<div ng-repeat="item in orden.entrega.items.prendas track by $index" >
+					<strong>Item {{$index+1}}</strong><br>
+					Codigo: <strong>{{item.codigo}}.</strong><br>
+					Servicio: {{item.servicio.nombre}}<br/>
+					Subservicio: {{item.subservicio.nombre}}<br/>
+					Fotos: <br/>
+					<div ng-repeat="foto in item.fotos track by $index" >
+						foto {{$index + 1}}: <br/>
+						<img ng-src="http://localhost:20987/updates/{{foto.nombre}}" style="height: 100px; ">
+					</div>
+				</div>
+				<br/>
+				Productos:
+				<div ng-repeat="item in orden.entrega.items.productos track by $index" >
+					<strong>Item {{$index+1}}</strong><br>
+					Tipo: <strong>{{item.tipo}}.</strong><br>
+					Descripción: {{item.nombre}}<br/>
+					Precio: {{item.precio}}<br/>
+					Cantidad: {{item.cantidad}}<br><br>
+				</div>
+				<br/><br/>
 			</td>
 			<td >
 				<div >
