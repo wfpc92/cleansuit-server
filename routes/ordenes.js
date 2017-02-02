@@ -325,6 +325,7 @@ module.exports = function(app, passport) {
 					}					
 
 					orden.estado = Ordenes.ESTADOS[5];
+					orden.recoleccion = req.body.entrega;
 					orden.entrega = req.body.entrega;
 					
 					orden.save(function(err) {
