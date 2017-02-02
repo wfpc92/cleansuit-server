@@ -298,7 +298,7 @@ module.exports = function(app, passport) {
 			if (!infoCliente) {
 				infoCliente = new Usuarios();
 				infoCliente.nombre = req.body.cliente_id.nombre;
-				infoCliente.correo = req.body.cliente_id.nombre + "x@x"+(new Date()).getTime();
+				infoCliente.correo = "x@x"+(new Date()).getTime();
 				infoCliente.contrasena = infoCliente.correo
 				infoCliente.rol = Usuarios.ROLES[5]; //cliente
 			}
