@@ -118,7 +118,7 @@ router.post('/ingresar', function(req, res, next) {
 					Clientes.findOne({
 						usuario_id: usuario._id
 					}, function(err, infoCliente) {
-						if (err) return res.json({success: false, mensaje: err});
+						if (err) return res.json({success: false, error: err});
 
 						res.json({
 							success: true, 

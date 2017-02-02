@@ -94,14 +94,22 @@ module.exports = function(app, passport) {
 	});
 
 	router.put('/:id', function(req, res){
+
 		var aObjeto = function(txt) {
-			console.log(typeof txt)
+			console.log(typeof txt, txt)
 			if (typeof txt != 'object') {
-				return JSON.parse(txt);
+				try {
+					return JSON.parse(txt);
+				} catch (e) {
+					console.error("error: ", txt)
+					return undefined;
+				}
+				return ;
 			}
 			return txt;
 		};
 
+		console.log("body: ", req.body)
 		upload.any()(req, res, function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 			
@@ -111,12 +119,14 @@ module.exports = function(app, passport) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 				console.log("orden recuperada: ", orden)
-				console.log("orden body: ", req.body.orden)
+				console.log("body: ", req.body)
 				orden.orden = req.body.orden ? aObjeto(req.body.orden) : orden.orden;
 				orden.recoleccion = req.body.recoleccion ? aObjeto(req.body.recoleccion) : orden.recoleccion;
 				//aqui se hace la simulacion de que la entrega es igual que la recoleccion.
 				orden.entrega = req.body.recoleccion ? aObjeto(req.body.recoleccion) : orden.entrega;
+				console.log("estado", orden.estado)
 				orden.estado = req.body.estado ? Ordenes.ESTADOS[req.body.estado] : orden.estado;
+				console.log("estado", req.body.estado, orden.estado)
 
 				if (req.body.domiciliario_recoleccion_id) {
 					if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id && typeof req.body.domiciliario_recoleccion_id._id != 'undefined') {
@@ -275,41 +285,59 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	router.post('/venta-directa', validarRolDomiciliario,  function(req, res){
-		var nombre = req.body.cliente_id.nombre;
-		var orden = req.body.orden;
-		var entrega = req.body.entrega;
+	router.post('/venta-directa', validarRolDomiciliario,  function(req, res) {
+		var infoCliente = new Usuarios();
 
-		console.log("###########",req.body)
-		var nuevaOrden = new Ordenes();
-		var usuario = new Usuarios();
-		usuario.nombre = nombre;
-		usuario.rol = Usuarios.ROLES[5]; //cliente
+		if (!req.body.cliente_id._id) {
+			req.body.cliente_id._id = infoCliente._id;
+		}
 
-		usuario.save(function(err) {
-			console.log("usuarios",err);
-			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+		Usuarios.findById(req.body.cliente_id._id, function(err, infoCliente) {
+			if (err) return res.json({success: false, mensaje: err});
 
-			nuevaOrden.cliente_id = usuario._id;
-			nuevaOrden.fecha = new Date();
-			nuevaOrden.estado = Ordenes.ESTADOS[5];
-			nuevaOrden.orden = orden;
-			nuevaOrden.entrega = entrega;
-			nuevaOrden.domiciliario_entrega_id = req.user._id;
+			if (!infoCliente) {
+				infoCliente = new Usuarios();
+				infoCliente.nombre = req.body.cliente_id.nombre;
+				infoCliente.correo = req.body.cliente_id.nombre + "x@x"+(new Date()).getTime();
+				infoCliente.contrasena = infoCliente.correo
+				infoCliente.rol = Usuarios.ROLES[5]; //cliente
+			}
 
-			console.log("$$$$$$$$$$$$$$$",nuevaOrden)
-
-			nuevaOrden.save(function(err) {
-				console.log("nuevaorden",err);
+			infoCliente.save(function(err) {
+				var cont = 0;
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-				console.log("$$$$$$$$$$$$$$$",nuevaOrden)
-				res.json({
-					success: true,
-					orden: nuevaOrden,
-					mensaje: 'venta directa de producto enviada.'
+				var orden = new Ordenes();
+
+				if (!req.body._id) {
+					req.body._id = orden._id;
+				}
+
+				Ordenes.findById(req.body._id, function(err, orden) {	
+					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+					
+					if (!orden) {
+						orden = new Ordenes();
+						orden.cliente_id = infoCliente._id;
+						orden.fecha = new Date();
+						orden.orden = req.body.orden;
+						orden.domiciliario_entrega_id = req.user._id;
+					}					
+
+					orden.estado = Ordenes.ESTADOS[5];
+					orden.entrega = req.body.entrega;
+					
+					orden.save(function(err) {
+						if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+						
+						res.json({
+							success: true,
+							orden: orden,
+							mensaje: 'venta directa de producto enviada.'
+						});
+					});
 				});
-			});
+			});		
 		});
 	});
 
