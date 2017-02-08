@@ -12,6 +12,13 @@ var EditarSubservicioCtrl = function($scope, RecursosFactory, $state, $statePara
         $scope.servicio = $scope.subservicio._creator;
     });
 
+    RecursosFactory  
+    .get("/servicios/subservicios/all")
+    .then(function(respuestaServicios) {
+        $scope.subservicios = respuestaServicios.data.subservicios;
+        console.log("subservicios", $scope.servicios)
+    });
+
     $scope.guardar = function(){
         RecursosFactory 
         .put("/servicios/subservicios/"+idSubservicio, $scope.subservicio)

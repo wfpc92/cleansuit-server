@@ -129,7 +129,8 @@ module.exports = function(app, passport) {
 				nombre: req.body.nombre,
 				descripcion: req.body.descripcion,
 				precio: req.body.precio,
-				detalles: req.body.detalles
+				detalles: req.body.detalles,
+				adicionales: req.body.adicionales
 			});
 		
 			subservicio.save(function(err) {
@@ -174,6 +175,7 @@ module.exports = function(app, passport) {
 			subservicio.descripcion = req.body.descripcion || subservicio.descripcion;
 			subservicio.precio = req.body.precio || subservicio.precio;
 			subservicio.detalles = req.body.detalles || subservicio.detalles;
+			subservicio.adicionales = req.body.adicionales || subservicio.adicionales;
 
 			// Save the beer and check for errors
 			subservicio.save(function(err) {

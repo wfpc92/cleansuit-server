@@ -6,7 +6,8 @@ var SubserviciosSchema = new mongoose.Schema({
 	nombre: String,
 	descripcion: String,
 	precio: Number, 
-	detalles: String
+	detalles: String,
+	adicionales: {}
 });
 
 SubserviciosSchema.post('save', function (next) {

@@ -2,21 +2,57 @@
 <h2>{{accion}}</h2>
 
 <form>
+    <input type="button" class="btn btn-primary" value="Save" ng-click="guardar()"></input> 
+
     <div class="form-group">
         <label>Nombre</label>		
         <input class="form-control" ng-model="subservicio.nombre"></input>
     </div>
+    
     <div class="form-group">
         <label>Descripción</label>		
         <input class="form-control" ng-model="subservicio.descripcion"></input>
     </div>
+    
     <div class="form-group">
         <label>Precio</label>		
         <input class="form-control" ng-model="subservicio.precio"></input>
     </div>
+    
     <div class="form-group">
         <label>Detalles</label> 
         <textarea class="form-control" ng-model="subservicio.detalles"></textarea>
     </div>
-    <input type="button" class="btn btn-primary" value="Save" ng-click="guardar()"></input>	
+
+    <div class="form-group">
+        <label>Servicios Adicionales</label> 
+        <table class="table table-responsive table-hover">
+            <thead>
+                <tr>
+                    <th>Aplicar</th>
+                    <th>Subservicio</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat='sub in subservicios'>
+                    <td>
+                        <input type="checkbox" ng-model="subservicio.adicionales[sub._id].checked" ng-checked="subservicio.adicionales[sub._id].checked">
+                    </td>
+                    <td>
+                        {{sub.nombre}}
+                    </td>
+                    <td>
+                        {{sub._creator.nombre}}
+                    </td>
+                    <td>
+                        {{sub.precio}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+   
 </form>
