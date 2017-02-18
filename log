@@ -1,0 +1,3 @@
+Intentando conexión a mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit, esperando respuesta...
+Listening on  { address: '::', family: 'IPv6', port: 20987 }
+Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
