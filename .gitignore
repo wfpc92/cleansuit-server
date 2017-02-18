@@ -48,3 +48,5 @@ build/Release
 
 # carpeta de almacenamiento de imagenes de prendas
 public/updates
+
+npm-debug.log

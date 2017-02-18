@@ -7,6 +7,7 @@ module.exports = function(app, passport) {
 	var ordenesRouter = require('./ordenes')(app, passport);
 	var configuracionesRouter = require('./configuraciones')(app, passport);
 	var domiciliariosRouter = require('./domiciliarios')(app, passport);
+	var prendasRouter = require('./prendas')(app, passport);
 
 
 	app.use('/', usuariosRouter);
@@ -15,6 +16,7 @@ module.exports = function(app, passport) {
 	app.use('/servicios', serviciosRouter);
 	app.use('/ordenes', ordenesRouter);
 	app.use('/domiciliarios', domiciliariosRouter);
+	app.use('/prendas', prendasRouter);
 
 	app.use('/configuraciones', configuracionesRouter);
 };
