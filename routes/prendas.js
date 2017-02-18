@@ -97,78 +97,28 @@ module.exports = function(app, passport) {
 		novedad.fecha = new Date();
 
 		Ordenes
-		.findById(prenda.orden._id, function(err, ordenGuardada) {
+		.findById(prenda.orden._id)
+		.populate('cliente_id')
+		.exec(function(err, ordenGuardada) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			if (typeof ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades == 'undefined') {
-				console.log("novedades no existe")
-				//ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = [];
-				ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = "";
+				ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = [];
 			}
-			ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = "funciona";
-			console.log(ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades)
-			//ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades.push(novedad);
-			console.log(ordenGuardada.recoleccion.items.prendas[prenda.codigo])
-			ordenGuardada
-			.save(function(err) {
-				console.log("error", err)
-				Ordenes
-				.findById(prenda.orden._id, function(err, ordenGuardada2) {
-					console.log("error2", err)
-					res.json({
-						success: true,
-						prenda: ordenGuardada2.recoleccion.items.prendas[prenda.codigo],
-						mensaje: 'novedad agregada a la prenda'
-					});
-				});	
-			})
 			
-		})
-
-
-		/*buscarPrenda(prenda.codigo,
-		function(ordenes, i, j) {
+			ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades.push(novedad);
 			
-
-			console.log("ordenes[i]", ordenes[i], i, j, "prenda", prenda);
-
-			ordenes[i]
-			.save(function(err) {
-				
-
-				
-				
-			});
-
-			/*Ordenes
-			.findById(ordenes[i]._id,function(err, orden) {
+			Ordenes
+			.findOneAndUpdate({_id: ordenGuardada._id}, ordenGuardada, function(err, sw) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 				
-				if (typeof orden.recoleccion.items.prendas[j].novedades == 'undefined') {
-					orden.recoleccion.items.prendas[j].novedades = [];
-				}
-
-				//orden.recoleccion.items.prendas[j].novedades.push(novedad);
-
-				orden.save(function(err) {
-					console.log(err)
-					res.json({
-						success: true,
-						prenda: prenda,
-						orden: orden,
-						mensaje: 'novedad agregada a la prenda'
-					});
-				});
-			});
-
-
-		},function() {
-			res.json({
-				success: true,
-				mensaje: "no se agrego una novedad"
-			});
-		});*/
-		
+				res.json({
+					success: true,
+					prenda: ordenGuardada.recoleccion.items.prendas[prenda.codigo],
+					mensaje: 'novedad agregada a la prenda'
+				});	
+			})	
+		})
 	});
 	
 	return router;
