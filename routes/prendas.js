@@ -4,13 +4,13 @@ var Prendas = require('../models/prendas');
 var Ordenes = require('../models/ordenes');
 var Subservicios = require('../models/subservicios');
 
-var buscarPrenda = function(codigo, cbSuccess, cbFail) {
-	var encontroPrenda = false;
-	var prenda = null, orden = null, indexPrenda = null;
-		
+var buscarPrenda = function(codigo, cbSuccess, cbFail) {		
 	Ordenes
 	.find(function(err, ordenes) {
 		if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+		
+		//en caso que se envie el codigo nulo se retornan todas las prendas
+		var prendas = {};
 
 		for (var i in ordenes) {
 			if(ordenes[i].recoleccion) {
@@ -21,7 +21,15 @@ var buscarPrenda = function(codigo, cbSuccess, cbFail) {
 						return null;
 					}
 				}
+				if (!codigo) {
+					prendas = Object.assign(prendas, ordenes[i].recoleccion.items.prendas);
+				}
 			}
+		}
+
+		if(!codigo) {
+			if (cbSuccess) 
+				return cbSuccess(prendas);
 		}
 
 		if (cbFail) 
@@ -31,6 +39,22 @@ var buscarPrenda = function(codigo, cbSuccess, cbFail) {
 
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
+
+	router.get('/', function(req, res) {
+		buscarPrenda(null, function(prendas) {
+			res.json({
+				success: true,
+				prendas: prendas,
+				mensaje: 'listado de prendas'
+			});
+		}, function() {
+			res.json({
+				success: true,
+				mensaje: 'no se encontraron prendas'
+			});
+		});
+		
+	});
 
 	router.get('/codigo/:codigo', function(req, res) {
 		var codigo = req.params.codigo;
@@ -46,8 +70,10 @@ module.exports = function(app, passport) {
 				
 				prenda.subservicio = subservicios;
 				delete prenda.servicio;
-				prenda.orden = {};
- 				prenda.orden.codigo =  ordenes[i].codigo;
+				prenda.orden = {
+					_id: ordenes[i]._id,
+					codigo: ordenes[i].codigo
+				};
 				
 				res.json({
 					success: true,
@@ -68,53 +94,80 @@ module.exports = function(app, passport) {
 	router.post('/novedad', function(req, res) {
 		var prenda = req.body.prenda;
 		var novedad = req.body.novedad;
-/*
-{ subservicio: 
-   { _id: '58623356926f7f1c728984da',
-     _creator: 
-      { _id: '58623317926f7f1c728984d7',
-        nombre: 'lavanderia',
-        descripcion: 'lavanderia de ropa',
-        __v: 2,
-        subservicios: [Object] },
-     nombre: 'camisas',
-     descripcion: 'lavnaderia de camisas sucias',
-     precio: 12000,
-     detalles: 'laandaerlavnaderia de camisas suciaslavnaderia de camisas suciaslavnaderia de camisas suciaslavnaderia de camisas sucias',
-     __v: 0 },
-  codigo: '12345',
-  fotos: [],
-  orden: { codigo: 6 } } { hayNovedad: true,
-  observaciones: 'observaciones',
-  proceso: { _id: '1', nombre: 'Proceso 1' } }
+		novedad.fecha = new Date();
 
-*/
-		buscarPrenda(prenda.codigo,
-		function(ordenes, i, j) {
-			var prenda = ordenes[i].recoleccion.items.prendas[j];
-			
-			if (typeof prenda.novedades == 'undefined') {
-				prenda.novedades = [];
+		Ordenes
+		.findById(prenda.orden._id, function(err, ordenGuardada) {
+			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+
+			if (typeof ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades == 'undefined') {
+				console.log("novedades no existe")
+				//ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = [];
+				ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = "";
 			}
+			ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = "funciona";
+			console.log(ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades)
+			//ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades.push(novedad);
+			console.log(ordenGuardada.recoleccion.items.prendas[prenda.codigo])
+			ordenGuardada
+			.save(function(err) {
+				console.log("error", err)
+				Ordenes
+				.findById(prenda.orden._id, function(err, ordenGuardada2) {
+					console.log("error2", err)
+					res.json({
+						success: true,
+						prenda: ordenGuardada2.recoleccion.items.prendas[prenda.codigo],
+						mensaje: 'novedad agregada a la prenda'
+					});
+				});	
+			})
+			
+		})
 
-			prenda.novedades.push(novedad);
+
+		/*buscarPrenda(prenda.codigo,
+		function(ordenes, i, j) {
+			
+
+			console.log("ordenes[i]", ordenes[i], i, j, "prenda", prenda);
 
 			ordenes[i]
 			.save(function(err) {
-				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+				
 
-				res.json({
-					success: true,
-					prenda: prenda,
-					mensaje: 'novedad agregada a la prenda'
+				
+				
+			});
+
+			/*Ordenes
+			.findById(ordenes[i]._id,function(err, orden) {
+				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
+				
+				if (typeof orden.recoleccion.items.prendas[j].novedades == 'undefined') {
+					orden.recoleccion.items.prendas[j].novedades = [];
+				}
+
+				//orden.recoleccion.items.prendas[j].novedades.push(novedad);
+
+				orden.save(function(err) {
+					console.log(err)
+					res.json({
+						success: true,
+						prenda: prenda,
+						orden: orden,
+						mensaje: 'novedad agregada a la prenda'
+					});
 				});
 			});
+
+
 		},function() {
 			res.json({
 				success: true,
 				mensaje: "no se agrego una novedad"
 			});
-		});
+		});*/
 		
 	});
 	
