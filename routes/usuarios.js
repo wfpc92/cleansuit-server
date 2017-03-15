@@ -36,7 +36,7 @@ function enviarEmail(origen, destino, titulo, texto, html, callback) {
 	});
 }
 
-// Registra un nuevo usuario cliente en BD (almacena 2 registros 1:1 en usuarios y clientes)
+// Registra un nuevo usuario en BD
 // invoca callback al terminar con la info del usuario creado como parámetro
 function registrarCliente(datos, callback) {
 	var nuevoUsuario = new Usuarios({
@@ -44,25 +44,18 @@ function registrarCliente(datos, callback) {
 		"correo": datos.correo,
 		"contrasena": datos.contrasena,
 		"rol": 'cliente',
-		"fb_uid": (datos.fb_uid) ? datos.fb_uid : ''
-	});
-
-	nuevoUsuario.save(function(err) { 
-		if (err) { console.log(err); callback(null); return;} 
-		
-		//informacion de cliente
-		var infoCliente = new Clientes({
-			usuario_id: nuevoUsuario._id,
+		"facebook": (datos.fb_uid) ? datos.fb_uid : '',
+		"profile": {
 			direccion: '',
 			telefono: '',
 			url_foto: datos.url_foto
-		});
+		}
+	});
 
-		infoCliente.save(function(err) {
-			if (err) { console.log(err); callback(null); } 
-			var info = nuevoUsuario.getInfo(infoCliente);
-			callback(info);
-		});
+	nuevoUsuario.save(function(err) {
+		if (err) { console.log(err); callback(null); return;}
+
+		callback(nuevoUsuario.getInfo());
 	});
 }
 
@@ -77,11 +70,11 @@ router.post('/registrar', function(req, res) {
 		res.json({success: false, mensaje: 'Por favor ingrese nombre, correo y contraseña.'});
 	}
 	else {
-		
+
 		registrarCliente(req.body, function(infoUsuario) {
 			if (infoUsuario) {
 				res.json({
-					success: true, 
+					success: true,
 					usuario: infoUsuario,
 					mensaje: 'Usuario creado satisfactoriamente.'
 				});
@@ -103,7 +96,7 @@ router.post('/ingresar', function(req, res, next) {
 			return next(err);
 		}
 	}, function(req, res) {
-	
+
 	Usuarios.findOne({
 			correo: req.correo
 		}, function(err, usuario) {
@@ -114,17 +107,10 @@ router.post('/ingresar', function(req, res, next) {
 		} else {
 			usuario.comparePassword(req.body.contrasena, function (err, isMatch) {
 				if (isMatch && !err) {
-					//informacion de cliente
-					Clientes.findOne({
-						usuario_id: usuario._id
-					}, function(err, infoCliente) {
-						if (err) return res.json({success: false, error: err});
-
-						res.json({
-							success: true, 
-							usuario: usuario.getInfo(infoCliente),
-							mensaje: 'usuario logueado satisfactoriamente.'
-						});
+					res.json({
+						success: true,
+						usuario: usuario.getInfo(),
+						mensaje: 'usuario logueado satisfactoriamente.'
 					});
 				} else {
 					return res.json({success: false, mensaje: 'Contraseña incorrecta.', error: err});
@@ -149,12 +135,12 @@ router.post("/ingresar/fb", function(req, res, next) {
 			fb_uid = req.body.fb_uid;
 		}
 	}
-	if (fb_token == "" && fb_uid == "") {
+	if (!fb_token && !fb_uid) {
 		res.json({ success: false, mensaje: 'Datos insuficientes para iniciar sesión.' });
 		return;
 	}
 
-	
+
 	// Validamos con Facebook que el token y el uid son verdaderos
 	console.log("fb_token:", fb_token)
 	var options = {
@@ -163,7 +149,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 	};
 	https.get(options, function(responseFb) {
 		var data = "";
-		
+
 		responseFb.on('data', function(chunk) {
 			data = chunk;
 		});
@@ -183,29 +169,23 @@ router.post("/ingresar/fb", function(req, res, next) {
 				// el UID de FB API coincide con el de la app cliente?
 				if (fb_api_uid == fb_uid) {
 					// El usuario ya tiene cuenta en Cleansuit?
-					Usuarios.findOne({ "fb_uid": fb_uid }, function(err, usuario) {
+					Usuarios.findOne({ "facebook": fb_uid }, function(err, usuario) {
 						if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
 
 						// Si el usuario existe, retornamos el token
 						if (usuario) {
-							Clientes.findOne({
-								usuario_id: usuario._id
-							}, function(err, infoCliente) {
-								if (err) return res.json({success: false, mensaje: err});
-
-								res.json({
-									success: true, 
-									existe: true,
-									usuario: usuario.getInfo(infoCliente),
-									mensaje: 'usuario logueado satisfactoriamente.'
-								});
+							res.json({
+								success: true,
+								existe: true,
+								usuario: usuario.getInfo(),
+								mensaje: 'usuario logueado satisfactoriamente.'
 							});
 						}
 						else {
 							// El usuario no existe -> crear uno nuevo y retornar token
 							var nombre1 = "" + parsed.name;
 							var nombre2 = (parsed.first_name + " " + parsed.last_name).trim();
-							
+
 							crypto.randomBytes(7, (err, buf) => {
 								if (err) throw err;
 							});
@@ -215,13 +195,13 @@ router.post("/ingresar/fb", function(req, res, next) {
 								"correo": parsed.email,
 								"contrasena": (crypto.randomBytes(12)).toString("base64"),
 								"url_foto": "http://graph.facebook.com/"+fb_uid+"/picture?width=270&height=270",
-								"fb_uid": fb_uid
+								"facebook": fb_uid
 							}
 
 							registrarCliente(datosNuevoUsuario, function(infoUsuario) {
 								if (infoUsuario) {
 									res.json({
-										success: true, 
+										success: true,
 										existe: false,
 										usuario: infoUsuario,
 										mensaje: 'Nuevo usuario registrado con éxito.'
@@ -263,7 +243,7 @@ router.post("/ingresar/fb", function(req, res, next) {
  */
 router.post('/cliente/reset', function(req, res) {
 	var correo = (req.body.correo) ? (req.body.correo).trim() : "";
-	
+
 	if (correo == "") {
 		res.json({ success: false, mensaje: 'Datos insuficientes para recuperar contraseña.' });
 		return;
@@ -284,20 +264,20 @@ router.post('/cliente/reset', function(req, res) {
 		// almacenamos en BD el token y fecha de expiración
 		usuario.pass_token = passToken;
         usuario.pass_token_vence = Date.now() + 3600000 * 24; // en 24 horas vence
-        
+
         usuario.save(function(err) {
         	if (err) return res.json({ success: false, mensaje: "Se ha producido un error al intentar almacenar esta información.", error: err });
 
 			// enviamos correo electrónico con el enlace
 			var asunto = "Cleansuit: Restaurar su contraseña";
 			var texto = "Para restaurar su contraseña, ingrese en el enlace: " + enlaceReset;
-			
+
 			fs.readFile('views/correo_reset.ejs', 'utf-8', function(err, content) {
 				var renderedHtml = ejs.render(content, {
 					enlaceReset: enlaceReset,
 					resetSuccess: false
 				});
-				
+
 				enviarEmail("noreply@cleansuit.co", correo, asunto, texto, renderedHtml, function(email_error, email_info) {
 					var success = true;
 					var mensaje = "Se ha enviado un enlace a tu correo.";
@@ -331,7 +311,7 @@ router.get('/cliente/reset/:token', function(req, res) {
 	// Buscamos el usuario con este token de recuperación de contraseña
 	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
 		if (!usuario) {
-			return res.render("reset", { 
+			return res.render("reset", {
 				estado: estadoReset.CADUCADO,
 				baseUrl: baseUrl
 			});
@@ -340,17 +320,17 @@ router.get('/cliente/reset/:token', function(req, res) {
 		// Verificamos que el token no ha expirado
 		var vencimiento = usuario.pass_token_vence;
 		if (Date.now() > vencimiento) {
-			return res.render("reset", { 
+			return res.render("reset", {
 				estado: estadoReset.CADUCADO,
 				baseUrl: baseUrl
 			});
 		}
 
-		return res.render("reset", { 
+		return res.render("reset", {
 			estado: estadoReset.FORMULARIO,
 			action: action,
 			baseUrl: baseUrl
-		});		
+		});
 	});
 });
 
@@ -374,7 +354,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 	// Buscamos el usuario con este token de recuperación de contraseña
 	Usuarios.findOne({ "pass_token": pass_token }, function(err, usuario) {
 		if (!usuario) {
-			return res.render("reset", { 
+			return res.render("reset", {
 				estado: estadoReset.CADUCADO,
 				baseUrl: baseUrl
 			});
@@ -383,7 +363,7 @@ router.post('/cliente/reset/:token', function(req, res) {
 		// Verificamos que el token no ha expirado
 		var vencimiento = usuario.pass_token_vence;
 		if (Date.now() > vencimiento) {
-			return res.render("reset", { 
+			return res.render("reset", {
 				estado: estadoReset.CADUCADO,
 				baseUrl: baseUrl
 			});
@@ -410,9 +390,9 @@ router.post('/cliente/reset/:token', function(req, res) {
 			fs.readFile('views/correo_reset.ejs', 'utf-8', function(err, content) {
 				var renderedHtml = ejs.render(content, {
 					enlaceReset: "",
-					resetSuccess: true 
+					resetSuccess: true
 				});
-				
+
 				enviarEmail("noreply@cleansuit.co", correo, asunto, texto, renderedHtml, function(email_error, email_info) {
 					if (email_error) {
 						return res.render("reset", {
@@ -463,31 +443,31 @@ module.exports = function(app, passport) {
 	router.put('/usuarios/:id', passport.authenticate('jwt', { session: false}), function(req, res) {
 		Usuarios.findById(req.params.id, function(err, usuario) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			usuario.nombre = req.body.nombre || usuario.nombre;
 			usuario.correo = req.body.correo || usuario.correo;
 			usuario.rol = req.body.rol || usuario.rol;
-			
+
 			if(req.body.reiniciarContrasena) {
 				usuario.contrasena = usuario.correo;
 			}
-			
+
 			usuario.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
+
 				res.json({
 					success: true,
 					usuario: usuario,
 					mensaje: 'usuario actualizado en la plataforma'
 				});
-			});			
+			});
 		});
 	});
 
 	router.get('/usuarios/:id', passport.authenticate('jwt', { session: false}), function(req, res) {
 		Usuarios.findById(req.params.id, function(err, usuario) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			res.json({
 				success: true,
 				usuario: usuario,
@@ -509,15 +489,15 @@ module.exports = function(app, passport) {
 	});
 
 	router.get('/cliente', passport.authenticate('jwt', { session: false}), function(req, res) {
-		Clientes.findOne({
-			usuario_id: req.user._id
-		}, function(err, infoCliente) {
+		Usuarios.findOne({
+			_id: req.user._id
+		}, function(err, user) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			// return the information including token as JSON
 			res.json({
-				success: true, 
-				usuario: req.user.getInfo(infoCliente),
+				success: true,
+				usuario: user.getInfo(),
 				mensaje: 'informacion de usuario.'
 			});
 		});
@@ -526,14 +506,17 @@ module.exports = function(app, passport) {
 	router.post('/cliente', passport.authenticate('jwt', { session: false}), function(req, res) {
 		//console.log(JSON.stringify(req.user))
 		//console.log(JSON.stringify(req.body))
-		
+
 		var mensaje = "";
 		req.user.nombre = req.body.nombre || "";
 		req.user.correo = req.body.correo || "";
-		
-		console.log(req.body.contrasena,  req.body.repetirContrasena)
+		req.user.profile = {
+			direccion: req.body.direccion || "",
+			telefono: req.body.telefono || "",
+			url_foto: req.body.url_foto || ""
+		};
+
 		if(req.body.contrasena) {
-			console.log("hola")
 			if (req.body.contrasena == req.body.repetirContrasena){
 				req.user.contrasena = req.body.contrasena;
 				mensaje = "Contraseña Modificada.";
@@ -545,26 +528,11 @@ module.exports = function(app, passport) {
 		req.user.save(function(err){
 			if (err) return res.json({success: false, mensaje: "Información duplicada.", error: err});
 
-			Clientes.findOne({
-				usuario_id: req.user._id
-			}, function(err, infoCliente) {
-				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				//console.log(JSON.stringify(infoCliente))
-				infoCliente.direccion = req.body.direccion || "";
-				infoCliente.telefono = req.body.telefono || "";
-				infoCliente.url_foto = req.body.url_foto || infoCliente.url_foto;
-
-				infoCliente.save(function(err){
-					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-
-					res.json({
-						success: true, 
-						usuario: req.user.getInfo(infoCliente),
-						mensaje: 'informacion actualizada' + (mensaje ? " y " : "") + mensaje
-					});
-				});
-				
-			});		
+			res.json({
+				success: true,
+				usuario: req.user.getInfo(),
+				mensaje: 'informacion actualizada' + (mensaje ? " y " : "") + mensaje
+			});
 		});
 	});
 

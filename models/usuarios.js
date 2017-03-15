@@ -5,14 +5,11 @@ var bcrypt   = require('bcrypt');
 var jwt         = require('jwt-simple');
 var config = require("../config/passport");
 
-var ROLES = ['gerente', 'admin_sede', 'recepcionista', 'procesos', 'domiciliario', 'cliente'];
+var ROLES = ['superadmin', 'gerente', 'admin_sede', 'recepcionista', 'trabajador', 'domiciliario', 'cliente'];
 
 // set up a mongoose model
 var UsuariosSchema = new mongoose.Schema({
-	nombre: {
-		type: String,
-		required: true
-	},
+	nombre: String,
 	correo: {
 		type: mongoose.SchemaTypes.Email,
 		unique: true
@@ -20,20 +17,24 @@ var UsuariosSchema = new mongoose.Schema({
 	contrasena: {
 		type: String,
 	},
-  	rol: {
-  		type: String, 
-  		enum: ROLES,
-  		required: true
-  	},
-  	fb_uid: {
-  		type: String
-  	},
-  	pass_token: { // Recuperar contraseña: token
-  		type: String
-  	},
-  	pass_token_vence: { // Recuperar contraseña: fecha y hora de vencimiento
-  		type: Date
-  	}
+	pass_token: String,  // Recuperar contraseña: token
+	pass_token_vence: Date,  // Recuperar contraseña: fecha y hora de vencimiento
+
+	rol: {
+		type: String,
+		enum: ROLES,
+		required: true
+	},
+
+	facebook: String,
+
+	profile: {
+		direccion: String,
+		telefono: String,
+		url_foto: String,
+	}
+}, {
+	timestamps: true
 });
 
 UsuariosSchema.pre('save', function (next) {
@@ -56,11 +57,11 @@ UsuariosSchema.pre('save', function (next) {
 		return next();
 	}
 });
- 
+
 UsuariosSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
-	console.log("Usuarios.comparePassword()")
+	// console.log("Usuarios.comparePassword()")
 	bcrypt.compare(contrasenaRecibida, this.contrasena, function (err, isMatch) {
-		console.log(err, isMatch)
+		// console.log(err, isMatch)
 		if (err) {
 			return cb(err);
 		}
@@ -68,32 +69,19 @@ UsuariosSchema.methods.comparePassword = function (contrasenaRecibida, cb) {
 	});
 };
 
-UsuariosSchema.methods.getInfo = function(info) {
+UsuariosSchema.methods.getInfo = function() {
 	var token = jwt.encode(this._id, config.jwtSecret);
 
-	var usuario = {
-		nombre: this.nombre, 
+	return {
+		nombre: this.nombre,
 		correo: this.correo,
 		rol: this.rol,
 		token: 'JWT ' + token,
-		fb: this.fb_uid ? true : false
+		fb: this.facebook ? true : false,
+		direccion: this.profile.direccion ? this.profile.direccion : '',
+		telefono: this.profile.telefono ? this.profile.telefono : '',
+		url_foto: this.profile.url_foto ? this.profile.url_foto : '',
 	};
-
-	switch(this.rol) {
-		case "cliente":
-			if (info) {
-				usuario.direccion = (info.direccion) ? info.direccion : "";
-				usuario.telefono = (info.telefono) ? info.telefono : "";
-				usuario.url_foto = (info.url_foto) ? info.url_foto : "";
-			} else {
-				usuario.direccion = "";
-				usuario.telefono = "";
-				usuario.url_foto = "";
-			}
-			break;
-	}
-
-	return usuario;
 };
 
 UsuariosSchema.statics.ROLES = ROLES;
