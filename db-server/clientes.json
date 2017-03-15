@@ -1,7 +1,0 @@
-{"_id":{"$oid":"57b5ebeadbb7ded443c63081"},"usuario_id":{"$oid":"57b5ebeadbb7ded443c63080"},"direccion":"","telefono":"","__v":0}
-{"_id":{"$oid":"57b5ec1fdbb7ded443c63083"},"usuario_id":{"$oid":"57b5ec1fdbb7ded443c63082"},"direccion":"calle 8 7 67s","telefono":"3102525365","__v":0}
-{"_id":{"$oid":"57b5ec40dbb7ded443c63085"},"usuario_id":{"$oid":"57b5ec3fdbb7ded443c63084"},"direccion":"","telefono":"","__v":0}
-{"_id":{"$oid":"57b5eebfdbb7ded443c63087"},"usuario_id":{"$oid":"57b5eebfdbb7ded443c63086"},"direccion":"","telefono":"","__v":0}
-{"_id":{"$oid":"57b5eeccdbb7ded443c6308a"},"usuario_id":{"$oid":"57b5eeccdbb7ded443c63089"},"direccion":"","telefono":"","__v":0}
-{"_id":{"$oid":"57b5eee5dbb7ded443c6308c"},"usuario_id":{"$oid":"57b5eee5dbb7ded443c6308b"},"direccion":"","telefono":"","__v":0}
-{"_id":{"$oid":"583912828560c848147eeb22"},"usuario_id":{"$oid":"583912828560c848147eeb21"},"direccion":"","telefono":"","url_foto":"http://graph.facebook.com/10202351246819111/picture?width=270\u0026height=270","__v":0}
