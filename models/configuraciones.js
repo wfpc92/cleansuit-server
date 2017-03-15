@@ -1,17 +1,17 @@
 var mongoose = require('mongoose');
-var VersionApp = require('./version-app');
+var VersionApp = mongoose.model('VersionApp');
 
 var ConfiguracionesSchema   = new mongoose.Schema({
 	domicilio: {
 		type: Number,
 		required: true,
 		default: 0
-	}, 
+	},
 	sobreEmpresa: {
 		type: String,
 		required: true,
 		default: "Informacion sobre Empresa no editada"
-	}, 
+	},
 	terminosCondiciones: {
 		type: String,
 		required: true,
@@ -31,7 +31,7 @@ ConfiguracionesSchema.methods.modificar = function(nuevaConfig) {
 ConfiguracionesSchema.post('save', function (next) {
 	VersionApp.singleton(function(v) {
 		v.configuraciones += 1;
-	})
+	});
 });
 
 ConfiguracionesSchema.statics.singleton = function(cb) {
@@ -43,15 +43,15 @@ ConfiguracionesSchema.statics.singleton = function(cb) {
 			configuraciones = configuracionesLst[0];
 			if(cb) {
 				cb(configuraciones);
-			}	
+			}
 		} else {
 			configuraciones = new self();
 			configuraciones.save(function(err) {
 				if(cb) {
 					cb(configuraciones);
-				}	
+				}
 			});
-		}		
+		}
 	});
 };
 

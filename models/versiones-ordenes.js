@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var VersionesOrdenesSchema   = new mongoose.Schema({
+var VersionesOrdenesSchema = new mongoose.Schema({
 	usuario_id: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Usuarios',
@@ -48,7 +48,7 @@ VersionesOrdenesSchema.statics.getVersion = function(usuario_id, cb) {
 			v.usuario_id = usuario_id;
 			v.version = 0;
 			v.save();
-		} 
+		}
 
 		if(cb) {
 			cb(v);

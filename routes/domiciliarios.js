@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var Usuarios = require('../models/usuarios');
+
+var mongoose = require('mongoose');
+var Usuarios = mongoose.model('Usuarios');
 
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
 
 	router.get('/', function(req, res) {
-		Usuarios.find({rol: Usuarios.ROLES[4]}, function(err, usuarios) {
+		Usuarios.find({rol: 'domiciliario'}, function(err, usuarios) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			var domiciliarios = [];
@@ -26,7 +28,7 @@ module.exports = function(app, passport) {
 			desc_larga: req.body.desc_larga,
 			url_imagen: req.body.url_imagen
 		});
-		
+
 		producto.save(function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
@@ -41,7 +43,7 @@ module.exports = function(app, passport) {
 	router.get('/:id', function(req, res) {
 		Productos.findById(req.params.id, function(err, producto) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			res.json({
 				success: true,
 				producto: producto,
@@ -85,6 +87,6 @@ module.exports = function(app, passport) {
 			});
 		});
 	});*/
-	
+
 	return router;
 };

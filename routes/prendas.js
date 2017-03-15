@@ -1,14 +1,16 @@
 var express = require('express');
 var router = express.Router();
-var Prendas = require('../models/prendas');
-var Ordenes = require('../models/ordenes');
-var Subservicios = require('../models/subservicios');
 
-var buscarPrenda = function(codigo, cbSuccess, cbFail) {		
+var mongoose = require('mongoose');
+var Prendas = mongoose.model('Prendas');
+var Ordenes = mongoose.model('Ordenes');
+var Subservicios = mongoose.model('Subservicios');
+
+var buscarPrenda = function(codigo, cbSuccess, cbFail) {
 	Ordenes
 	.find(function(err, ordenes) {
 		if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-		
+
 		//en caso que se envie el codigo nulo se retornan todas las prendas
 		var prendas = {};
 
@@ -16,7 +18,7 @@ var buscarPrenda = function(codigo, cbSuccess, cbFail) {
 			if(ordenes[i].recoleccion) {
 				for (var j in ordenes[i].recoleccion.items.prendas) {
 					if (ordenes[i].recoleccion.items.prendas[j].codigo == codigo) {
-						if (cbSuccess) 
+						if (cbSuccess)
 							return cbSuccess(ordenes, i, j);
 						return null;
 					}
@@ -28,12 +30,12 @@ var buscarPrenda = function(codigo, cbSuccess, cbFail) {
 		}
 
 		if(!codigo) {
-			if (cbSuccess) 
+			if (cbSuccess)
 				return cbSuccess(prendas);
 		}
 
-		if (cbFail) 
-			return cbFail();			
+		if (cbFail)
+			return cbFail();
 	});
 };
 
@@ -53,13 +55,13 @@ module.exports = function(app, passport) {
 				mensaje: 'no se encontraron prendas'
 			});
 		});
-		
+
 	});
 
 	router.get('/codigo/:codigo', function(req, res) {
 		var codigo = req.params.codigo;
 
-		buscarPrenda(codigo, 
+		buscarPrenda(codigo,
 		function(ordenes, i, j) {
 			var prenda = ordenes[i].recoleccion.items.prendas[j];
 			Subservicios
@@ -67,28 +69,28 @@ module.exports = function(app, passport) {
 			.populate('_creator')
 			.exec(function(err, subservicios) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
+
 				prenda.subservicio = subservicios;
 				delete prenda.servicio;
 				prenda.orden = {
 					_id: ordenes[i]._id,
 					codigo: ordenes[i].codigo
 				};
-				
+
 				res.json({
 					success: true,
 					prenda: prenda,
 					mensaje: 'prenda de codigo '+codigo
 				});
-				
+
 			});
-		}, 
+		},
 		function() {
 			res.json({
 				success: true,
 				mensaje: 'no se encuentra informacion de prenda de codigo '+codigo
 			});
-		});		
+		});
 	});
 
 	router.post('/novedad', function(req, res) {
@@ -105,21 +107,21 @@ module.exports = function(app, passport) {
 			if (typeof ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades == 'undefined') {
 				ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades = [];
 			}
-			
+
 			ordenGuardada.recoleccion.items.prendas[prenda.codigo].novedades.push(novedad);
-			
+
 			Ordenes
 			.findOneAndUpdate({_id: ordenGuardada._id}, ordenGuardada, function(err, sw) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
+
 				res.json({
 					success: true,
 					prenda: ordenGuardada.recoleccion.items.prendas[prenda.codigo],
 					mensaje: 'novedad agregada a la prenda'
-				});	
-			})	
-		})
+				});
+			});
+		});
 	});
-	
+
 	return router;
 };

@@ -1,14 +1,14 @@
 var mongoose = require('mongoose');
-var VersionApp = require('./version-app');
+var VersionApp = mongoose.model('VersionApp');
 
 var PromocionesSchema = new mongoose.Schema({
 	url_imagen: {
 		type: String,
 		required: true
-	}, 
+	},
 	descuento: {
 		type: Number,
-	}, 
+	},
 	codigo: {
 		type: String,
 		unique: true,
@@ -39,44 +39,44 @@ PromocionesSchema.methods.vigente = function() {
 
 PromocionesSchema.methods.etiquetar = function() {
 	var arr = [], etiqueta, cadena;
-	
+
 	for(var i in this.items){
-		if (this.items 
-			&& arr.indexOf(this.items[i].descuento) == -1 
-			&& this.items[i].descuento) {
+		if (this.items &&
+			arr.indexOf(this.items[i].descuento) == -1 &&
+			this.items[i].descuento) {
 		    arr.push(parseInt(this.items[i].descuento));
 		}
 	}
-	
-	arr = arr.sort(function(a, b){return a-b});
-	
-	if(arr.length == 0){
+
+	arr = arr.sort(function(a, b) {return a-b;});
+
+	if (arr.length === 0){
 		etiqueta = "Descuento del " + this.descuento + "%";
-	} else if(arr.length == 1) {
+	} else if (arr.length == 1) {
 		etiqueta = "Descuento del " + arr[0] + "%";
 	} else {
 		cadena = "";
 
-		for (var i in arr) {
+		for (i in arr) {
 			cadena += arr[i];
 			if(i < arr.length - 2) {
 				cadena += ", ";
 			}
 			if(i == arr.length - 2) {
-			 	cadena += " y "
+			 	cadena += " y ";
 			}
 		}
 
 		etiqueta = "Descuentos del " + cadena + "%";
 	}
-	console.log(etiqueta)
+	console.log(etiqueta);
 	this.etiquetaDescuentos = etiqueta;
 };
 
 PromocionesSchema.post('save', function (next) {
 	VersionApp.singleton(function(v) {
 		v.inventario += 1;
-	})
+	});
 });
 
 module.exports = mongoose.model('Promociones', PromocionesSchema);

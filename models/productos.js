@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var VersionApp = require('./version-app');
+var VersionApp = mongoose.model('VersionApp');
 
 var ProductosSchema   = new mongoose.Schema({
 	nombre: String,
@@ -12,7 +12,7 @@ var ProductosSchema   = new mongoose.Schema({
 ProductosSchema.post('save', function (next) {
 	VersionApp.singleton(function(v) {
 		v.inventario += 1;
-	})
+	});
 });
 
 module.exports = mongoose.model('Productos', ProductosSchema);

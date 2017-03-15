@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
-var Configuraciones = require('../models/configuraciones');
-var VersionApp = require('../models/version-app');
-var VersionesOrdenes = require('../models/versiones-ordenes');
+var mongoose = require('mongoose');
+var Configuraciones = mongoose.model('Configuraciones');
+var VersionApp = mongoose.model('VersionApp');
+var VersionesOrdenes = mongoose.model('VersionesOrdenes');
 
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
-	
+
 	router.get('/', function(req, res) {
 		Configuraciones.singleton(function(c) {
 			res.json({
@@ -16,7 +17,7 @@ module.exports = function(app, passport) {
 				mensaje: 'configuraciones de la aplicación.'
 			});
 		});
-	}); 
+	});
 
 	router.get('/versiones', function(req, res) {
 		VersionApp.singleton(function(v) {
@@ -29,9 +30,8 @@ module.exports = function(app, passport) {
 						ordenes: vo.version
 					},
 					mensaje: 'versiones de informacion actual del API.'
-				});	
-			})
-			
+				});
+			});
 		});
 	});
 
@@ -40,7 +40,7 @@ module.exports = function(app, passport) {
 			c.modificar(req.body)
 			.save(function(err){
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
+
 				res.json({
 					success: true,
 					configuraciones: c,

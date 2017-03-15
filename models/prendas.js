@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var VersionApp = require('./version-app');
+// var VersionApp = mongoose.model('VersionApp');
 
 var PrendasSchema = new mongoose.Schema({
 	_creator : { type: mongoose.Schema.Types.ObjectId, ref: 'Ordenes' },

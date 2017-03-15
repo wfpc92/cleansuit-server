@@ -1,8 +1,8 @@
 // get an instance of mongoose and mongoose.Schema
 var mongoose = require('mongoose');
 require('mongoose-type-email');
-var bcrypt   = require('bcrypt');
-var jwt         = require('jwt-simple');
+var bcrypt = require('bcrypt');
+var jwt = require('jwt-simple');
 var config = require("../config/passport");
 
 var ROLES = ['superadmin', 'gerente', 'admin_sede', 'recepcionista', 'trabajador', 'domiciliario', 'cliente'];

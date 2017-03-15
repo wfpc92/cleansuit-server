@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var Promociones = require('../models/promociones');
+
+var mongoose = require('mongoose');
+var Promociones = mongoose.model('Promociones');
 
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
@@ -9,7 +11,7 @@ module.exports = function(app, passport) {
 		Promociones
 		.find(function(err, promociones) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			for (var i in promociones){
 				promociones[i].etiquetar();
 			}
@@ -25,7 +27,7 @@ module.exports = function(app, passport) {
 	router.post('/', function(req, res){
 		//req.body.items viene con el formato: [{_idItem: boolean}],
 		var items = {};
-		console.log(req.body.items)
+		// console.log(req.body.items);
 
 		for(var i in req.body.items) {
 			if(req.body.items[i]){
@@ -33,7 +35,7 @@ module.exports = function(app, passport) {
 			}
 		}
 
-		console.log(items)
+		// console.log(items);
 
 		var promocion = new Promociones({
 			url_imagen: req.body.url_imagen,
@@ -44,7 +46,7 @@ module.exports = function(app, passport) {
 			descripcion: req.body.descripcion,
 			items: items
 		});
-		
+
 		promocion
 		.save(function(err) {
 			if (err) return res.json({success: false, mensaje: "Campos de promocion incompletos o invalidos.", error: err});
@@ -61,9 +63,9 @@ module.exports = function(app, passport) {
 		Promociones
 		.findById(req.params.id, function(err, promocion) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			if(!promocion) return res.json({success: false, mensaje: "No existe promocion", error: err});
-			
+
 			promocion.etiquetar();
 
 			res.json({
@@ -94,7 +96,7 @@ module.exports = function(app, passport) {
 			promocion.fecha_fin = req.body.fecha_fin || promocion.fecha_fin;
 			promocion.descripcion = req.body.descripcion || promocion.descripcion;
 			promocion.items = items;
-			
+
 			// Save the beer and check for errors
 			promocion.save(function(err) {
 				if (err) return res.json({success: false, mensaje: "Campos de promocion incompletos o invalidos.", error: err});
@@ -123,17 +125,17 @@ module.exports = function(app, passport) {
 	router.get('/validar/:cupon', function(req, res) {
 		var descuentos = null;
 		var cupon = req.params.cupon;
-		
+
 		Promociones
 		.findOne({
 			codigo: cupon
 		}, function(err, promocion) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			if(!promocion) {
 				return res.json({
-					success: true, 
-					mensaje: "El código '"+ cupon +"' no se encuentra disponible.", 
+					success: true,
+					mensaje: "El código '"+ cupon +"' no se encuentra disponible.",
 				});
 			}
 
@@ -150,7 +152,7 @@ module.exports = function(app, passport) {
 
 			res.json(respuesta);
 		});
-	});	
+	});
 
 	return router;
 };

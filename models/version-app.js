@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var VersionAppSchema   = new mongoose.Schema({
+var VersionAppSchema = new mongoose.Schema({
 	inventario: {
 		type: Number,
 		required: true,
@@ -25,11 +25,11 @@ VersionAppSchema.statics.singleton = function(cb) {
 		} else {
 			versionApp = new self();
 		}
-		
+
 		if(cb) {
 			cb(versionApp);
 		}
-		
+
 		versionApp.save();
 	});
 };

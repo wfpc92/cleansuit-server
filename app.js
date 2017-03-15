@@ -33,6 +33,9 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
+// registra los modelos del API
+require('./models')(app, passport);
+
 //configurar rutas del API
 require('./routes/config')(app, passport);
 

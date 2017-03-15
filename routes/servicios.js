@@ -1,14 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-var Servicios = require('../models/servicios');
-var Subservicios = require('../models/subservicios');
-
-
+var mongoose = require('mongoose');
+var Servicios = mongoose.model('Servicios');
+var Subservicios = mongoose.model('Subservicios');
 
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
-	
+
 	router.get('/', function(req, res) {
 		//req.user
 		Servicios
@@ -16,7 +15,7 @@ module.exports = function(app, passport) {
 			.populate('subservicios')
 			.exec(function(err, servicios) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
+
 				res.json({
 					success: true,
 					servicios: servicios,
@@ -30,7 +29,7 @@ module.exports = function(app, passport) {
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion
 		});
-		
+
 		servicio.save(function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
@@ -94,7 +93,7 @@ module.exports = function(app, passport) {
 		.populate('_creator')
 		.exec(function(err, subservicios) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			res.json({
 				success: true,
 				subservicios: subservicios,
@@ -109,7 +108,7 @@ module.exports = function(app, passport) {
 		.populate('_creator')
 		.exec(function(err, subservicios) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			res.json({
 				success: true,
 				subservicios: subservicios,
@@ -123,7 +122,7 @@ module.exports = function(app, passport) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			if(!servicio) return res.json({success: false, mensaje: "no se encuentra el servicio"});
-			
+
 			var subservicio = new Subservicios({
 				_creator: servicio._id,
 				nombre: req.body.nombre,
@@ -132,7 +131,7 @@ module.exports = function(app, passport) {
 				detalles: req.body.detalles,
 				adicionales: req.body.adicionales
 			});
-		
+
 			subservicio.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
@@ -147,7 +146,7 @@ module.exports = function(app, passport) {
 					});
 
 				});
-			});        
+			});
 		});
 	});
 
@@ -157,7 +156,7 @@ module.exports = function(app, passport) {
 			.populate('_creator')
 			.exec(function(err, subservicio) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
+
 				res.json({
 					success: true,
 					subservicio: subservicio,

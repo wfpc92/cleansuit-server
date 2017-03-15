@@ -10,7 +10,7 @@ var RecursosFactory = function($log, $http) {
 		console.log("solicitud para consumir servicio de api cleansuit");
 
 		var requestConfig = {
-			url: self._apiUrl + recurso, 
+			url: self._apiUrl + recurso,
 			method: metodo,
 			params: getParams,
 			data: postParams
@@ -22,16 +22,16 @@ var RecursosFactory = function($log, $http) {
 
 	return {
 		get: function(recursos, params) {
-			return self.solicitud("GET", recursos, params, null);	
+			return self.solicitud("GET", recursos, params, null);
 		},
 		post: function(recursos, params) {
-			return self.solicitud("POST", recursos, null, params);	
+			return self.solicitud("POST", recursos, null, params);
 		},
 		put: function(recursos, params) {
-			return self.solicitud("PUT", recursos, null, params);	
+			return self.solicitud("PUT", recursos, null, params);
 		},
 		delete: function(recursos, params) {
-			return self.solicitud("DELETE", recursos, null, params);	
+			return self.solicitud("DELETE", recursos, null, params);
 		}
 	};
 };

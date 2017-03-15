@@ -1,30 +1,26 @@
 var express = require('express');
 var router = express.Router();
-var multer  =   require('multer');
 
-var storage =   multer.diskStorage({
+var multer = require('multer');
+var storage = multer.diskStorage({
 	destination: function (req, file, callback) {
-		console.log(file)
+		// console.log(file)
 		callback(null, "./public/updates");
 	},
 	filename: function (req, file, callback) {
 		callback(null, file.originalname);
 	}
 });
-
 var upload = multer({ storage : storage});
 
-
-var Ordenes = require('../models/ordenes');
-var Usuarios = require('../models/usuarios');
-var Clientes = require('../models/clientes');
-
-var VersionesOrdenes = require("../models/versiones-ordenes")
+var mongoose = require('mongoose');
+var Usuarios = mongoose.model('Usuarios');
+var Clientes = mongoose.model('Clientes');
+var Ordenes = mongoose.model('Ordenes');
+var VersionesOrdenes = mongoose.model('VersionesOrdenes');
 
 var validarRolDomiciliario = function(req, res, next) {
-    console.log(req.user.rol, Usuarios.ROLES[4])
-    	
-    if(req.user.rol == Usuarios.ROLES[4]) {
+    if (req.user.rol == 'domiciliario') {
     	next();
     } else {
     	next().json({
@@ -36,13 +32,13 @@ var validarRolDomiciliario = function(req, res, next) {
 
 module.exports = function(app, passport) {
 	router.use(passport.authenticate('jwt', { session: false}));
-	
+
 	// middleware to use for all requests
-	router.use(function(req, res, next) {
-	    // do logging
-	    console.log('Something is happening.');
-	    next(); // make sure we go to the next routes and don't stop here
-	});
+	// router.use(function(req, res, next) {
+	//     // do logging
+	//     console.log('Something is happening.');
+	//     next(); // make sure we go to the next routes and don't stop here
+	// });
 
 	router.get('/', function(req, res) {
 		Ordenes
@@ -50,7 +46,7 @@ module.exports = function(app, passport) {
 		.populate('cliente_id')
 		.exec(function(err, ordenes) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			res.json({
 				success: true,
 				ordenes: ordenes,
@@ -79,7 +75,7 @@ module.exports = function(app, passport) {
 		orden.orden = req.orden;
 		orden.items = req.items;
 		orden.cupon = req.cupon;
-		
+
 		orden.save(function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
@@ -96,12 +92,12 @@ module.exports = function(app, passport) {
 	router.put('/:id', function(req, res){
 
 		var aObjeto = function(txt) {
-			console.log(typeof txt, txt)
+			// console.log(typeof txt, txt)
 			if (typeof txt != 'object') {
 				try {
 					return JSON.parse(txt);
 				} catch (e) {
-					console.error("error: ", txt)
+					console.error("error: ", txt);
 					return undefined;
 				}
 				return ;
@@ -109,24 +105,24 @@ module.exports = function(app, passport) {
 			return txt;
 		};
 
-		console.log("body: ", req.body)
+		// console.log("body: ", req.body)
 		upload.any()(req, res, function(err) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			Ordenes.findById(req.params.id)
 			.populate('cliente_id')
 			.exec(function(err, orden) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-				console.log("orden recuperada: ", orden)
-				console.log("body: ", req.body)
+				console.log("orden recuperada: ", orden);
+				console.log("body: ", req.body);
 				orden.orden = req.body.orden ? aObjeto(req.body.orden) : orden.orden;
 				orden.recoleccion = req.body.recoleccion ? aObjeto(req.body.recoleccion) : orden.recoleccion;
 				//aqui se hace la simulacion de que la entrega es igual que la recoleccion.
 				orden.entrega = req.body.recoleccion ? aObjeto(req.body.recoleccion) : orden.entrega;
-				console.log("estado", orden.estado)
+				console.log("estado", orden.estado);
 				orden.estado = req.body.estado ? Ordenes.ESTADOS[req.body.estado] : orden.estado;
-				console.log("estado", req.body.estado, orden.estado)
+				console.log("estado", req.body.estado, orden.estado);
 
 				if (req.body.domiciliario_recoleccion_id) {
 					if (orden.domiciliario_recoleccion_id != req.body.domiciliario_recoleccion_id._id && typeof req.body.domiciliario_recoleccion_id._id != 'undefined') {
@@ -134,18 +130,18 @@ module.exports = function(app, passport) {
 						orden.estado = Ordenes.ESTADOS[1];//cambiar estado en recoleccion.
 					}
 				}
-				
+
 				if (req.body.domiciliario_entrega_id) {
 					if (orden.domiciliario_entrega_id != req.body.domiciliario_entrega_id._id && typeof req.body.domiciliario_entrega_id._id != 'undefined') {
 						orden.domiciliario_entrega_id = req.body.domiciliario_entrega_id._id;
-						orden.estado = Ordenes.ESTADOS[4];//cambiar estado en entrega.	
+						orden.estado = Ordenes.ESTADOS[4];//cambiar estado en entrega.
 					}
 				}
 
 				// Save the beer and check for errors
 				orden.save(function(err) {
 					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-					
+
 					res.json({
 						success: true,
 						orden: orden,
@@ -166,7 +162,7 @@ module.exports = function(app, passport) {
 		.populate('cliente_id')
 		.exec(function(err, ordenes) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			res.json({
 				success: true,
 				ordenes: ordenes,
@@ -183,7 +179,7 @@ module.exports = function(app, passport) {
 		.populate('cliente_id')
 		.exec(function(err, ordenes) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			res.json({
 				success: true,
 				ordenes: ordenes,
@@ -203,9 +199,8 @@ module.exports = function(app, passport) {
 			.where('estado').in(estado)
 			.populate('cliente_id')
 			.exec(function(err, ordenes) {
-				console.log()
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-				
+
 				ordenesRespuesta[index] = ordenes;
 
 				if (cb) {
@@ -213,7 +208,7 @@ module.exports = function(app, passport) {
 				}
 			});
 		};
-		
+
 		getOrdenes({domiciliario_recoleccion_id: req.user._id}, Ordenes.ESTADORUTARECOLECCION, 0, function() {
 			getOrdenes({domiciliario_recoleccion_id: req.user._id}, Ordenes.ESTADORECOLECTADA, 1, function() {
 				getOrdenes({domiciliario_entrega_id: req.user._id}, Ordenes.ESTADORUTAENTREGA, 2, function() {
@@ -246,7 +241,7 @@ module.exports = function(app, passport) {
 		.populate('cliente_id')
 		.exec(function(err, orden) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			orden.estado = Ordenes.ESTADOS[6];
 			orden.cancelacion = orden.cancelacion || {};
 			orden.cancelacion.motivo = motivo;
@@ -254,7 +249,7 @@ module.exports = function(app, passport) {
 			orden.save(function(err) {
 				if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
-				
+
 			});
 		});
 	});*/
@@ -267,7 +262,7 @@ module.exports = function(app, passport) {
 		.populate('cliente_id')
 		.exec(function(err, orden) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-			
+
 			orden.estado = Ordenes.ESTADOS[6];
 			orden.cancelacion = {
 				motivo:	motivo
@@ -299,8 +294,8 @@ module.exports = function(app, passport) {
 				infoCliente = new Usuarios();
 				infoCliente.nombre = req.body.cliente_id.nombre;
 				infoCliente.correo = "x@x"+(new Date()).getTime();
-				infoCliente.contrasena = infoCliente.correo
-				infoCliente.rol = Usuarios.ROLES[5]; //cliente
+				infoCliente.contrasena = infoCliente.correo;
+				infoCliente.rol = 'cliente';
 			}
 
 			infoCliente.save(function(err) {
@@ -313,23 +308,23 @@ module.exports = function(app, passport) {
 					req.body._id = orden._id;
 				}
 
-				Ordenes.findById(req.body._id, function(err, orden) {	
+				Ordenes.findById(req.body._id, function(err, orden) {
 					if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-					
+
 					if (!orden) {
 						orden = new Ordenes();
 						orden.cliente_id = infoCliente._id;
 						orden.fecha = new Date();
 						orden.orden = req.body.orden;
 						orden.domiciliario_entrega_id = req.user._id;
-					}					
+					}
 
 					orden.estado = Ordenes.ESTADOS[5];
 					orden.entrega = req.body.entrega;
-					
+
 					orden.save(function(err) {
 						if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
-						
+
 						res.json({
 							success: true,
 							orden: orden,
@@ -337,7 +332,7 @@ module.exports = function(app, passport) {
 						});
 					});
 				});
-			});		
+			});
 		});
 	});
 

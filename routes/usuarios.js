@@ -7,8 +7,7 @@ var ejs = require("ejs");
 var fs = require("fs");
 var url = require('url');
 
-var Usuarios = require('../models/usuarios');
-var Clientes = require('../models/clientes');
+var Usuarios = mongoose.model('Usuarios');
 
 var router = express.Router();
 
@@ -142,7 +141,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 
 
 	// Validamos con Facebook que el token y el uid son verdaderos
-	console.log("fb_token:", fb_token)
+	// console.log("fb_token:", fb_token);
 	var options = {
 		host: "graph.facebook.com",
 		path: "/v2.6/me?fields=id,email,last_name,first_name&access_token=" + fb_token
@@ -186,7 +185,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 							var nombre1 = "" + parsed.name;
 							var nombre2 = (parsed.first_name + " " + parsed.last_name).trim();
 
-							crypto.randomBytes(7, (err, buf) => {
+							crypto.randomBytes(7, function (err, buf) {
 								if (err) throw err;
 							});
 
@@ -196,7 +195,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 								"contrasena": (crypto.randomBytes(12)).toString("base64"),
 								"url_foto": "http://graph.facebook.com/"+fb_uid+"/picture?width=270&height=270",
 								"facebook": fb_uid
-							}
+							};
 
 							registrarCliente(datosNuevoUsuario, function(infoUsuario) {
 								if (infoUsuario) {
@@ -244,7 +243,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 router.post('/cliente/reset', function(req, res) {
 	var correo = (req.body.correo) ? (req.body.correo).trim() : "";
 
-	if (correo == "") {
+	if (correo === "") {
 		res.json({ success: false, mensaje: 'Datos insuficientes para recuperar contraseña.' });
 		return;
 	}
