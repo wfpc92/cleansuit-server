@@ -1,7 +1,7 @@
 
-module.exports = function(app, passport) {
+module.exports = function(app) {
 	require('./version-app');
-	require('./version-ordenes');
+	require('./versiones-ordenes');
 	require('./usuarios');
 	require('./configuraciones');
 	require('./prendas');

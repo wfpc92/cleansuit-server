@@ -1,9 +1,10 @@
 var passportJWT = require('passport-jwt');
-var mongoose = require('mongoose');
-var Usuarios = mongoose.model('Usuarios');
 var ExtractJwt = passportJWT.ExtractJwt;
 var Strategy = passportJWT.Strategy;
 var config = require("./passport");
+
+var mongoose = require('mongoose');
+var Usuarios = mongoose.model('Usuarios');
 
 module.exports = function(passport) {
 	var params = {

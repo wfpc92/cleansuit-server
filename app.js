@@ -11,6 +11,10 @@ var session  		= require('express-session');
 var mongoose 		= require('mongoose');
 
 var app = express();
+
+// registra los modelos del API
+require('./models')(app);
+
 require('./config/database');
 require('./config/auth')(passport); // pass passport for configuration
 require('./config/multer')(); // verificar que exista carpeta para guardar imagenes
@@ -32,9 +36,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
-
-// registra los modelos del API
-require('./models')(app, passport);
 
 //configurar rutas del API
 require('./routes/config')(app, passport);
