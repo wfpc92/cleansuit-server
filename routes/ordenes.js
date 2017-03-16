@@ -314,12 +314,13 @@ module.exports = function(app, passport) {
 						orden = new Ordenes();
 						orden.cliente_id = infoCliente._id;
 						orden.fecha = new Date();
-						orden.orden = req.body.orden;
+
 						orden.domiciliario_entrega_id = req.user._id;
 					}
 
+					orden.orden = req.body.orden;
 					orden.estado = Ordenes.ESTADOS[5];
-					orden.entrega = req.body.entrega;
+					orden.recoleccion = req.body.recoleccion;
 
 					orden.save(function(err) {
 						if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
