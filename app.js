@@ -12,10 +12,10 @@ var mongoose 		= require('mongoose');
 
 var app = express();
 
+require('./config/database');
 // registra los modelos del API
 require('./models')(app);
 
-require('./config/database');
 require('./config/auth')(passport); // pass passport for configuration
 require('./config/multer')(); // verificar que exista carpeta para guardar imagenes
 

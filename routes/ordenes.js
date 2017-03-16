@@ -15,7 +15,6 @@ var upload = multer({ storage : storage});
 
 var mongoose = require('mongoose');
 var Usuarios = mongoose.model('Usuarios');
-var Clientes = mongoose.model('Clientes');
 var Ordenes = mongoose.model('Ordenes');
 var VersionesOrdenes = mongoose.model('VersionesOrdenes');
 
