@@ -7,7 +7,8 @@ var ejs = require("ejs");
 var fs = require("fs");
 var url = require('url');
 
-var Usuarios = require('../models/usuarios');
+var mongoose = require('mongoose');
+var Usuarios = mongoose.model('Usuarios');
 
 var router = express.Router();
 
