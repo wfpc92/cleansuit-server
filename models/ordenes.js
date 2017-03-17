@@ -23,7 +23,7 @@ var OrdenesSchema = new mongoose.Schema({
 		type: Date
 	},
 	estado: {
-		type: String, 
+		type: String,
 		enum: ESTADOS
 	},
 	orden: {},
@@ -38,17 +38,17 @@ var OrdenesSchema = new mongoose.Schema({
 	domiciliario_entrega_id: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Usuarios'
-	},	
+	},
 	servicioDirecto: {
 		type: Boolean
 	}
 });
 
 OrdenesSchema.plugin(autoIncrement.plugin, {
-		model: 'Ordenes',
-		field: 'codigo',
-		startAt: 1,
-		incrementBy: 1
+	model: 'Ordenes',
+	field: 'codigo',
+	startAt: 1,
+	incrementBy: 1
 });
 
 OrdenesSchema.statics.ESTADOS = ESTADOS;
