@@ -33,7 +33,7 @@ var PromocionesSchema = new mongoose.Schema({
 
 PromocionesSchema.methods.vigente = function() {
 	var ahora = Date.now();
-	console.log(ahora, this.fecha_inicio, this.fecha_fin);
+	// console.log(ahora, this.fecha_inicio, this.fecha_fin);
 	return ahora >= this.fecha_inicio && ahora <= this.fecha_fin;
 };
 
@@ -69,7 +69,7 @@ PromocionesSchema.methods.etiquetar = function() {
 
 		etiqueta = "Descuentos del " + cadena + "%";
 	}
-	console.log(etiqueta);
+	// console.log(etiqueta);
 	this.etiquetaDescuentos = etiqueta;
 };
 

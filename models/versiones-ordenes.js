@@ -19,7 +19,7 @@ VersionesOrdenesSchema.statics.actualizar = function(usuario_id, cb) {
 	var self = this;
 
 	self.findOne({usuario_id: usuario_id}, function(err, v) {
-		if(err) {console.log("error"); return;}
+		if(err) {return;}
 
 		if(!v) {
 			v = new self();
@@ -41,7 +41,7 @@ VersionesOrdenesSchema.statics.getVersion = function(usuario_id, cb) {
 	var self = this;
 
 	self.findOne({usuario_id: usuario_id}, function(err, v) {
-		if(err) {console.log("error"); return;}
+		if(err) {return;}
 
 		if(!v) {
 			v = new self();
