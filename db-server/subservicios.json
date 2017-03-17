@@ -1,5 +1,14 @@
-{"_id":{"$oid":"5761e98718532f0b35195219"},"detalles":"detalles subservicio1 postman","precio":99999,"descripcion":"descripcion subservicio1 postman","nombre":"subservicio1 postman","_creator":{"$oid":"5761e96518532f0b35195218"},"__v":0}
-{"_id":{"$oid":"5761ead218532f0b3519521a"},"detalles":"detalles modificado desde postman","precio":99999,"descripcion":"descripcion modificado desde postman","nombre":"subservicio modificado PUT postman","_creator":{"$oid":"5761e96518532f0b35195218"},"__v":0}
-{"_id":{"$oid":"577ee3007bd3c70274c0fb8d"},"_creator":{"$oid":"577ee2e47bd3c70274c0fb8b"},"nombre":"subservicio 1 del servicio lavado frio","descripcion":"descripcion subservicio 1","precio":10000,"detalles":"detalles subservicio 1","__v":0}
-{"_id":{"$oid":"577ee31a7bd3c70274c0fb8e"},"_creator":{"$oid":"577ee2ef7bd3c70274c0fb8c"},"nombre":"subservicio 1 del servicio lavado caliente","descripcion":"descripcion subservicio 1","precio":34000,"detalles":"detalles descipcion subservicio 1","__v":0}
-{"_id":{"$oid":"58876faeb4bdc86a08202115"},"_creator":{"$oid":"58876f58b4bdc86a08202114"},"nombre":"planchado","descripcion":"planchado de un vestido de dama","precio":100000,"__v":0}
+{"_id":{"$oid":"578d0db6b1a2de285f2fdecf"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Abrigos","precio":12000,"__v":0,"adicionales":{"589acc39b0952a0e68a5e1e7":{"checked":true},"589acc07b0952a0e68a5e1e6":{"checked":false}}}
+{"_id":{"$oid":"578d0e49b1a2de285f2fded0"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Camisa, Chaquetas Blazer, Faldas, Pantalón","precio":7000,"__v":0,"adicionales":{"589acc07b0952a0e68a5e1e6":{"checked":true}}}
+{"_id":{"$oid":"578d0f11b1a2de285f2fded1"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Camisa de gamuza","precio":30000,"__v":0}
+{"_id":{"$oid":"578d0f37b1a2de285f2fded2"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Chaquetas","precio":8000,"__v":0,"descripcion":"Chaquetas sport, Chalecos, Gabanes y Chaquetas impermeable"}
+{"_id":{"$oid":"578d0f82b1a2de285f2fded4"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Prendas en Cuero y Gamuza","precio":70000,"__v":0,"descripcion":"Pantalones, Chaquetas y Gabán en cuero y/o gamuza"}
+{"_id":{"$oid":"578d1069b1a2de285f2fded5"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Cobijas, Edredones, Cubrelechos","precio":22000,"__v":0}
+{"_id":{"$oid":"578d10aab1a2de285f2fded7"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Vestido dama y hombre de dos piezas","precio":12000,"__v":0}
+{"_id":{"$oid":"578d10c1b1a2de285f2fded8"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Vestido de novia","precio":150000,"__v":0}
+{"_id":{"$oid":"578d10e0b1a2de285f2fded9"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Bolsos, Morrales, Maletas","precio":18000,"__v":0}
+{"_id":{"$oid":"578d1116b1a2de285f2fdeda"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Muñecos","precio":15000,"__v":0}
+{"_id":{"$oid":"578d1144b1a2de285f2fdedc"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Sacos de lana y/o algodón","precio":7000,"__v":0}
+{"_id":{"$oid":"578d119cb1a2de285f2fdedd"},"_creator":{"$oid":"578d08edb1a2de285f2fdecb"},"nombre":"Vestidos de noche o cocktail","descripcion":"Vestidos de primera comunión, smoking, traje de cocktail, etc.","precio":30000,"__v":0}
+{"_id":{"$oid":"589acc07b0952a0e68a5e1e6"},"_creator":{"$oid":"589acbe0b0952a0e68a5e1e5"},"nombre":"Planchado prenda individual","descripcion":"planchado de prenda como camisas, jeans, etc","precio":5000,"detalles":"detalles de planchado de prenda como camisas, jeans, etc","__v":0}
+{"_id":{"$oid":"589acc39b0952a0e68a5e1e7"},"_creator":{"$oid":"589acbe0b0952a0e68a5e1e5"},"nombre":"Planchado prenda especial","descripcion":"Planchado prenda especial","precio":8000,"detalles":"detalles de Planchado prenda especial","__v":0}

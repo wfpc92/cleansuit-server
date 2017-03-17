@@ -1,1 +1,1 @@
-{"_id":{"$oid":"57c5c8c3118a8d1b119f1dcf"},"updatedAt":{"$date":"2017-01-24T15:19:07.113Z"},"createdAt":{"$date":"2016-08-30T17:56:19.835Z"},"configuraciones":0,"inventario":15,"__v":0}
+{"_id":{"$oid":"57c99a676e081dc454d9b0e7"},"updatedAt":{"$date":"2017-03-16T22:07:56.254Z"},"createdAt":{"$date":"2016-09-02T15:27:35.041Z"},"configuraciones":7,"inventario":13,"__v":0}
