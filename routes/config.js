@@ -9,6 +9,9 @@ module.exports = function(app, passport) {
 	var domiciliariosRouter = require('./domiciliarios')(app, passport);
 	var prendasRouter = require('./prendas')(app, passport);
 
+	// router.get('/', function(req, res, next) {
+	// 	res.render('index', { view: 'pages/home'});
+	// });
 
 	app.use('/', usuariosRouter);
 	app.use('/promociones', promocionesRouter);

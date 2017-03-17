@@ -59,9 +59,6 @@ function registrarCliente(datos, callback) {
 	});
 }
 
-router.get('/', function(req, res, next) {
-	res.render('index', { view: 'pages/home'});
-});
 
 router.post('/registrar', function(req, res) {
 	var datos = req.body.datos || {};
