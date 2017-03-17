@@ -1,7 +1,17 @@
 {
-  "name": "cleansuit",
+  "name": "cleansuit-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "CleanSuit API",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wfpc92/cleansuit-server.git"
+  },
+  "author": "CleanSuit",
+  "private": true,
+  "license": "Private",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
   "dependencies": {
     "angular-ui-router": "^0.3.1",
     "bcrypt": "latest",
@@ -33,9 +43,7 @@
     "passport-local": "~0.1.6",
     "serve-favicon": "^2.3.0"
   },
-  "scripts": {
-    "start": "node ./bin/www"
-  },
-  "author": "",
-  "license": "ISC"
+  "engines": {
+    "node": ">=5.9.0"
+  }
 }
