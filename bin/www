@@ -1,143 +1,114 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
+var chalk = require('chalk');
 
-var app = require('../app');
-var debug = require('debug')('cleansuit:server');
+var cluster = require('cluster');
 var http = require('http');
-
-/*var cluster = require('cluster');
 var workers = process.env.WORKERS || require('os').cpus().length;
 
 if (cluster.isMaster) {
 
-  console.log('start cluster with %s workers', workers);
+    console.log(`Comenzando el Cluster [%s] con %s workers:`, process.pid, chalk.green(workers));
 
-  for (var i = 0; i < workers; ++i) {
-    var worker = cluster.fork().process;
-    console.log('worker %s started.', worker.pid);
-  }
-
-  cluster.on('exit', function(worker) {
-    console.log('worker %s died. restart...', worker.process.pid);
-    cluster.fork();
-  });
-
-} else {*/
-
-  /**
-   * Get port from environment and store in Express.
-   */
-
-  var port = normalizePort(process.env.PORT || '20987');
-  app.set('port', port);
-
-  /**
-   * Create HTTP server.
-   */
-
-  var server = http.createServer(app);
-
-  /**
-   * Listen on provided port, on all network interfaces.
-   */
-
-  server.listen(port);
-  server.on('error', onError);
-  server.on('listening', onListening);
-
-  /**
-   * Normalize a port into a number, string, or false.
-   */
-
-  function normalizePort(val) {
-    var port = parseInt(val, 10);
-
-    if (isNaN(port)) {
-      // named pipe
-      return val;
+    var worker;
+    for (var i = 0; i < workers; ++i) {
+        worker = cluster.fork().process;
+        console.log(`%s Instanciando Worker [%s]`, chalk.green('✓'), worker.pid);
     }
 
-    if (port >= 0) {
-      // port number
-      return port;
-    }
+    cluster.on('exit', function(worker) {
+        console.log(`%s Worker [%s] murió. Reiniciando...`, chalk.red('✗'), worker.process.pid);
+        cluster.fork();
+    });
 
-    return false;
-  }
+} else {
 
-  /**
-   * Event listener for HTTP server "error" event.
-   */
+    /**
+     * Normalize a port into a number, string, or false.
+     */
+    var normalizePort = function(val) {
+        var port = parseInt(val, 10);
 
-  function onError(error) {
-    if (error.syscall !== 'listen') {
-      throw error;
-    }
+        if (isNaN(port)) { // named pipe
+            return val;
+        }
+        if (port >= 0) { // port number
+            return port;
+        }
 
-    var bind = typeof port === 'string'
-      ? 'Pipe ' + port
-      : 'Port ' + port;
+        return false;
+    };
 
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-      case 'EACCES':
-        console.error(bind + ' requires elevated privileges');
-        process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        console.error(bind + ' is already in use');
-        process.exit(1);
-        break;
-      default:
-        throw error;
-    }
-  }
+    /**
+     * Event listener for HTTP server "error" event.
+     */
+    var onError = function(error) {
+        if (error.syscall !== 'listen') {
+            throw error;
+        }
 
-  /**
-   * Event listener for HTTP server "listening" event.
-   */
+        var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
-  function onListening() {
-    var addr = server.address();
-    var bind = typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port;
-    debug('Listening on ' + bind);
-    console.log("Listening on ", addr);
-  }
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
+            case 'EACCES':
+                console.error(bind + ' requires elevated privileges');
+                process.exit(1);
+                break;
+            case 'EADDRINUSE':
+                console.error(bind + ' is already in use');
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
+    };
 
+    var runForkAfterAppInit = function(app) {
+        // Get port from environment and store in Express.
+        app.set('port', normalizePort(process.env.PORT || '20987'));
 
-//}//END IF
+        // Create HTTP server.
+        var server = http.createServer(app);
+
+        // Listen on provided port, on all network interfaces.
+        server.listen(app.get('port'), function() {
+            console.log('%s Fork escuchando el puerto %d en modo: %s', chalk.green(`✓ [${process.pid}]`), app.get('port'), app.get('env'));
+            // console.log('  Press CTRL-C to stop\n');
+        });
+        server.on('error', onError);
+    };
+
+    require('../app')(runForkAfterAppInit);
+}
+
 
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 
-process.on('uncaughtException', function (err) {
-  var d = new Date;
-  console.error(d.toUTCString() + ' uncaughtException:', err.message)
-  console.error(err.stack)
-  
-  var strErr = JSON.stringify(err);
+process.on('uncaughtException', function(err) {
+    var d = new Date();
+    console.error(d.toUTCString() + ' uncaughtException:', err.message);
+    console.error(err.stack);
 
-  var opciones = {
-    "from": "noreply@cleansuit.co",
-    "to": "wfpantoja@gmail.com",
-    "subject": "CleanSuit Crash!",
-    "text": "",
-    "html": "<h2>"+d.toUTCString()+" uncaughtException: "+err.message+"</h2>"+
-            "<br/>"+
-            "<pre>"+ err.stack + "</pre>" +
+    var strErr = JSON.stringify(err);
+
+    var opciones = {
+        "from": "noreply@cleansuit.co",
+        "to": "wfpantoja@gmail.com",
+        "subject": "CleanSuit Crash!",
+        "text": "",
+        "html": "<h2>" + d.toUTCString() + " uncaughtException: " + err.message + "</h2>" +
+            "<br/>" +
+            "<pre>" + err.stack + "</pre>" +
             "<br/><br/>"
-  };
+    };
 
-  var transporter = nodemailer.createTransport(sendmailTransport({ "path": "/usr/bin/sendmail", "args": "" }));
-  transporter.sendMail(opciones, function(error, info) {
-    process.exit(1)
-  });
-  
-})
-
-
+    var transporter = nodemailer.createTransport(sendmailTransport({
+        "path": "/usr/bin/sendmail",
+        "args": ""
+    }));
+    transporter.sendMail(opciones, function(error, info) {
+        process.exit(1);
+    });
+});

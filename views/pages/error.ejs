@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Cleansuit | Error</title>
+    <title>Cleansuit | Error <%if (error.status) { %><%= error.status %><% } %></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta http-equiv="content-type" content="text-html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,12 +15,8 @@
 
     <main>
         <div class="jumbotron">
-            <h2><%= message %></h2>
-            <%if (error.status) { %>
-            <h3><%= error.status %></h3>
-            <% } else { %>
-            <p>Please contact ventas@cleansuit.co if you have a problem with the Application.</p>
-            <% } %>
+            <h2><%if (error.status) { %><%= error.status %> <% } %><%= message %></h2>
+            <p>Por favor contacte ventas@cleansuit.co si usted tiene un problema con la Aplicación.</p>
             <%if (error.stack) { %>
             <pre><%= error.stack %> </pre>
             <% } %>
