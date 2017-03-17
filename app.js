@@ -56,8 +56,7 @@ function runapp() {
     if (app.get('env') === 'development') {
       app.use(function(err, req, res, next) {
       	res.status(err.status || 500);
-      	res.render('index', {
-          view: 'pages/error',
+      	res.render('pages/error', {
       	  message: err.message,
       	  error: err
       	});
@@ -68,8 +67,7 @@ function runapp() {
     // no stacktraces leaked to user
     app.use(function(err, req, res, next) {
       res.status(err.status || 500);
-      res.render('index', {
-        view: 'pages/error',
+      res.render('pages/error', {
         message: err.message,
         error: {}
       });

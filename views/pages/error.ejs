@@ -1,4 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cleansuit | Error</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta http-equiv="content-type" content="text-html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<h3><%= message %></h3>
-<h3><%= error.status %></h3>
-<pre><%= error.stack %> </pre>
+    <link rel="stylesheet" href="/javascripts/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+        body { padding-top:50px; }
+    </style>
+</head>
+<body class="container">
+
+    <main>
+        <div class="jumbotron">
+            <h3><%= message %></h3>
+            <%if (error.status) { %>
+            <h4><%= error.status %></h4>
+            <% } %>
+            <%if (error.stack) { %>
+            <pre><%= error.stack %> </pre>
+            <% } %>
+        </div>
+    </main>
+
+</body>
+</html>
