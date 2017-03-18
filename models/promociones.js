@@ -28,7 +28,7 @@ var PromocionesSchema = new mongoose.Schema({
 	etiquetaDescuentos: {
 		type: String
 	},
-	items: {},//referencias a los productos y subservicios a los se aplica la promocion.
+	items: {}, // referencias a los productos y subservicios a los se aplica la promocion.
 });
 
 PromocionesSchema.methods.vigente = function() {
@@ -38,36 +38,42 @@ PromocionesSchema.methods.vigente = function() {
 };
 
 PromocionesSchema.methods.etiquetar = function() {
-	var arr = [], etiqueta, cadena;
+	var i, arr = [], etiqueta, cadena;
 
-	for(var i in this.items){
-		if (this.items &&
-			arr.indexOf(this.items[i].descuento) == -1 &&
-			this.items[i].descuento) {
-		    arr.push(parseInt(this.items[i].descuento));
+	for (i in this.productos) {
+		if (this.productos &&
+		this.productos[i].descuento &&
+			arr.indexOf(this.productos[i].descuento) == -1 ) {
+			arr.push(parseInt(this.productos[i].descuento));
 		}
 	}
 
-	arr = arr.sort(function(a, b) {return a-b;});
+	for (i in this.servicios) {
+		if (this.servicios &&
+		this.servicios[i].descuento &&
+			arr.indexOf(this.servicios[i].descuento) == -1 ) {
+			arr.push(parseInt(this.servicios[i].descuento));
+		}
+	}
 
-	if (arr.length === 0){
-		etiqueta = "Descuento del " + this.descuento + "%";
+  	arr = arr.sort(function(a, b) { return a-b; });
+
+  	if (arr.length === 0){
+  		etiqueta = "";
 	} else if (arr.length == 1) {
-		etiqueta = "Descuento del " + arr[0] + "%";
+		etiqueta = `Descuento del ${arr[0]}%`;
 	} else {
 		cadena = "";
-
 		for (i in arr) {
 			cadena += arr[i];
-			if(i < arr.length - 2) {
+			if (i < arr.length - 2) {
 				cadena += ", ";
 			}
-			if(i == arr.length - 2) {
+			if (i == arr.length - 2) {
 			 	cadena += " y ";
 			}
 		}
-
-		etiqueta = "Descuentos del " + cadena + "%";
+		etiqueta = `Descuentos del ${cadena}%`;
 	}
 	// console.log(etiqueta);
 	this.etiquetaDescuentos = etiqueta;
