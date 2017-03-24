@@ -41,7 +41,11 @@ var OrdenesSchema = new mongoose.Schema({
 	},
 	servicioDirecto: {
 		type: Boolean
-	}
+	},
+	noleido:  {
+		type: Boolean,
+		default: true
+	},
 });
 
 OrdenesSchema.plugin(autoIncrement.plugin, {
