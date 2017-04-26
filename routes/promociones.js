@@ -111,7 +111,7 @@ module.exports = function(app, passport) {
 	});
 
 	router.delete('/:id', function(req, res){
-		Promociones.findByIdAndRemove(req.params.id, function(err, promocion) {
+		Promociones.findOneAndRemove({_id: req.params.id}, function(err, promocion) {
 			if (err) return res.json({success: false, mensaje: err.errmsg, error: err});
 
 			res.json({

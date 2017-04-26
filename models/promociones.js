@@ -85,4 +85,16 @@ PromocionesSchema.post('save', function (next) {
 	});
 });
 
+PromocionesSchema.post('findOneAndRemove', function (next) {
+	VersionApp.singleton(function(v) {
+		v.inventario += 1;
+	});
+});
+
+PromocionesSchema.post('update', function (next) {
+	VersionApp.singleton(function(v) {
+		v.inventario += 1;
+	});
+});
+
 module.exports = mongoose.model('Promociones', PromocionesSchema);
