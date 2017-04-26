@@ -16,4 +16,10 @@ SubserviciosSchema.post('save', function (next) {
 	});
 });
 
+SubserviciosSchema.post('findOneAndUpdate', function(next) {
+	VersionApp.singleton(function(v) {
+    	v.inventario += 1;
+	})
+});
+
 module.exports = mongoose.model('Subservicios', SubserviciosSchema);

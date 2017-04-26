@@ -91,10 +91,15 @@ PromocionesSchema.post('findOneAndRemove', function (next) {
 	});
 });
 
-PromocionesSchema.post('update', function (next) {
+PromocionesSchema.post('remove', function (next) {
 	VersionApp.singleton(function(v) {
 		v.inventario += 1;
 	});
 });
 
+PromocionesSchema.post('update', function (next) {
+	VersionApp.singleton(function(v) {
+		v.inventario += 1;
+	});
+});
 module.exports = mongoose.model('Promociones', PromocionesSchema);
