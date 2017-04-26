@@ -9,9 +9,11 @@ var ROLES = ['superadmin', 'gerente', 'admin_sede', 'recepcionista', 'trabajador
 
 // set up a mongoose model
 var UsuariosSchema = new mongoose.Schema({
-	nombre: String,
+	nombre: {
+		type: String,
+	},
 	correo: {
-		type: mongoose.SchemaTypes.Email,
+		type: String,
 		unique: true
 	},
 	contrasena: {

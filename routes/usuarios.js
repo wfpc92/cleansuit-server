@@ -62,13 +62,13 @@ function registrarCliente(datos, callback) {
 
 router.post('/registrar', function(req, res) {
 	var datos = req.body.datos || {};
-
+	
 	if (!datos.nombre || !datos.correo || !datos.contrasena) {
 		res.json({success: false, mensaje: 'Por favor ingrese nombre, correo y contraseña.'});
 	}
 	else {
 
-		registrarCliente(req.body, function(infoUsuario) {
+		registrarCliente(datos, function(infoUsuario) {
 			if (infoUsuario) {
 				res.json({
 					success: true,
