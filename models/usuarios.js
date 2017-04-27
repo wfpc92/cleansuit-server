@@ -12,6 +12,9 @@ var UsuariosSchema = new mongoose.Schema({
 	nombre: {
 		type: String,
 	},
+	cedula: {
+		type: String,
+	},
 	correo: {
 		type: String,
 		unique: true
@@ -76,6 +79,7 @@ UsuariosSchema.methods.getInfo = function() {
 
 	return {
 		nombre: this.nombre,
+		cedula: this.cedula,
 		correo: this.correo,
 		rol: this.rol,
 		token: 'JWT ' + token,

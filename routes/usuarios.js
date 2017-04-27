@@ -503,11 +503,10 @@ module.exports = function(app, passport) {
 	});
 
 	router.post('/cliente', passport.authenticate('jwt', { session: false}), function(req, res) {
-		//console.log(JSON.stringify(req.user))
-		//console.log(JSON.stringify(req.body))
-
+		
 		var mensaje = "";
 		req.user.nombre = req.body.nombre || "";
+		req.user.cedula = req.body.cedula || "";
 		req.user.correo = req.body.correo || "";
 		req.user.profile = {
 			direccion: req.body.direccion || "",
