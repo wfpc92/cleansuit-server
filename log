@@ -1,3 +1,16 @@
-Intentando conexión a mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit, esperando respuesta...
-Listening on  { address: '::', family: 'IPv6', port: 20987 }
-Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+Comenzando el Cluster [5780] con 5 workers:
+✓ Instanciando Worker [5847]
+✓ Instanciando Worker [5862]
+✓ Instanciando Worker [5864]
+✓ Instanciando Worker [5869]
+✓ Instanciando Worker [5870]
+✗ [5864] No se pudo conectar a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✗ [5870] No se pudo conectar a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✗ [5864] No se pudo conectar a: mongodb://localhost:27017/Cleansuit
+✗ [5870] No se pudo conectar a: mongodb://localhost:27017/Cleansuit
+✗ [5847] No se pudo conectar a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✗ [5847] No se pudo conectar a: mongodb://localhost:27017/Cleansuit
+✗ [5869] No se pudo conectar a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✗ [5862] No se pudo conectar a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✗ [5869] No se pudo conectar a: mongodb://localhost:27017/Cleansuit
+✗ [5862] No se pudo conectar a: mongodb://localhost:27017/Cleansuit

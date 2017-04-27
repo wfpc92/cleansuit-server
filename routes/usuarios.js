@@ -164,11 +164,13 @@ router.post("/ingresar/fb", function(req, res, next) {
 				console.log("Respuesta de FB:", parsed.id, parsed.email, parsed.last_name, parsed.first_name);
 				var fb_api_uid = parsed.id;
 				// el UID de FB API coincide con el de la app cliente?
+				
 				if (fb_api_uid == fb_uid) {
 					// El usuario ya tiene cuenta en Cleansuit?
-					Usuarios.findOne({ "facebook": fb_uid }, function(err, usuario) {
+					Usuarios.findOne({ facebook: fb_api_uid }, function(err, usuario) {
 						if (err) return res.json({ success: false, mensaje: err.errmsg, error: err });
 
+						console.log(JSON.stringify(usuario));
 						// Si el usuario existe, retornamos el token
 						if (usuario) {
 							res.json({
@@ -192,7 +194,7 @@ router.post("/ingresar/fb", function(req, res, next) {
 								"correo": parsed.email,
 								"contrasena": (crypto.randomBytes(12)).toString("base64"),
 								"url_foto": "http://graph.facebook.com/"+fb_uid+"/picture?width=270&height=270",
-								"facebook": fb_uid
+								"fb_uid": fb_uid
 							};
 
 							registrarCliente(datosNuevoUsuario, function(infoUsuario) {
