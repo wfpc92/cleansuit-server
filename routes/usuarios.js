@@ -410,6 +410,16 @@ router.post('/cliente/reset/:token', function(req, res) {
 	});
 });
 
+//////borrar
+router.get('/socket', function(req, res) {
+	var baseUrl = url.format({protocol: req.protocol, host: req.get('host')});
+	var action = url.format({protocol: req.protocol, host: req.get('host'), pathname: req.originalUrl});
+
+	return res.render("socket", {
+		baseUrl: baseUrl
+	});
+});
+
 module.exports = function(app, passport) {
 
 	router.get('/usuarios', passport.authenticate('jwt', { session: false}), function(req, res) {

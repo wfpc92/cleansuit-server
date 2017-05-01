@@ -70,7 +70,19 @@ if (cluster.isMaster) {
 
         // Create HTTP server.
         var server = http.createServer(app);
+        var io = require("socket.io")(server);
 
+        io.on("connection", function(socket) {
+            //console.log("socket conectado... ", socket);
+            console.log("nuevo sockt conectado", socket.id);
+
+            socket.on("dibujar", function(data) {
+                socket.broadcast.emit("dibujar", data);
+                //la diferencia entre socket.broadcast y io.sockets.emit es que broadcast no se envia a si mismo
+                //mientras io.socket.emit se envia a todos los sockets conectados.
+                
+            })
+        })
         // Listen on provided port, on all network interfaces.
         server.listen(app.get('port'), function() {
             console.log('%s Fork escuchando el puerto %d en modo: %s', chalk.green(`✓ [${process.pid}]`), app.get('port'), app.get('env'));

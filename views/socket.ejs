@@ -13,77 +13,23 @@ var baseUrl = baseUrl || ".";
     <title>CleanSuit | Lavandería Boutique en Bogotá</title>
     <meta name="description" content="Lavandería y Productos de limpieza en Bogotá. Lavado de prendas en frio y en seco, tintorería, sastrería y zapatería. Productos para el hogar e industria. Servicio a domicilio" />
     <meta name="viewport" content="width-device-width, initial-scale=1" />
-
-    <link rel="stylesheet" href="<%= baseUrl %>/css/genericos.css" />
-    <link rel="stylesheet" href="<%= baseUrl %>/css/estilos-reset-password.css" />
     
     <link rel="icon" sizes="192x192" href="favicon_192.png">
     <link rel="shortcut icon" href="favicon.ico">
 
     <script src="<%= baseUrl %>/javascripts/lib/jquery/dist/jquery.js"></script>
     <script src="<%= baseUrl %>/javascripts/lib/jquery-validation-1.15.1/dist/jquery.validate.js"></script>
+    <script src="js/cleansuit.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.8/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.8/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <script src="<%= baseUrl %>/javascripts/sketch.js"></script>
+
 
 </head>
 
 <body>
-    <header id="header">
-        <h1><img src="<%= baseUrl %>/img/logo.png" alt="CleanSuit"></h1>
-    </header>
-    
-    <section>
-        <h2>Restablece tu contraseña</h2>
-
-
-<%
-switch (estado) { 
-case "FORMULARIO":
-%>
-        <p>Te recomendamos ingresar una contraseña fuerte con mínimo 6 caracteres que incluya números, letras y signos de puntuación.</p>
-        <form id="formReset" class="contrasenas" action="<%= action %>" method="POST">
-            <div class="form">
-                <label for="contrasena">Escribe tu contraseña nueva</label>
-                <input type="password" id="contrasena" name="contrasena"></input>
-            </div>
-            <div class="form">
-                <label for="confirmarContrasena">Escribe tu contraseña nueva una vez más</label>
-                <input type="password" id="confirmarContrasena" name="confirmarContrasena"></input>
-<% if(errContrasena) { %>
-                <span>Las contraseñas no coinciden</span>
-<% } %> 
-            </div>
-            <button type="submit">Enviar</button>
-            <div class="clearFix"></div>
-        </form>
-
-
-<%
-break;
-case "CADUCADO":
-%>
-        <h3>Este enlace ha caducado</h3>
-        <p class="mensaje">Por favor vuelve a intentar a realizar el cambio de tu contraseña</p>
-        <a href="http://www.cleansuit.co" class="sitio">IR AL SITIO WEB DE CLEANSUIT</a>
-
-<%
-break;
-case "RESET_OK":
-%>
-        <h3>¡Felicitaciones!</h3>
-        <p class="mensaje">Has cambiado tu contraseña exitosamente</p>
-        <a href="http://www.cleansuit.co" class="sitio">IR AL SITIO WEB DE CLEANSUIT</a>
-
-<%
-break;
-case "ERROR_SERVIDOR":
-%>
-        <h3>No disponible</h3>
-        <p class="mensaje">Estamos experimentado problemas con nuestros servidores. Por favor, intenta más tarde.</p>
-        <a href="http://www.cleansuit.co" class="sitio">IR AL SITIO WEB DE CLEANSUIT</a>
-<%
-}
-%> 
-                         
-    </section>
 
     <script type="text/javascript">
         $(document).ready(function(){
@@ -115,6 +61,8 @@ case "ERROR_SERVIDOR":
                     },
                 }
             });
+
+           
         });
     </script>
 
