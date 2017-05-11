@@ -12,7 +12,7 @@ var UsuariosSchema = new mongoose.Schema({
 	nombre: {
 		type: String,
 	},
-	cedula: {
+	docId: {
 		type: String,
 	},
 	correo: {

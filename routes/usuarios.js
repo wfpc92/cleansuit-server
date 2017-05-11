@@ -516,7 +516,7 @@ module.exports = function(app, passport) {
 		
 		var mensaje = "";
 		req.user.nombre = req.body.nombre || "";
-		req.user.cedula = req.body.cedula || "";
+		req.user.docId = req.body.docId || "";
 		req.user.correo = req.body.correo || "";
 		req.user.profile = {
 			direccion: req.body.direccion || "",
