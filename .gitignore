@@ -2,6 +2,7 @@
 logs
 *.log
 log
+/log
 npm-debug.log*
 
 # Runtime data
@@ -47,7 +48,9 @@ build/Release
 /share
 !/bin/www
 
+
 # carpeta de almacenamiento de imagenes de prendas
 public/updates
+public/images
 
 npm-debug.log
