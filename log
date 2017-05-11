@@ -1,16 +1,16 @@
-Comenzando el Cluster [32490] con 5 workers:
-✓ Instanciando Worker [32523]
-✓ Instanciando Worker [32529]
-✓ Instanciando Worker [32530]
-✓ Instanciando Worker [32535]
-✓ Instanciando Worker [32540]
-✓ [32540] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
-✓ [32530] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
-✓ [32535] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
-✓ [32540] Fork escuchando el puerto 20987 en modo: production
-✓ [32529] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
-✓ [32523] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
-✓ [32535] Fork escuchando el puerto 20987 en modo: production
-✓ [32530] Fork escuchando el puerto 20987 en modo: production
-✓ [32529] Fork escuchando el puerto 20987 en modo: production
-✓ [32523] Fork escuchando el puerto 20987 en modo: production
+Comenzando el Cluster [31913] con 5 workers:
+✓ Instanciando Worker [31972]
+✓ Instanciando Worker [31977]
+✓ Instanciando Worker [31978]
+✓ Instanciando Worker [31983]
+✓ Instanciando Worker [31988]
+✓ [31978] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✓ [31988] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✓ [31972] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✓ [31983] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✓ [31977] Conectado a: mongodb://uclean:limpiaropa0@localhost:17551/Cleansuit
+✓ [31977] Fork escuchando el puerto 20987 en modo: production
+✓ [31983] Fork escuchando el puerto 20987 en modo: production
+✓ [31972] Fork escuchando el puerto 20987 en modo: production
+✓ [31988] Fork escuchando el puerto 20987 en modo: production
+✓ [31978] Fork escuchando el puerto 20987 en modo: production

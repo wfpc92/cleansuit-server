@@ -3,8 +3,8 @@
 function setup() {
     createCanvas(600,400);
     background(51);
-    socket = io.connect("http://localhost:20987");
-
+    // socket = io.connect("http://localhost:20987");
+    socket = io.connect("http://api.cleansuit.co:20987");
     socket.on("dibujar", function(data) {
         dibujar(data);
     });

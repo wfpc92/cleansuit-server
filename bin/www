@@ -74,7 +74,7 @@ if (cluster.isMaster) {
 
         io.on("connection", function(socket) {
             //console.log("socket conectado... ", socket);
-            console.log("nuevo sockt conectado", socket.id);
+            console.log("nuevo sockt conectado", socket.id, app.get("port"));
 
             socket.on("dibujar", function(data) {
                 socket.broadcast.emit("dibujar", data);
