@@ -39,20 +39,16 @@ PromocionesSchema.methods.vigente = function() {
 
 PromocionesSchema.methods.etiquetar = function() {
 	var i, arr = [], etiqueta, cadena;
+	console.log("etiquetar:", this.items);
 
-	for (i in this.productos) {
-		if (this.productos &&
-		this.productos[i].descuento &&
-			arr.indexOf(this.productos[i].descuento) == -1 ) {
-			arr.push(parseInt(this.productos[i].descuento));
-		}
-	}
+	for (i in this.items) {
+		if(this.items[i].descuento) {
+			var desc = parseInt(this.items[i].descuento);
+			var noExisteEnArr = (arr.indexOf(desc) == -1);
 
-	for (i in this.servicios) {
-		if (this.servicios &&
-		this.servicios[i].descuento &&
-			arr.indexOf(this.servicios[i].descuento) == -1 ) {
-			arr.push(parseInt(this.servicios[i].descuento));
+			if (noExisteEnArr) {
+				arr.push(desc);
+			}
 		}
 	}
 
@@ -75,7 +71,8 @@ PromocionesSchema.methods.etiquetar = function() {
 		}
 		etiqueta = `Descuentos del ${cadena}%`;
 	}
-	// console.log(etiqueta);
+
+	console.log(etiqueta);
 	this.etiquetaDescuentos = etiqueta;
 };
 
