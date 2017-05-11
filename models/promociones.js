@@ -28,7 +28,8 @@ var PromocionesSchema = new mongoose.Schema({
 	etiquetaDescuentos: {
 		type: String
 	},
-	items: {}, // referencias a los productos y subservicios a los se aplica la promocion.
+	productos: [],
+	servicios: []
 });
 
 PromocionesSchema.methods.vigente = function() {
@@ -39,18 +40,23 @@ PromocionesSchema.methods.vigente = function() {
 
 PromocionesSchema.methods.etiquetar = function() {
 	var i, arr = [], etiqueta, cadena;
-	console.log("etiquetar:", this.items);
+	console.log("etiquetar:", this.productos, this.servicios);
+	
+	var buscarYAgregarEnArr = function(items) {
+		for (i in items) {
+			if(items[i].descuento) {
+				var desc = parseInt(items[i].descuento);
+				var noExisteEnArr = (arr.indexOf(desc) == -1);
 
-	for (i in this.items) {
-		if(this.items[i].descuento) {
-			var desc = parseInt(this.items[i].descuento);
-			var noExisteEnArr = (arr.indexOf(desc) == -1);
-
-			if (noExisteEnArr) {
-				arr.push(desc);
+				if (noExisteEnArr) {
+					arr.push(desc);
+				}
 			}
 		}
 	}
+
+	buscarYAgregarEnArr(this.productos);
+	buscarYAgregarEnArr(this.servicios);
 
   	arr = arr.sort(function(a, b) { return a-b; });
 
