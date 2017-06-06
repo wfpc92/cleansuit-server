@@ -78,10 +78,10 @@ UsuariosSchema.methods.getInfo = function() {
 	var token = jwt.encode(this._id, config.jwtSecret);
 
 	return {
-		nombre: this.nombre,
-		cedula: this.cedula,
-		correo: this.correo,
-		rol: this.rol,
+		nombre: this.nombre || '',
+		docId: this.docId || '',
+		correo: this.correo || '',
+		rol: this.rol || '',
 		token: 'JWT ' + token,
 		fb: this.facebook ? true : false,
 		direccion: this.profile.direccion ? this.profile.direccion : '',

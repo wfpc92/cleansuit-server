@@ -41,6 +41,7 @@ function enviarEmail(origen, destino, titulo, texto, html, callback) {
 function registrarCliente(datos, callback) {
 	var nuevoUsuario = new Usuarios({
 		"nombre": datos.nombre,
+		"docId": '',
 		"correo": datos.correo,
 		"contrasena": datos.contrasena,
 		"rol": 'cliente',
