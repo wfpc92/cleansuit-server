@@ -292,6 +292,7 @@ module.exports = function(app, passport) {
 			if (!infoCliente) {
 				infoCliente = new Usuarios();
 				infoCliente.nombre = req.body.cliente_id.nombre;
+				infoCliente.docId = req.body.cliente_id.docId;
 				infoCliente.correo = "x@x"+(new Date()).getTime();
 				infoCliente.contrasena = infoCliente.correo;
 				infoCliente.rol = 'cliente';
